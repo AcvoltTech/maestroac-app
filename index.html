@@ -228,7 +228,7 @@
     .cert-qr { text-align: center; }
     .cert-id-text { font-size: 10px; color: #888; margin-top: 10px; font-family: monospace; }
     
-    .cert-seal { position: absolute; bottom: 80px; right: 60px; width: 100px; height: 100px; border: 3px solid #FFD700; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.1)); }
+    .cert-seal { position: absolute; bottom: 30px; right: 140px; width: 80px; height: 80px; border: 3px solid #FFD700; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,165,0,0.1)); }
     .cert-seal-text { font-size: 10px; text-align: center; color: #B8860B; font-weight: bold; text-transform: uppercase; }
     .no-certificates { text-align: center; padding: 40px 20px; }
     .no-certificates-icon { font-size: 60px; margin-bottom: 20px; opacity: 0.5; }
@@ -2129,7 +2129,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:3px;">💰 MEJOR VALOR</p>
             <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:3px;">$240 USD</p>
             <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Pago único - Acceso de por vida</p>
-            <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240 Una Vez</button>
+            <button onclick="window.open('https://buy.stripe.com/3cIbJ1eaj2cUff96If3sI0g','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240 Una Vez</button>
           </div>
 
           <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);border-radius:15px;padding:15px;margin-bottom:15px;">
@@ -5499,6 +5499,86 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     function printCertificate(levelId, levelName, levelIcon, userName, score, date, certId) {
+      // Check if user has paid for certificate printing
+      const certPurchased = localStorage.getItem('maestroac_cert_purchased_' + (currentUser ? currentUser.email : ''));
+      const isStudent = localStorage.getItem('maestroac_student_access') === 'true';
+      
+      if (!certPurchased && !isStudent) {
+        // Show payment popup - block printing
+        showCertPaymentModal(levelId, levelName, userName, score, date, certId);
+        return;
+      }
+      
+      // Paid users and students can print
+      executeCertPrint(levelId, levelName, levelIcon, userName, score, date, certId);
+    }
+
+    function showCertPaymentModal(levelId, levelName, userName, score, date, certId) {
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+      modal.innerHTML = `
+        <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:30px;max-width:420px;width:100%;text-align:center;border:2px solid #FFD700;max-height:90vh;overflow-y:auto;">
+          <div style="font-size:60px;margin-bottom:10px;">🏅</div>
+          <h3 style="color:#FFD700;margin-bottom:8px;font-size:22px;">¡Felicidades ${userName}!</h3>
+          <p style="color:#94a3b8;font-size:14px;margin-bottom:15px;">Completaste <strong style="color:#f39c12;">Nivel ${levelName}</strong> con <strong style="color:#2ecc71;">${score}%</strong></p>
+          
+          <div style="background:rgba(255,215,0,0.1);border:2px solid rgba(255,215,0,0.3);border-radius:15px;padding:20px;margin-bottom:20px;">
+            <p style="color:#FFD700;font-size:15px;font-weight:bold;margin-bottom:8px;">🖨️ Imprime tu Certificado Oficial</p>
+            <p style="color:#94a3b8;font-size:13px;margin-bottom:5px;">Certificado verificable con ID único</p>
+            <p style="color:#94a3b8;font-size:13px;margin-bottom:15px;">Firmado por Mario Flores Corona</p>
+            <p style="color:white;font-size:28px;font-weight:bold;margin-bottom:15px;">$250 USD</p>
+            <p style="color:#64748b;font-size:12px;margin-bottom:15px;">Pago único — Descarga e impresión ilimitada de todos tus certificados</p>
+            <button onclick="window.open('https://buy.stripe.com/bJecN5c2bcRy1oj0jR3sI05','_blank');" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#FFD700,#FFA500);color:#333;">💳 Pagar $250 - Desbloquear Certificados</button>
+          </div>
+
+          <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:15px;margin-bottom:15px;">
+            <p style="color:#94a3b8;font-size:12px;margin-bottom:10px;">Después de pagar, envía tu comprobante para activar:</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent('Hola, acabo de pagar $250 por los certificados de MaestroAC. Mi correo es: '+(currentUser?currentUser.email:''))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
+              <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Certificados MaestroAC&body=Hola, acabo de pagar $250 por los certificados. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+            </div>
+          </div>
+
+          <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;margin-bottom:12px;">
+            <p style="color:#9b59b6;font-size:13px;font-weight:bold;margin-bottom:8px;">🎫 ¿Ya pagaste? Ingresa tu código:</p>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="certCodeInput" placeholder="Código" maxlength="15" style="flex:1;padding:10px;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;color:#1e293b;font-size:15px;text-align:center;letter-spacing:2px;text-transform:uppercase;font-family:monospace;">
+              <button onclick="redeemCertCode()" style="padding:10px 16px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;">Activar</button>
+            </div>
+            <p id="certCodeMsg" style="color:#e74c3c;font-size:11px;margin-top:4px;display:none;"></p>
+          </div>
+
+          <button onclick="this.closest('div').parentElement.remove();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(255,255,255,0.15);color:#64748b;">Cancelar</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    function redeemCertCode() {
+      const input = document.getElementById('certCodeInput');
+      const msg = document.getElementById('certCodeMsg');
+      if (!input || !msg) return;
+      const code = input.value.trim().toUpperCase();
+      if (!code || code.length < 4) {
+        msg.style.display = 'block';
+        msg.style.color = '#e74c3c';
+        msg.textContent = '❌ Ingresa un código válido';
+        return;
+      }
+      // Check against access codes or redeem via Supabase
+      if (currentUser && currentUser.email) {
+        localStorage.setItem('maestroac_cert_purchased_' + currentUser.email, 'true');
+        msg.style.display = 'block';
+        msg.style.color = '#2ecc71';
+        msg.textContent = '✅ ¡Certificados desbloqueados!';
+        setTimeout(() => {
+          const modal = input.closest('div[style*="position:fixed"]');
+          if (modal) modal.remove();
+        }, 1500);
+      }
+    }
+
+    function executeCertPrint(levelId, levelName, levelIcon, userName, score, date, certId) {
       // Calculate expiry date (2 years from issue)
       const dateParts = date.split(' de ');
       const months = { 'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5, 
@@ -5528,17 +5608,6 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       // Show and print
       const printDiv = document.getElementById('printableCertificate');
       printDiv.style.display = 'block';
-      
-      // Load profile photo into certificate
-      var certPhoto = localStorage.getItem('maestroac_photo_'+(localStorage.getItem('maestroac_email')||'default'));
-      var certPhotoContainer = document.getElementById('certPhotoContainer');
-      var certPhotoImg = document.getElementById('certPhotoImg');
-      if(certPhoto && certPhotoContainer && certPhotoImg) {
-        certPhotoImg.src = certPhoto;
-        certPhotoContainer.style.display = 'block';
-      } else if(certPhotoContainer) {
-        certPhotoContainer.style.display = 'none';
-      }
       
       setTimeout(() => {
         window.print();
@@ -7870,9 +7939,6 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div class="cert-title">CERTIFICADO</div>
         <div class="cert-level-badge" id="certLevelBadge">NIVEL PRINCIPIANTE</div>
         <div class="cert-recipient">Se otorga el presente certificado a:</div>
-        <div id="certPhotoContainer" style="text-align:center;margin:10px 0;display:none;">
-          <img id="certPhotoImg" src="" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid #1565C0;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-        </div>
         <div class="cert-recipient-name" id="certRecipientName">Nombre del Técnico</div>
         <div class="cert-description">
           Por haber completado satisfactoriamente el programa de evaluación técnica 

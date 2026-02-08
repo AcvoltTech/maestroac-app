@@ -1092,8 +1092,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           </div>
           <div id="adminLockManagement">
             <div class="admin-lock-disabled-notice" id="lockSystemNotice">
-              ⚠️ El sistema de candados está actualmente DESACTIVADO.
-              Para activarlo, cambia <code>LOCK_SYSTEM_ENABLED = true</code> en el código.
+              ✅ Sistema de acceso ACTIVADO. Nivel 1 gratis. Niveles 2-5 requieren compra ($20/mo) o acceso de estudiante ACVOLT.
             </div>
             <div id="adminLockControls" style="display: none;">
               <!-- Lock controls will be rendered by JavaScript -->
@@ -2022,7 +2021,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     // ==== LOCK SYSTEM CONFIGURATION ====
     // IMPORTANT: Set LOCK_SYSTEM_ENABLED to true to activate locks
-    const LOCK_SYSTEM_ENABLED = false; // Change to true to enable lock system
+    const LOCK_SYSTEM_ENABLED = true; // ACTIVATED - Levels 2+ require purchase or student access
 
     // Valid Matrix IDs that can unlock levels (generated from Matrix website)
     // Format: MATRIX-YYYY-XXXX where YYYY is year and XXXX is unique code
@@ -2051,9 +2050,43 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       localStorage.setItem('tecnico_unlocked_levels', JSON.stringify(unlockedLevels));
     }
 
+    // ===== ACVOLT STUDENT ACCESS SYSTEM =====
+    // Students get full access via special URL: maestromario.com?access=acvolt2026
+    // Access is saved in localStorage so they only need to open the link once
+    const ACVOLT_ACCESS_CODES = ['acvolt2026', 'acvolt2025', 'nivel33'];
+    
+    function checkStudentAccess() {
+      // Check URL parameter
+      const params = new URLSearchParams(window.location.search);
+      const accessParam = params.get('access');
+      
+      if (accessParam && ACVOLT_ACCESS_CODES.includes(accessParam.toLowerCase())) {
+        // Grant access and save to localStorage
+        localStorage.setItem('maestroac_student_access', 'true');
+        localStorage.setItem('maestroac_student_code', accessParam.toLowerCase());
+        localStorage.setItem('maestroac_student_date', new Date().toISOString());
+        
+        // Clean URL (remove ?access= parameter) so it looks normal
+        const cleanUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
+        
+        console.log('✅ ACVOLT Student access granted via URL');
+        return true;
+      }
+      
+      // Check if previously granted
+      return localStorage.getItem('maestroac_student_access') === 'true';
+    }
+    
+    // Run on page load
+    const isAcvoltStudent = checkStudentAccess();
+
     // Check if a level is locked
     // Check if user has purchased full app access
     function hasAppAccess() {
+      // ACVOLT students always have access (via URL link or saved)
+      if (isAcvoltStudent) return true;
+      
       if (!currentUser || !currentUser.email) return false;
       // Check individual purchase flag
       const purchased = localStorage.getItem('maestroac_app_purchased_' + currentUser.email);
@@ -2097,13 +2130,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:3px;">💰 MEJOR VALOR</p>
             <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:3px;">$240 USD</p>
             <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Pago único - Acceso de por vida</p>
-            <button onclick="window.open('STRIPE_LINK_240','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240 Una Vez</button>
+            <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240 Una Vez</button>
           </div>
 
           <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);border-radius:15px;padding:15px;margin-bottom:15px;">
             <p style="color:#1e293b;font-size:22px;font-weight:bold;margin-bottom:3px;">$20 USD/mes</p>
             <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Suscripción mensual - Cancela cuando quieras</p>
-            <button onclick="window.open('STRIPE_LINK_20','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">💳 Suscribirme $20/mes</button>
+            <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">💳 Suscribirme $20/mes</button>
           </div>
 
           <p style="color:#64748b;font-size:11px;margin-bottom:12px;">Después de pagar, envía tu comprobante por WhatsApp o correo para activar tu acceso en menos de 24 horas.</p>

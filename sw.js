@@ -1,51 +1,100 @@
-const CACHE_NAME = 'maestroac-v1.0.0';
-const OFFLINE_URL = '/';
+// MaestroAC Service Worker v2.0
+// Auto-invalidates cache on every new deploy
+const CACHE_VERSION = 'maestroac-v2025-0208-1530';
+const CACHE_NAME = CACHE_VERSION;
 
-const ASSETS_TO_CACHE = [
+// Files to cache
+const PRECACHE_FILES = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  '/logo.png'
 ];
 
+// Install: cache core files
 self.addEventListener('install', event => {
+  console.log('[SW] Installing version:', CACHE_VERSION);
+  // Skip waiting to activate immediately
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
-      console.log('[MaestroAC] Caching app shell');
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+      return cache.addAll(PRECACHE_FILES).catch(err => {
+        console.log('[SW] Precache partial failure:', err);
+      });
+    })
   );
 });
 
+// Activate: delete ALL old caches
 self.addEventListener('activate', event => {
+  console.log('[SW] Activating version:', CACHE_VERSION);
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-    )).then(() => self.clients.claim())
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames
+          .filter(name => name !== CACHE_NAME)
+          .map(name => {
+            console.log('[SW] Deleting old cache:', name);
+            return caches.delete(name);
+          })
+      );
+    }).then(() => {
+      // Take control of all pages immediately
+      return self.clients.claim();
+    }).then(() => {
+      // Notify all tabs to reload
+      return self.clients.matchAll({ type: 'window' }).then(clients => {
+        clients.forEach(client => {
+          client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION });
+        });
+      });
+    })
   );
 });
 
+// Fetch: Network-first strategy for HTML, cache-first for assets
 self.addEventListener('fetch', event => {
-  if (event.request.mode === 'navigate') {
+  const url = new URL(event.request.url);
+  
+  // Skip non-GET requests and external URLs
+  if (event.request.method !== 'GET') return;
+  if (!url.origin.includes(self.location.origin)) return;
+  
+  // HTML files: ALWAYS network first (ensures latest version)
+  if (event.request.headers.get('accept')?.includes('text/html') || 
+      url.pathname === '/' || 
+      url.pathname.endsWith('.html')) {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match(OFFLINE_URL))
+      fetch(event.request)
+        .then(response => {
+          // Cache the fresh response
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => {
+          // Offline fallback
+          return caches.match(event.request);
+        })
     );
     return;
   }
   
+  // Other assets (images, CSS, JS): cache first, then network
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request).then(fetchResponse => {
-        return caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, fetchResponse.clone());
-          return fetchResponse;
-        });
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        return response;
       });
-    }).catch(() => {
-      if (event.request.destination === 'image') {
-        return caches.match('/icons/icon-192.png');
-      }
     })
   );
+});
+
+// Listen for skip waiting message from the page
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });

@@ -1536,6 +1536,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <div class="attendance-type-selector">
             <div class="type-option selected" id="typePresencial" onclick="selectClassType('presencial')">🏫 Presencial</div>
             <div class="type-option" id="typeZoom" onclick="selectClassType('zoom')">💻 Zoom</div>
+            <div class="type-option" id="typeMovil" onclick="selectClassType('movil')">📱 Móvil</div>
           </div>
           <button id="btnCheckIn" class="btn-checkin btn-checkin-in" onclick="doCheckIn()">✅ HACER CHECK-IN</button>
           <button id="btnCheckOut" class="btn-checkin btn-checkin-out" onclick="doCheckOut()" style="display:none;">🛑 HACER CHECK-OUT</button>
@@ -4376,12 +4377,15 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     function showScreen(screenId) {
-      // Force check-in before accessing quizzes/levels
-      if (screenId === 'levelsScreen' && !sessionCheckedIn) {
-        if (!requireCheckIn('levelsScreen')) return;
+      // Force check-in before accessing any content
+      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen'];
+      if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
+        if (!requireCheckIn(screenId)) return;
       }
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(screenId).classList.add('active');
+      // Save current screen for "back to app" navigation
+      localStorage.setItem('maestroac_last_screen', screenId);
     }
 
     // Handle the "Comenzar" button - check if profile exists
@@ -7823,6 +7827,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       selectedClassType = type;
       document.getElementById('typePresencial').classList.toggle('selected', type === 'presencial');
       document.getElementById('typeZoom').classList.toggle('selected', type === 'zoom');
+      document.getElementById('typeMovil').classList.toggle('selected', type === 'movil');
     }
 
     function updateTimer() {
@@ -7851,11 +7856,11 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         currentAttendanceId = data.id;
         currentCheckInTime = new Date(data.check_in);
         sessionCheckedIn = true; // Unlock quizzes/levels for this session
-        addNotification('checkin', '✅ Check-in registrado — ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : '💻 Zoom'), '📋');
+        addNotification('checkin', '✅ Check-in registrado — ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : selectedClassType === 'zoom' ? '💻 Zoom' : '📱 Móvil'), '📋');
         document.getElementById('btnCheckIn').style.display = 'none';
         document.getElementById('btnCheckOut').style.display = 'block';
         document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
-        document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : '💻 Zoom');
+        document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : selectedClassType === 'zoom' ? '💻 Zoom' : '📱 Móvil');
         document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
         attendanceTimerInterval = setInterval(updateTimer, 1000);
         updateTimer();
@@ -8179,7 +8184,38 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     document.addEventListener('DOMContentLoaded', function() {
       updateNotifBadge();
       renderNotifications();
+      
+      // Check if user was in the app before (show "back to app" button on welcome/login screens)
+      const lastScreen = localStorage.getItem('maestroac_last_screen');
+      const savedUser = localStorage.getItem('tecnico_user') || localStorage.getItem('tecnico_user_backup');
+      if (lastScreen && savedUser && lastScreen !== 'loginScreen' && lastScreen !== 'registerScreen' && lastScreen !== 'welcomeScreen') {
+        const backBtn = document.getElementById('backToAppBtn');
+        if (backBtn) backBtn.style.display = 'block';
+      }
     });
+    
+    function returnToApp() {
+      const lastScreen = localStorage.getItem('maestroac_last_screen');
+      const backBtn = document.getElementById('backToAppBtn');
+      if (backBtn) backBtn.style.display = 'none';
+      
+      // Load user data first
+      let savedUser = localStorage.getItem('tecnico_user') || localStorage.getItem('tecnico_user_backup');
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+          document.getElementById('userGreeting').textContent = 'Hola, ' + currentUser.nombre.split(' ')[0];
+          showNotifBell();
+        } catch(e) {}
+      }
+      
+      // Navigate to last screen or levels
+      const safeScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'certificatesScreen', 'attendanceScreen', 'welcomeScreen'];
+      const target = safeScreens.includes(lastScreen) ? lastScreen : 'welcomeScreen';
+      
+      // If going to protected screen, need check-in first
+      showScreen(target);
+    }
 
     // Register Service Worker
     if ('serviceWorker' in navigator) {
@@ -8203,6 +8239,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       <button class="notif-bell-btn" onclick="toggleNotifPanel()">
         🔔
         <span class="notif-badge hidden" id="notifBadge">0</span>
+      </button>
+    </div>
+
+    <!-- Back to App Button (shows when user has an active session) -->
+    <div id="backToAppBtn" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:500;">
+      <button onclick="returnToApp()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; padding:14px 30px; border-radius:50px; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(99,102,241,0.5); display:flex; align-items:center; gap:8px;">
+        ← Volver al App
       </button>
     </div>
 

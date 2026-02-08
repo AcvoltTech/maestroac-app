@@ -8217,12 +8217,34 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       showScreen(target);
     }
 
-    // Register Service Worker
+    // Register Service Worker with auto-update
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('[MaestroAC] SW registered:', reg.scope))
+          .then(reg => {
+            console.log('[MaestroAC] SW registered:', reg.scope);
+            // Check for updates every 60 seconds
+            setInterval(() => { reg.update(); }, 60000);
+            // Listen for new SW waiting
+            reg.addEventListener('updatefound', () => {
+              const newSW = reg.installing;
+              newSW.addEventListener('statechange', () => {
+                if (newSW.state === 'activated') {
+                  console.log('[MaestroAC] New version activated, reloading...');
+                  window.location.reload();
+                }
+              });
+            });
+          })
           .catch(err => console.error('[MaestroAC] SW failed:', err));
+      });
+      
+      // Listen for SW update message
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data && event.data.type === 'SW_UPDATED') {
+          console.log('[MaestroAC] SW updated to:', event.data.version);
+          window.location.reload();
+        }
       });
     }
     

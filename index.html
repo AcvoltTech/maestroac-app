@@ -1646,6 +1646,12 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
               </div>
             </div>
           </div>
+          <div class="profile-section" style="margin-top:25px;">
+            <h3 style="color:#f39c12; margin-bottom:15px; font-size:18px;">🪪 Mi Credencial de Estudiante</h3>
+            <div id="credentialSection">
+              <p style="color:#64748b; font-size:14px;">Cargando credencial...</p>
+            </div>
+          </div>
         </div>
 
         <div id="noProfileContent" style="display:none; text-align:center; padding:30px 0;">
@@ -4378,7 +4384,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     function showScreen(screenId) {
       // Force check-in before accessing any content
-      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen'];
+      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipLoginScreen', 'membershipZoneScreen'];
       if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
         if (!requireCheckIn(screenId)) return;
       }
@@ -4441,6 +4447,11 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         nate: document.getElementById('nate').value,
         esco: document.getElementById('esco').value
       };
+      // Auto-generate student ID
+      if (!currentUser.studentId) {
+        currentUser.studentId = generateStudentId();
+        currentUser.studentIdDate = new Date().toISOString();
+      }
       // Save with backup to prevent data loss
       localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
       localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
@@ -5283,6 +5294,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       // Update technician number section
       updateTechnicianNumberDisplay();
       
+      // Update credential section
+      renderCredentialSection();
+      
       // Update avatar and badge based on completed levels
       updateProfileAvatarAndBadge();
     }
@@ -5450,6 +5464,136 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       } else {
         displaySection.style.display = 'none';
         generatorSection.style.display = 'block';
+      }
+    }
+
+    // ===== STUDENT ID SYSTEM =====
+    function generateStudentId() {
+      const year = new Date().getFullYear();
+      const seq = Math.floor(1000 + Math.random() * 9000); // 4-digit random
+      return 'ACVOLT-' + year + '-' + seq;
+    }
+    
+    function ensureStudentId() {
+      if (currentUser && !currentUser.studentId) {
+        currentUser.studentId = generateStudentId();
+        currentUser.studentIdDate = new Date().toISOString();
+        localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+        localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+      }
+    }
+    
+    function renderCredentialSection() {
+      const container = document.getElementById('credentialSection');
+      if (!container || !currentUser) return;
+      
+      ensureStudentId();
+      const idPurchased = localStorage.getItem('maestroac_id_purchased_' + (currentUser.email || ''));
+      const nombre = currentUser.nombre || 'Técnico HVAC';
+      const studentId = currentUser.studentId || 'N/A';
+      const registroDate = currentUser.studentIdDate ? new Date(currentUser.studentIdDate).toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' });
+      
+      container.innerHTML = `
+        <!-- ID Card Preview -->
+        <div style="background:linear-gradient(135deg,#1a237e,#0d47a1);border-radius:16px;padding:20px;color:white;position:relative;overflow:hidden;max-width:380px;margin:0 auto;box-shadow:0 8px 30px rgba(0,0,0,0.3);">
+          <!-- Header -->
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:15px;border-bottom:2px solid rgba(255,215,0,0.4);padding-bottom:12px;">
+            <img src="logo.png" alt="ACVOLT" style="width:50px;height:auto;background:white;border-radius:8px;padding:4px;">
+            <div>
+              <div style="font-size:14px;font-weight:bold;letter-spacing:1px;color:#FFD700;">ACVOLT TECHNICAL SCHOOL</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.7);letter-spacing:1px;">CREDENCIAL DE ESTUDIANTE</div>
+            </div>
+          </div>
+          
+          <!-- Photo + Info -->
+          <div style="display:flex;gap:15px;align-items:flex-start;">
+            <div style="width:80px;height:100px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0;border:2px solid rgba(255,215,0,0.3);" id="credentialPhotoBox">
+              ${getCredentialPhoto()}
+            </div>
+            <div style="flex:1;">
+              <div style="font-size:18px;font-weight:bold;margin-bottom:6px;">${nombre}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:3px;">ID: <span style="color:#FFD700;font-family:monospace;font-weight:bold;font-size:13px;">${studentId}</span></div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:3px;">Registro: ${registroDate}</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);">San Bernardino, CA</div>
+            </div>
+          </div>
+          
+          <!-- Signature -->
+          <div style="margin-top:15px;border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;display:flex;justify-content:space-between;align-items:flex-end;">
+            <div style="text-align:center;">
+              <div id="credentialSignature" style="font-family:'Brush Script MT',cursive;font-size:18px;color:#FFD700;font-style:italic;margin-bottom:2px;">Mario Flores Corona</div>
+              <div style="width:140px;border-top:1px solid rgba(255,215,0,0.5);padding-top:3px;font-size:9px;color:rgba(255,255,255,0.6);">Master Instructor / Director</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:9px;color:rgba(255,255,255,0.5);">maestromario.com</div>
+            </div>
+          </div>
+          
+          ${!idPurchased ? '<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;border-radius:16px;"><div style="background:rgba(255,215,0,0.15);border:2px solid #FFD700;border-radius:12px;padding:12px 20px;text-align:center;"><div style="font-size:24px;margin-bottom:5px;">🔒</div><div style="color:#FFD700;font-size:13px;font-weight:bold;">Vista Previa</div></div></div>' : ''}
+        </div>
+        
+        <!-- Student ID Display -->
+        <div style="text-align:center;margin:15px 0;">
+          <p style="color:#64748b;font-size:12px;margin-bottom:5px;">Tu ID de Estudiante:</p>
+          <div style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(243,156,18,0.1));border:2px solid rgba(255,215,0,0.3);border-radius:12px;padding:12px;display:inline-block;">
+            <span style="font-family:monospace;font-size:20px;font-weight:bold;color:#f39c12;letter-spacing:2px;">${studentId}</span>
+          </div>
+        </div>
+        
+        ${!idPurchased ? `
+        <!-- Purchase Button -->
+        <div style="background:linear-gradient(135deg,rgba(26,35,126,0.1),rgba(13,71,161,0.1));border:2px solid rgba(99,102,241,0.3);border-radius:16px;padding:20px;text-align:center;margin-top:15px;">
+          <p style="color:#6366f1;font-size:15px;font-weight:bold;margin-bottom:5px;">🪪 Obtén tu Credencial Oficial</p>
+          <p style="color:#64748b;font-size:13px;margin-bottom:5px;">Credencial física o digital firmada por Mario Flores Corona</p>
+          <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:12px;">$150 <span style="font-size:14px;color:#64748b;">USD</span></p>
+          <button onclick="window.open('https://buy.stripe.com/PLACEHOLDER_ID_150','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;margin-bottom:10px;">💳 Pagar $150 - Solicitar Credencial</button>
+          <p style="color:#64748b;font-size:11px;">Después de pagar, envía comprobante por WhatsApp</p>
+          <div style="margin-top:10px;">
+            <p style="color:#9b59b6;font-size:12px;font-weight:bold;margin-bottom:6px;">🎫 ¿Ya pagaste? Ingresa tu código:</p>
+            <div style="display:flex;gap:8px;max-width:300px;margin:0 auto;">
+              <input type="text" id="idCodeInput" placeholder="Código" maxlength="15" style="flex:1;padding:10px;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;color:#1e293b;font-size:14px;text-align:center;letter-spacing:2px;text-transform:uppercase;font-family:monospace;">
+              <button onclick="redeemIdCode()" style="padding:10px 16px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;">Activar</button>
+            </div>
+            <p id="idCodeMsg" style="color:#e74c3c;font-size:11px;margin-top:4px;display:none;"></p>
+          </div>
+        </div>
+        ` : `
+        <div style="text-align:center;margin-top:15px;">
+          <div style="background:linear-gradient(135deg,rgba(39,174,96,0.1),rgba(46,204,113,0.1));border:2px solid rgba(39,174,96,0.3);border-radius:12px;padding:15px;">
+            <p style="color:#27ae60;font-size:15px;font-weight:bold;">✅ Credencial Oficial Activada</p>
+            <p style="color:#64748b;font-size:12px;margin-top:5px;">Tu credencial firmada está lista</p>
+          </div>
+        </div>
+        `}
+      `;
+    }
+    
+    function getCredentialPhoto() {
+      if (currentUser && currentUser.email) {
+        const photo = localStorage.getItem('maestroac_photo_' + currentUser.email);
+        if (photo) return '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+      }
+      return '👤';
+    }
+    
+    function redeemIdCode() {
+      const input = document.getElementById('idCodeInput');
+      const msg = document.getElementById('idCodeMsg');
+      if (!input || !msg) return;
+      const code = input.value.trim().toUpperCase();
+      if (!code || code.length < 4) {
+        msg.style.display = 'block';
+        msg.style.color = '#e74c3c';
+        msg.textContent = '❌ Ingresa un código válido';
+        return;
+      }
+      if (currentUser && currentUser.email) {
+        localStorage.setItem('maestroac_id_purchased_' + currentUser.email, 'true');
+        msg.style.display = 'block';
+        msg.style.color = '#2ecc71';
+        msg.textContent = '✅ ¡Credencial activada!';
+        addNotification('payment', '🪪 ¡Credencial de estudiante activada! ID: ' + (currentUser.studentId || ''), '🪪');
+        setTimeout(() => { renderCredentialSection(); }, 1500);
       }
     }
 

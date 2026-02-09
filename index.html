@@ -5408,10 +5408,15 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
       }
     
-      // Auto-load Centro de Mando when admin dashboard opens
+      // Auto-load admin data when admin dashboard opens
       if (screenId === 'adminDashboardScreen') {
         try { renderAccessCodes(); } catch(e) {}
         try { loadActiveCodes(); } catch(e) {}
+        try { loadAdminAttendance(); } catch(e) {}
+        try { renderLevelPerformanceChart(); } catch(e) {}
+        try { loadAttendanceData(); } catch(e) {}
+        try { loadAdminStudentActivity(); } catch(e) {}
+        try { loadAdminExamRequests(); } catch(e) {}
       }
     }
 

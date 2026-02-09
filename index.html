@@ -661,7 +661,10 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div style="text-align:center; margin-top:15px;">
           <span style="color:#64748b; cursor:pointer; text-decoration:underline;" onclick="showScreen('registerScreen')">¿No tienes cuenta? Regístrate gratis</span>
         </div>
-        <div style="text-align: center; margin-top: 10px;">
+        <div style="text-align:center; margin-top:15px;">
+            <button class="btn btn-secondary" onclick="cerrarSesion()" style="margin-top:10px; background:rgba(231,76,60,0.2); border:1px solid #e74c3c; color:#e74c3c; font-size:13px; padding:8px 20px;">Cerrar Sesion</button>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
           <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔑 Acceso Administrador</span>
         </div>
       </div>
@@ -1729,12 +1732,34 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     // ============================================
     const SUPABASE_URL = 'https://htklsowiyjwsjnacnvnr.supabase.co';
     const SUPABASE_KEY = 'sb_publishable_Appokp_k6dAzxDjjmlED9g_bLi4kLQs';
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+        }
+    }) : null;
     let supabaseUserId = null;
     let isOnline = navigator.onLine;
 
     window.addEventListener('online', () => { isOnline = true; syncToSupabase(); });
     window.addEventListener('offline', () => { isOnline = false; });
+
+    // Auth state change listener
+    if (supabaseClient) {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            console.log('[MaestroAC] Auth event:', event);
+            if (event === 'SIGNED_IN' && session) {
+                const userEmail = session.user.email;
+                localStorage.setItem('tecnico_authenticated', 'true');
+                localStorage.setItem('tecnico_email', userEmail);
+            }
+            if (event === 'SIGNED_OUT') {
+                localStorage.removeItem('tecnico_authenticated');
+                localStorage.removeItem('tecnico_email');
+            }
+        });
+    }
 
     // ============================================
     // SUPABASE DATABASE LAYER
@@ -4721,7 +4746,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     // Check if user is authenticated via Supabase
     function isAuthenticated() {
-      return sessionStorage.getItem('tecnico_authenticated') === 'true' && sessionStorage.getItem('tecnico_email');
+      return localStorage.getItem('tecnico_authenticated') === 'true' && localStorage.getItem('tecnico_email');
     }
 
     // Handle login with Supabase Auth
@@ -4757,8 +4782,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
 
         // Login successful
-        sessionStorage.setItem('tecnico_authenticated', 'true');
-        sessionStorage.setItem('tecnico_email', email);
+        localStorage.setItem('tecnico_authenticated', 'true');
+        localStorage.setItem('tecnico_email', email);
         errorDiv.classList.remove('show');
 
         // Load user profile from local storage or Supabase
@@ -4881,7 +4906,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         });
 
         if (error) {
-          if (error.message.includes('already registered')) {
+          if (error.message.includes('already registered') || error.message.includes('User already registered')) {
             errorDiv.textContent = 'Este correo ya está registrado. Inicia sesión.';
           } else {
             errorDiv.textContent = error.message;
@@ -4891,6 +4916,14 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
 
         // Save user data locally and to Supabase technicians table
+
+        // Verificar si el email ya existe (Supabase retorna user con identities vacio)
+        if (data.user && data.user.identities && data.user.identities.length === 0) {
+            errorDiv.innerHTML = 'Este correo ya tiene cuenta. <a href="#" onclick="showScreen(\x27loginScreen\x27); return false;" style="color:#f39c12;text-decoration:underline;">Iniciar Sesion</a>';
+            errorDiv.classList.add('show');
+            return false;
+        }
+
         const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
         users[email] = {
           nombre: name,
@@ -4956,6 +4989,24 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       }
     }
 
+    // Cerrar sesion del usuario
+    async function cerrarSesion() {
+        try {
+            if (supabaseClient) {
+                await supabaseClient.auth.signOut();
+            }
+        } catch(e) {
+            console.log('[MaestroAC] SignOut error:', e);
+        }
+        localStorage.removeItem('tecnico_authenticated');
+        localStorage.removeItem('tecnico_email');
+        sessionStorage.removeItem('tecnico_authenticated');
+        sessionStorage.removeItem('tecnico_email');
+        currentUser = null;
+        supabaseUserId = null;
+        showScreen('loginScreen');
+    }
+
     // Load user-specific progress
     function loadUserProgress(email) {
       const key = 'maestroac_progress_' + email;
@@ -4985,8 +5036,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           const { data: { session } } = await supabaseClient.auth.getSession();
           if (session && session.user) {
             const email = session.user.email;
-            sessionStorage.setItem('tecnico_authenticated', 'true');
-            sessionStorage.setItem('tecnico_email', email);
+            localStorage.setItem('tecnico_authenticated', 'true');
+            localStorage.setItem('tecnico_email', email);
             
             // Mark as verified locally
             const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
@@ -5000,7 +5051,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
       // Check authentication status
       if (isAuthenticated()) {
-        const email = sessionStorage.getItem('tecnico_email');
+        const email = localStorage.getItem('tecnico_email');
         const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
         if (users[email]) {
           currentUser = {
@@ -5264,7 +5315,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       localStorage.setItem('tecnico_progress', JSON.stringify(progress));
       localStorage.setItem('tecnico_progress_backup', JSON.stringify(progress));
       // Save per-user progress
-      const email = sessionStorage.getItem('tecnico_email');
+      const email = localStorage.getItem('tecnico_email');
       if (email) {
         localStorage.setItem('maestroac_progress_' + email, JSON.stringify(progress));
       }
@@ -5274,7 +5325,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     // ========== ACTIVITY LOGGING ==========
     function logActivity(type, detail) {
-      const email = sessionStorage.getItem('tecnico_email');
+      const email = localStorage.getItem('tecnico_email');
       if (!email) return;
       const key = 'maestroac_activity_' + email;
       const log = JSON.parse(localStorage.getItem(key) || '[]');
@@ -5289,7 +5340,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     function getActivityLog(email) {
-      const key = 'maestroac_activity_' + (email || sessionStorage.getItem('tecnico_email'));
+      const key = 'maestroac_activity_' + (email || localStorage.getItem('tecnico_email'));
       return JSON.parse(localStorage.getItem(key) || '[]');
     }
 

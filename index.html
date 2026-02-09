@@ -5063,6 +5063,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       loadVideoProgress();
       renderLevels();
 
+      // Clean up stale attendance sessions
+      checkStaleAttendance();
+
       // Check for Supabase Auth callback (email confirmation redirect)
       if (supabaseClient) {
         try {
@@ -8821,6 +8824,85 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     // ===== FORCED CHECK-IN SYSTEM =====
     // Users MUST check-in before accessing quizzes/levels each session
     let sessionCheckedIn = false;
+
+    // ===== AUTO CHECK-OUT ON EXIT =====
+    // When technician closes browser/tab, save state for auto-checkout on next load
+    window.addEventListener('beforeunload', function() {
+      if (currentAttendanceId && currentCheckInTime) {
+        localStorage.setItem('attendance_pending_checkout', JSON.stringify({
+          id: currentAttendanceId,
+          checkIn: currentCheckInTime.toISOString(),
+          closedAt: new Date().toISOString(),
+          classType: selectedClassType
+        }));
+      }
+    });
+
+    // Also handle visibility change (app backgrounded on mobile)
+    document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'hidden' && currentAttendanceId && currentCheckInTime) {
+        localStorage.setItem('attendance_pending_checkout', JSON.stringify({
+          id: currentAttendanceId,
+          checkIn: currentCheckInTime.toISOString(),
+          closedAt: new Date().toISOString(),
+          classType: selectedClassType
+        }));
+      }
+      if (document.visibilityState === 'visible' && currentAttendanceId) {
+        updateTimer();
+      }
+    });
+
+    // Check and auto-close stale sessions on app load
+    async function checkStaleAttendance() {
+      if (!supabaseClient) return;
+      try {
+        var userResp = await supabaseClient.auth.getUser();
+        var user = userResp.data ? userResp.data.user : null;
+        if (!user) return;
+        
+        // Process pending checkout from last session close
+        var pendingCheckout = localStorage.getItem('attendance_pending_checkout');
+        if (pendingCheckout) {
+          var pc = JSON.parse(pendingCheckout);
+          var closedAt = new Date(pc.closedAt);
+          var checkInTime = new Date(pc.checkIn);
+          var totalMinutes = Math.round((closedAt - checkInTime) / 60000);
+          totalMinutes = Math.min(totalMinutes, 480); // Cap at 8 hours
+          
+          await supabaseClient.from('attendance')
+            .update({ check_out: closedAt.toISOString(), total_minutes: totalMinutes })
+            .eq('id', pc.id)
+            .is('check_out', null); // Only update if still open
+          
+          console.log('[Attendance] Auto-checkout from previous session:', pc.id, totalMinutes + 'min');
+          localStorage.removeItem('attendance_pending_checkout');
+        }
+
+        // Find any open sessions older than 8 hours (forgotten checkout)
+        var activeRes = await supabaseClient.from('attendance')
+          .select('*')
+          .eq('student_id', user.id)
+          .is('check_out', null)
+          .order('check_in', { ascending: false });
+        
+        var activeSessions = activeRes.data || [];
+        for (var i = 0; i < activeSessions.length; i++) {
+          var session = activeSessions[i];
+          var sessionCheckIn = new Date(session.check_in);
+          var hoursSince = (new Date() - sessionCheckIn) / (1000 * 60 * 60);
+          
+          if (hoursSince > 8) {
+            // Auto-close - cap at 8 hours
+            var autoCloseTime = new Date(sessionCheckIn.getTime() + 8 * 60 * 60 * 1000);
+            await supabaseClient.from('attendance')
+              .update({ check_out: autoCloseTime.toISOString(), total_minutes: 480 })
+              .eq('id', session.id);
+            console.log('[Attendance] Auto-closed stale session:', session.id);
+          }
+        }
+      } catch(e) { console.log('[Attendance] Stale check error:', e); }
+    }
     
     function requireCheckIn(destination) {
       if (sessionCheckedIn) return true;
@@ -8907,6 +8989,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'auto'; });
         currentAttendanceId = null;
         currentCheckInTime = null;
+        sessionCheckedIn = false;
+        localStorage.removeItem('attendance_active_session');
+        localStorage.removeItem('attendance_last_checkout');
         loadAttendanceData();
         var hrs = Math.floor(totalMinutes / 60);
         var mins = totalMinutes % 60;
@@ -8931,11 +9016,12 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           currentAttendanceId = session.id;
           currentCheckInTime = new Date(session.check_in);
           selectedClassType = session.class_type;
+          sessionCheckedIn = true; // Restore session state
           selectClassType(session.class_type);
           document.getElementById('btnCheckIn').style.display = 'none';
           document.getElementById('btnCheckOut').style.display = 'block';
           document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
-          document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (session.class_type === 'presencial' ? '🏫 Presencial' : '💻 Zoom');
+          document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (session.class_type === 'presencial' ? '🏫 Presencial' : session.class_type === 'zoom' ? '💻 Zoom' : '📱 Móvil');
           document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
           if (!attendanceTimerInterval) { attendanceTimerInterval = setInterval(updateTimer, 1000); updateTimer(); }
         }

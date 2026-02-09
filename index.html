@@ -5673,7 +5673,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     
       // Auto-load profile data when profile screen opens
 
-function toggleFormula(id) {
+window.toggleFormula = function(id) {
   var el = document.getElementById(id);
   var arrow = document.getElementById(id + '_arrow');
   if (!el) return;

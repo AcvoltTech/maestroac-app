@@ -5896,12 +5896,99 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     function requestCertExam() {
       const course = certCourses[currentCertCourse];
       const userName = currentUser ? currentUser.nombre : 'Estudiante';
-      const subject = encodeURIComponent('Solicitud de Examen: ' + course.name);
-      const body = encodeURIComponent('Hola ACVOLT Tech School,\n\nMi nombre es ' + userName + ' y quiero solicitar el examen de certificación:\n\n📜 ' + course.name + '\n💰 Precio: ' + course.examPrice + '\n\nPor favor envíenme la información para realizar el pago y programar mi examen.\n\nGracias.');
-      const whatsappMsg = encodeURIComponent('Hola ACVOLT Tech School, soy ' + userName + '. Quiero solicitar el examen de *' + course.name + '* (' + course.examPrice + '). ¿Cómo puedo inscribirme?');
+      const userEmail = currentUser ? currentUser.email : '';
+
+      // === VALIDATION 1: Must have membership ===
+      var membershipType = localStorage.getItem('maestroac_membership_type_' + userEmail) || '';
+      var membershipDate = localStorage.getItem('maestroac_membership_date_' + userEmail) || '';
+      var hasAppPurchase = localStorage.getItem('maestroac_app_purchased_' + userEmail) === 'true';
+
+      if (!membershipType && !hasAppPurchase) {
+        alert('⚠️ Para solicitar un examen de certificación, debes estar inscrito en una membresía activa.\n\nMembresias disponibles:\n• Básica ($119/mes) — Examen disponible después de 1 año\n• Profesional ($299/mes) — Examen disponible después de 6 meses\n• Premium ($699/mes) — Examen disponible después de 6 meses\n\nVe a la sección de membresías para inscribirte.');
+        return;
+      }
+
+      // === VALIDATION 2: Minimum membership time ===
+      if (membershipDate) {
+        var startDate = new Date(membershipDate);
+        var now = new Date();
+        var monthsActive = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+        
+        var requiredMonths = 6;
+        if (membershipType === 'basica' || membershipType === '119') {
+          requiredMonths = 12;
+        }
+
+        if (monthsActive < requiredMonths) {
+          var remaining = requiredMonths - monthsActive;
+          alert('⚠️ Tu membresía ' + (requiredMonths === 12 ? 'Básica ($119)' : 'actual') + ' requiere ' + requiredMonths + ' meses de antigüedad para solicitar examen.\n\nTiempo activo: ' + monthsActive + ' meses\nFaltan: ' + remaining + ' meses\n\nSigue estudiando y preparándote. ¡Tú puedes!');
+          return;
+        }
+      }
+
+      // === VALIDATION 3: 100% score on ALL levels ===
+      var levelOrder = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
+      var allPassed = true;
+      var failedLevels = [];
+      levelOrder.forEach(function(lvl) {
+        var lvlProgress = progress[lvl];
+        if (!lvlProgress || lvlProgress.completed === 0) {
+          allPassed = false;
+          failedLevels.push(lvl.charAt(0).toUpperCase() + lvl.slice(1) + ' (no completado)');
+        } else {
+          var pct = Math.round((lvlProgress.score / lvlProgress.completed) * 100);
+          if (pct < 100) {
+            allPassed = false;
+            failedLevels.push(lvl.charAt(0).toUpperCase() + lvl.slice(1) + ' (' + pct + '%)');
+          }
+        }
+      });
+
+      if (!allPassed) {
+        alert('⚠️ Para solicitar el examen necesitas 100% de aprobación en TODOS los niveles.\n\nNiveles pendientes:\n• ' + failedLevels.join('\n• ') + '\n\nCompleta todos los niveles con 100% antes de solicitar tu examen.');
+        return;
+      }
+
+      // === CAPTURE USER INFO ===
+      var regDate = currentUser.registrationDate || currentUser.studentIdDate || 'No disponible';
+      var regDateFormatted = regDate !== 'No disponible' ? new Date(regDate).toLocaleDateString('es-MX', {year:'numeric',month:'long',day:'numeric'}) : regDate;
+      var techNumber = currentUser.technicianNumber || 'No asignado';
+      var studentId = currentUser.studentId || 'No asignado';
+      var progressSummary = levelOrder.map(function(lvl) {
+        var p = progress[lvl];
+        return lvl.charAt(0).toUpperCase() + lvl.slice(1) + ': ' + (p ? Math.round((p.score/p.completed)*100) + '%' : '0%');
+      }).join(' | ');
+
+      var subject = encodeURIComponent('Solicitud de Examen: ' + course.name);
+      var body = encodeURIComponent(
+        'SOLICITUD DE EXAMEN DE CERTIFICACIÓN\n' +
+        '=====================================\n\n' +
+        '👤 Nombre: ' + userName + '\n' +
+        '📧 Email: ' + userEmail + '\n' +
+        '📞 Teléfono: ' + (currentUser.telefono || 'No registrado') + '\n' +
+        '🏙️ Ciudad: ' + (currentUser.ciudad || 'No registrada') + '\n' +
+        '🔢 No. Técnico: ' + techNumber + '\n' +
+        '🪪 ID Estudiante: ' + studentId + '\n' +
+        '📅 Fecha de Registro en App: ' + regDateFormatted + '\n' +
+        '📊 Resultados: ' + progressSummary + '\n' +
+        '💼 Membresía: ' + (membershipType || 'App Completa') + '\n\n' +
+        '📜 Examen Solicitado: ' + course.name + '\n' +
+        '💰 Precio: ' + course.examPrice + '\n\n' +
+        'Confirmo que he leído y acepto los términos y condiciones del examen.\n\nGracias.'
+      );
+      var whatsappMsg = encodeURIComponent(
+        'SOLICITUD DE EXAMEN\n' +
+        'Nombre: ' + userName + '\n' +
+        'Email: ' + userEmail + '\n' +
+        'Teléfono: ' + (currentUser.telefono || 'N/A') + '\n' +
+        'No. Técnico: ' + techNumber + '\n' +
+        'Examen: *' + course.name + '* (' + course.examPrice + ')\n' +
+        'Resultados: ' + progressSummary + '\n' +
+        'Acepto términos y condiciones.'
+      );
 
       // Stripe payment links per course
-      const stripeLinks = {
+      var stripeLinks = {
         epa608: 'https://buy.stripe.com/00w8wPd6f6taff92rZ3sI0f',
         osha: 'https://buy.stripe.com/6oU7sL0jt4l2ff97Mj3sI09',
         a2l: 'https://buy.stripe.com/9B63cveajdVCd71giP3sI08',
@@ -5909,16 +5996,43 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         hvaccore: 'https://buy.stripe.com/5kQ8wP3vF18Qeb5aYv3sI0a',
         hvacr: 'https://buy.stripe.com/4gMbJ18PZ9Fmgjd9Ur3sI0b'
       };
-      const payLink = stripeLinks[currentCertCourse] || '';
+      var payLink = stripeLinks[currentCertCourse] || '';
 
-      const modal = document.createElement('div');
+      var modal = document.createElement('div');
       modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
       modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:25px;max-width:400px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
+        <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:25px;max-width:420px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
           <div style="font-size:50px;margin-bottom:10px;">🎓</div>
-          <h3 style="color:#f39c12;margin-bottom:8px;">Solicitar Examen</h3>
-          <p style="color:#1e293b;font-size:15px;margin-bottom:5px;">${course.name}</p>
+          <h3 style="color:#f39c12;margin-bottom:8px;">Solicitar Examen de Certificación</h3>
+          <p style="color:white;font-size:15px;margin-bottom:5px;">${course.name}</p>
           <p style="color:#f39c12;font-size:24px;font-weight:bold;margin-bottom:15px;">${course.examPrice}</p>
+
+          <!-- DISCLAIMER -->
+          <div style="background:rgba(231,76,60,0.15);border:2px solid rgba(231,76,60,0.5);border-radius:12px;padding:15px;margin-bottom:15px;text-align:left;">
+            <p style="color:#e74c3c;font-size:14px;font-weight:bold;margin-bottom:8px;">⚠️ TÉRMINOS Y CONDICIONES DEL EXAMEN</p>
+            <p style="color:#e2e8f0;font-size:12px;line-height:1.6;margin-bottom:8px;">
+              Al solicitar este examen, confirmo que:
+            </p>
+            <ul style="color:#e2e8f0;font-size:12px;line-height:1.7;margin:0;padding-left:18px;">
+              <li>He estudiado y completado todos los niveles de la plataforma con un <strong style="color:#2ecc71;">score de 100%</strong> en cada nivel.</li>
+              <li>Si <strong style="color:#e74c3c;">repruebo</strong> el examen, deberé volver a tomarlo y pagar el <strong>monto total</strong> que cubre los honorarios del Proctor y el costo del examen.</li>
+              <li>Una vez <strong style="color:#2ecc71;">aprobado</strong> el examen, mi certificación llegará en <strong>30 días hábiles</strong> a mi domicilio o residencia registrada.</li>
+              <li>Cuento con una membresía activa con la antigüedad mínima requerida (Básica $119: 1 año / Profesional $299 o Premium $699: 6 meses).</li>
+            </ul>
+          </div>
+
+          <!-- User Info Summary -->
+          <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:12px;margin-bottom:15px;text-align:left;">
+            <p style="color:#3498db;font-size:13px;font-weight:bold;margin-bottom:8px;">📋 Tu Información</p>
+            <p style="color:#e2e8f0;font-size:12px;line-height:1.8;margin:0;">
+              👤 <strong>${userName}</strong><br>
+              📧 ${userEmail}<br>
+              📞 ${currentUser.telefono || 'No registrado'}<br>
+              🔢 ${techNumber}<br>
+              📅 Inicio: ${regDateFormatted}<br>
+              📊 ${progressSummary}
+            </p>
+          </div>
           
           <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.4);border-radius:12px;padding:12px;margin-bottom:15px;">
             <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:8px;">💳 PASO 1: Pagar el Examen</p>
@@ -5931,8 +6045,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=${subject}&body=${body}');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Confirmar por Correo</button>
           </div>
 
-          <p style="color:#64748b;font-size:11px;margin-bottom:15px;">Una vez confirmado tu pago, te enviaremos acceso al examen en menos de 24 horas.</p>
-          <button onclick="this.closest('div').parentElement.remove();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(255,255,255,0.15);color:#64748b;">Cancelar</button>
+          <p style="color:#64748b;font-size:11px;margin-bottom:15px;">Una vez confirmado tu pago, te contactaremos para programar tu examen.</p>
+          <button onclick="this.closest('div').parentElement.remove();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(255,255,255,0.15);color:#94a3b8;">Cancelar</button>
         </div>
       `;
       document.body.appendChild(modal);

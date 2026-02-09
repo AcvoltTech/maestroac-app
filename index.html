@@ -1067,17 +1067,58 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
 
         
-        <!-- Access Codes Section -->
-        <div class="admin-section admin-grid-full">
-          <div class="admin-section-header">
-            <div class="admin-section-title">
-              <h3>🔑 Códigos de Acceso</h3>
-              <button onclick="renderAccessCodes()" style="background:#27ae60;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔄 Actualizar</button>
+        <!-- Centro de Mando Section -->
+        <div class="admin-section admin-grid-full" style="border: 2px solid #e67e22; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h3 style="color: #f39c12; font-size: 1.3em; margin-bottom: 15px;">🎯 Centro de Mando</h3>
+            
+            <!-- Generar Código Manual -->
+            <div style="background: rgba(243,156,18,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                <h4 style="color: #f39c12; margin-bottom: 10px;">🔑 Generar Código de Acceso</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <input type="text" id="manualCodeName" placeholder="Nombre del técnico" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                    <input type="email" id="manualCodeEmail" placeholder="Email del técnico" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                    <select id="manualCodeLevel" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff; min-width: 150px;">
+                        <option value="full_app">🔓 App Completa</option>
+                        <option value="principiante">🔧 Principiante</option>
+                        <option value="intermedio">📊 Intermedio</option>
+                        <option value="avanzado">⚡ Avanzado</option>
+                        <option value="elite">🏆 Elite</option>
+                        <option value="platino">💎 Platino</option>
+                        <option value="clases_vivo">🎬 Clases en Vivo</option>
+                    </select>
+                    <select id="manualCodeDuration" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="30">30 días</option>
+                        <option value="90">90 días</option>
+                        <option value="180">6 meses</option>
+                        <option value="365">1 año</option>
+                        <option value="lifetime">De por vida</option>
+                    </select>
+                    <button onclick="generateManualAccessCode()" style="padding: 10px 20px; background: #f39c12; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; white-space: nowrap;">⚡ GENERAR CÓDIGO</button>
+                </div>
+                <div id="generatedCodeDisplay" style="margin-top: 10px; display: none; background: rgba(46,204,113,0.15); border: 1px solid #2ecc71; border-radius: 8px; padding: 12px; text-align: center;">
+                    <span style="color: #2ecc71; font-size: 0.9em;">Código generado:</span>
+                    <div id="generatedCodeValue" style="color: #2ecc71; font-size: 1.5em; font-weight: bold; letter-spacing: 3px; margin: 5px 0;"></div>
+                    <button onclick="copyGeneratedCode()" style="padding: 6px 15px; background: #2ecc71; color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">📋 Copiar Código</button>
+                </div>
             </div>
-          </div>
-          <div id="accessCodesList" style="max-height:400px;overflow-y:auto;">
-            <p style="color:#999;text-align:center;padding:20px;">Cargando solicitudes...</p>
-          </div>
+
+            <!-- Solicitudes de Acceso -->
+            <div style="background: rgba(52,152,219,0.1); border-radius: 12px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #3498db;">📋 Solicitudes de Técnicos</h4>
+                    <button onclick="renderAccessCodes()" style="padding: 6px 15px; background: #3498db; color: #fff; border: none; border-radius: 6px; cursor: pointer;">🔄 Actualizar</button>
+                </div>
+                <div id="accessCodesList" style="color: #ccc;">Cargando solicitudes...</div>
+            </div>
+
+            <!-- Códigos Activos -->
+            <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 15px; margin-top: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #2ecc71;">✅ Códigos Activos</h4>
+                    <button onclick="loadActiveCodes()" style="padding: 6px 15px; background: #2ecc71; color: #000; border: none; border-radius: 6px; cursor: pointer;">🔄 Actualizar</button>
+                </div>
+                <div id="activeCodesList" style="color: #ccc;">Cargando códigos activos...</div>
+            </div>
         </div>
 
         </div><!-- close admin-grid-2col -->
@@ -5365,6 +5406,12 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         if (screenId === 'loginScreen' || screenId === 'registerScreen' || screenId === 'adminLoginScreen') {
           backBtn.style.display = 'none';
         }
+      }
+    
+      // Auto-load Centro de Mando when admin dashboard opens
+      if (screenId === 'adminDashboardScreen') {
+        try { renderAccessCodes(); } catch(e) {}
+        try { loadActiveCodes(); } catch(e) {}
       }
     }
 
@@ -9817,6 +9864,158 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       html += '</table>';
       container.innerHTML = html;
     }
+
+    // === CENTRO DE MANDO FUNCTIONS ===
+    
+    async function generateManualAccessCode() {
+      const name = document.getElementById('manualCodeName').value.trim();
+      const email = document.getElementById('manualCodeEmail').value.trim();
+      const level = document.getElementById('manualCodeLevel').value;
+      const duration = document.getElementById('manualCodeDuration').value;
+      
+      if (!name) { alert('Ingresa el nombre del t' + String.fromCharCode(233) + 'cnico'); return; }
+      
+      // Generate unique code
+      const prefix = level === 'full_app' ? 'FULL' : level.substring(0, 4).toUpperCase();
+      const code = prefix + '-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString(36).toUpperCase().slice(-4);
+      
+      // Calculate expiration
+      let expiresAt = null;
+      if (duration !== 'lifetime') {
+        const d = new Date();
+        d.setDate(d.getDate() + parseInt(duration));
+        expiresAt = d.toISOString();
+      }
+      
+      try {
+        const { data, error } = await supabase.from('access_code_requests').insert([{
+          student_name: name,
+          student_email: email || null,
+          student_phone: '',
+          student_city: '',
+          tech_number: '',
+          student_id: '',
+          access_level: level,
+          duration_days: duration === 'lifetime' ? 'lifetime' : duration,
+          code: code,
+          status: 'approved',
+          requested_at: new Date().toISOString(),
+          approved_at: new Date().toISOString()
+        }]);
+        
+        if (error) throw error;
+        
+        // Show the generated code
+        document.getElementById('generatedCodeDisplay').style.display = 'block';
+        document.getElementById('generatedCodeValue').textContent = code;
+        
+        // Clear inputs
+        document.getElementById('manualCodeName').value = '';
+        document.getElementById('manualCodeEmail').value = '';
+        
+        // Refresh active codes list
+        loadActiveCodes();
+        
+        // Add notification
+        if (typeof addNotification === 'function') {
+          addNotification('admin', 'C' + String.fromCharCode(243) + 'digo generado para ' + name + ': ' + code);
+        }
+      } catch(e) {
+        console.error('Error generating code:', e);
+        // Fallback to localStorage
+        const codes = JSON.parse(localStorage.getItem('maestroac_access_codes') || '[]');
+        codes.push({ name, email, level, duration, code, status: 'approved', created: new Date().toISOString() });
+        localStorage.setItem('maestroac_access_codes', JSON.stringify(codes));
+        
+        document.getElementById('generatedCodeDisplay').style.display = 'block';
+        document.getElementById('generatedCodeValue').textContent = code;
+        document.getElementById('manualCodeName').value = '';
+        document.getElementById('manualCodeEmail').value = '';
+        loadActiveCodes();
+      }
+    }
+
+    function copyGeneratedCode() {
+      const code = document.getElementById('generatedCodeValue').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('C' + String.fromCharCode(243) + 'digo copiado: ' + code);
+      }).catch(() => {
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('C' + String.fromCharCode(243) + 'digo copiado: ' + code);
+      });
+    }
+
+    async function loadActiveCodes() {
+      const container = document.getElementById('activeCodesList');
+      if (!container) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('access_code_requests')
+          .select('*')
+          .eq('status', 'approved')
+          .order('approved_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="color: #888; text-align: center;">No hay c' + String.fromCharCode(243) + 'digos activos</p>';
+          return;
+        }
+        
+        let html = '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">';
+        html += '<tr style="background: rgba(46,204,113,0.2); color: #2ecc71;">';
+        html += '<th style="padding: 8px; text-align: left;">T' + String.fromCharCode(233) + 'cnico</th>';
+        html += '<th style="padding: 8px; text-align: left;">C' + String.fromCharCode(243) + 'digo</th>';
+        html += '<th style="padding: 8px; text-align: left;">Nivel</th>';
+        html += '<th style="padding: 8px; text-align: left;">Estado</th>';
+        html += '<th style="padding: 8px; text-align: left;">Fecha</th>';
+        html += '<th style="padding: 8px; text-align: center;">Acci' + String.fromCharCode(243) + 'n</th>';
+        html += '</tr>';
+        
+        data.forEach(item => {
+          const levelLabel = item.access_level || 'App Completa';
+          const redeemed = item.redeemed_at ? '\u2705 Canjeado' : '\u23F3 Pendiente';
+          const date = new Date(item.approved_at || item.requested_at).toLocaleDateString();
+          html += '<tr style="border-bottom: 1px solid #333;">';
+          html += '<td style="padding: 8px; color: #fff;">' + (item.student_name || 'N/A') + '</td>';
+          html += '<td style="padding: 8px; color: #2ecc71; font-family: monospace; font-weight: bold;">' + (item.code || 'N/A') + '</td>';
+          html += '<td style="padding: 8px; color: #3498db;">' + levelLabel + '</td>';
+          html += '<td style="padding: 8px;">' + redeemed + '</td>';
+          html += '<td style="padding: 8px; color: #888;">' + date + '</td>';
+          html += '<td style="padding: 8px; text-align: center;"><button onclick="revokeAccessCode(\'' + item.id + '\')" style="padding: 4px 10px; background: #e74c3c; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em;">Revocar</button></td>';
+          html += '</tr>';
+        });
+        
+        html += '</table></div>';
+        container.innerHTML = html;
+      } catch(e) {
+        console.error('Error loading active codes:', e);
+        // Fallback to localStorage
+        const codes = JSON.parse(localStorage.getItem('maestroac_access_codes') || '[]');
+        if (codes.length === 0) {
+          container.innerHTML = '<p style="color: #888; text-align: center;">No hay c' + String.fromCharCode(243) + 'digos activos</p>';
+        } else {
+          let html = '';
+          codes.forEach(c => {
+            html += '<div style="display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #333;">';
+            html += '<span style="color: #fff;">' + c.name + '</span>';
+            html += '<span style="color: #2ecc71; font-family: monospace;">' + c.code + '</span>';
+            html += '<span style="color: #3498db;">' + (c.level || 'full_app') + '</span>';
+            html += '</div>';
+          });
+          container.innerHTML = html;
+        }
+      }
+    }
+    // === END CENTRO DE MANDO FUNCTIONS ===
+
 
     async function approveAccessCode(index) {
       let requests = [];

@@ -298,7 +298,7 @@
     /* Admin Section Styles */
     .admin-link { color: #f39c12; text-decoration: underline; cursor: pointer; font-size: 14px; margin-top: 15px; display: inline-block; }
     .admin-link:hover { color: #ffd700; }
-    .admin-container { max-width: 1400px !important; width:100% !important; padding:10px 20px !important; }
+    .admin-container { max-width: 1400px !important; width:100% !important; margin:0 auto; padding:15px 25px !important; min-height:100vh; }
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
     .admin-title { display: flex; align-items: center; gap: 10px; }
     .admin-title h1 { font-size: 24px; margin: 0; }
@@ -895,7 +895,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     <!-- Admin Dashboard Screen -->
     <div class="screen" id="adminDashboardScreen">
-      <div class="container admin-container">
+      <div class="admin-container">
         <div class="admin-header">
           <div class="admin-title">
             <span style="font-size: 28px;">👨‍💼</span>
@@ -1069,7 +1069,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       </div>
     </div>
     <div class="screen" id="adminTechnicianProfileScreen">
-      <div class="container admin-container">
+      <div class="admin-container">
         <div class="admin-header">
           <button class="back-btn" onclick="showScreen('adminDashboardScreen')">← Volver al Panel</button>
         </div>

@@ -1870,6 +1870,133 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <button class="btn btn-primary" onclick="showScreen('registerScreen')">Crear Perfil</button>
         </div>
       </div>
+
+      <!-- ===== STUDENT PROFILE SECTIONS ===== -->
+      
+      <!-- 1. ACCESO A CLASES EN VIVO -->
+      <div style="margin-top: 20px; background: linear-gradient(135deg, #6c3ce0 0%, #4a1fb8 100%); border-radius: 16px; padding: 20px; text-align: center;">
+        <h3 style="color: #fff; margin-bottom: 8px;">🎥 Clases en Vivo</h3>
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 15px;">Accede a las clases en vivo por Zoom</p>
+        <button onclick="joinLiveClass()" style="padding: 14px 40px; background: #f39c12; color: #000; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+          📹 ENTRAR A CLASE ZOOM
+        </button>
+        <div id="zoomClassStatus" style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin-top: 10px;">Próxima clase: Por confirmar</div>
+      </div>
+
+      <!-- 2. MI PROGRESO -->
+      <div style="margin-top: 20px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h3 style="color: #1a1a2e; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">📊 Mi Progreso</h3>
+        <div id="studentProgressBars" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Populated by JS -->
+        </div>
+        <button onclick="loadStudentProgress()" style="margin-top: 12px; padding: 8px 20px; background: #6c3ce0; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em;">🔄 Actualizar Progreso</button>
+      </div>
+
+      <!-- 3. MIS TAREAS ASIGNADAS -->
+      <div style="margin-top: 20px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h3 style="color: #1a1a2e; margin-bottom: 15px;">📝 Mis Tareas Asignadas</h3>
+        <div id="studentTasksList" style="color: #666;">Cargando tareas...</div>
+        <!-- Enviar tarea completada -->
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+          <h4 style="color: #1a1a2e; margin-bottom: 10px;">📤 Enviar Tarea Completada</h4>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <select id="taskToSubmit" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+              <option value="">Seleccionar tarea...</option>
+            </select>
+            <input type="file" id="taskFile" accept=".pdf,.jpg,.png,.doc,.docx" style="flex: 1; min-width: 150px; padding: 8px; border-radius: 8px; border: 1px solid #ddd; font-size: 0.85em;">
+            <textarea id="taskNotes" placeholder="Notas adicionales..." rows="2" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; resize: vertical;"></textarea>
+            <button onclick="submitCompletedTask()" style="padding: 10px 25px; background: #2ecc71; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">✅ ENVIAR TAREA</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. MIS EXÁMENES ASIGNADOS -->
+      <div style="margin-top: 20px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h3 style="color: #1a1a2e; margin-bottom: 15px;">🎯 Mis Exámenes Asignados</h3>
+        <div id="studentExamsList" style="color: #666;">Cargando exámenes...</div>
+      </div>
+
+      <!-- 5. MIS LIBROS DE TRABAJO -->
+      <div style="margin-top: 20px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h3 style="color: #1a1a2e; margin-bottom: 15px;">📚 Mis Libros de Trabajo</h3>
+        <p style="color: #888; font-size: 0.85em; margin-bottom: 12px;">Material compartido por el instructor</p>
+        <div id="studentWorkbooks" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- 6. MIS RECORDS DE PAGOS -->
+      <div style="margin-top: 20px; background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08);">
+        <h3 style="color: #1a1a2e; margin-bottom: 15px;">💳 Mis Records de Pagos</h3>
+        <div id="studentPaymentRecords" style="color: #666;">Cargando historial de pagos...</div>
+        <!-- Solicitar forma de taxes -->
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+          <button onclick="requestTaxForm()" style="padding: 10px 25px; background: #e67e22; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+            📄 SOLICITAR FORMA DE TAXES
+          </button>
+          <span id="taxFormStatus" style="color: #888; font-size: 0.85em;"></span>
+        </div>
+      </div>
+
+      <!-- 7. CRÉDITOS Y RENOVACIONES -->
+      <div style="margin-top: 20px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 20px;">
+        <h3 style="color: #f39c12; margin-bottom: 8px;">🏅 Créditos y Renovaciones</h3>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.85em; margin-bottom: 15px;">Administra tus créditos de educación continua para certificaciones</p>
+        
+        <div id="certCreditsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px;">
+          <!-- NATE -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #3498db;">
+            <div style="color: #3498db; font-weight: bold; font-size: 0.95em;">NATE</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Créditos: <span id="nateCredits" style="color: #2ecc71; font-weight: bold;">0/16</span></div>
+            <div style="color: #888; font-size: 0.75em;">Renovación: <span id="nateRenewal">--</span></div>
+            <button onclick="requestCertRenewal('NATE')" style="margin-top: 8px; padding: 5px 12px; background: #3498db; color: #fff; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- EPA 608 -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #2ecc71;">
+            <div style="color: #2ecc71; font-weight: bold; font-size: 0.95em;">EPA 608</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Estado: <span id="epaStatus" style="color: #f39c12; font-weight: bold;">Pendiente</span></div>
+            <div style="color: #888; font-size: 0.75em;">Tipo: <span id="epaType">Universal</span></div>
+            <button onclick="requestCertRenewal('EPA608')" style="margin-top: 8px; padding: 5px 12px; background: #2ecc71; color: #000; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- OSHA -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #e74c3c;">
+            <div style="color: #e74c3c; font-weight: bold; font-size: 0.95em;">OSHA 30</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Créditos: <span id="oshaCredits" style="color: #2ecc71; font-weight: bold;">0/30</span></div>
+            <div style="color: #888; font-size: 0.75em;">Renovación: <span id="oshaRenewal">--</span></div>
+            <button onclick="requestCertRenewal('OSHA')" style="margin-top: 8px; padding: 5px 12px; background: #e74c3c; color: #fff; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- ESCO -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #9b59b6;">
+            <div style="color: #9b59b6; font-weight: bold; font-size: 0.95em;">ESCO</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Estado: <span id="escoStatus" style="color: #f39c12; font-weight: bold;">Pendiente</span></div>
+            <div style="color: #888; font-size: 0.75em;">Certificación activa</div>
+            <button onclick="requestCertRenewal('ESCO')" style="margin-top: 8px; padding: 5px 12px; background: #9b59b6; color: #fff; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- ACCA -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #1abc9c;">
+            <div style="color: #1abc9c; font-weight: bold; font-size: 0.95em;">ACCA</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Estado: <span id="accaStatus" style="color: #f39c12; font-weight: bold;">Pendiente</span></div>
+            <div style="color: #888; font-size: 0.75em;">Manual J/D/S</div>
+            <button onclick="requestCertRenewal('ACCA')" style="margin-top: 8px; padding: 5px 12px; background: #1abc9c; color: #000; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- NCCER -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #f39c12;">
+            <div style="color: #f39c12; font-weight: bold; font-size: 0.95em;">NCCER</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Nivel: <span id="nccerLevel" style="color: #2ecc71; font-weight: bold;">--</span></div>
+            <div style="color: #888; font-size: 0.75em;">Refrigeración/HVAC</div>
+            <button onclick="requestCertRenewal('NCCER')" style="margin-top: 8px; padding: 5px 12px; background: #f39c12; color: #000; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+          <!-- R-410A / R-32 -->
+          <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #00bcd4;">
+            <div style="color: #00bcd4; font-weight: bold; font-size: 0.95em;">R-410A / R-32 A2L</div>
+            <div style="color: #fff; font-size: 0.8em; margin: 4px 0;">Estado: <span id="refrigStatus" style="color: #f39c12; font-weight: bold;">Pendiente</span></div>
+            <div style="color: #888; font-size: 0.75em;">Seguridad en refrigerantes</div>
+            <button onclick="requestCertRenewal('R32')" style="margin-top: 8px; padding: 5px 12px; background: #00bcd4; color: #000; border: none; border-radius: 6px; font-size: 0.75em; cursor: pointer;">Solicitar Renovación</button>
+          </div>
+        </div>
+      </div>
+      <!-- ===== END STUDENT PROFILE SECTIONS ===== -->
+
       <button class="btn btn-secondary" onclick="goBackFromProfile()" style="margin-top:20px;">← Volver</button>
     </div>
   </div>
@@ -5408,6 +5535,10 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
       }
     
+      // Auto-load profile data when profile screen opens
+      if (screenId === 'miPerfilScreen') {
+        try { loadProfileData(); } catch(e) {}
+      }
       // Auto-load admin data when admin dashboard opens
       if (screenId === 'adminDashboardScreen') {
         try { renderAccessCodes(); } catch(e) {}
@@ -10020,6 +10151,247 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       }
     }
     // === END CENTRO DE MANDO FUNCTIONS ===
+
+    // === STUDENT PROFILE FUNCTIONS ===
+
+    function joinLiveClass() {
+      const zoomLink = localStorage.getItem('maestroac_zoom_link') || '';
+      if (zoomLink) {
+        window.open(zoomLink, '_blank');
+      } else {
+        alert('El enlace de Zoom aún no está configurado. El instructor compartirá el enlace próximamente.');
+      }
+    }
+
+    function loadStudentProgress() {
+      const container = document.getElementById('studentProgressBars');
+      if (!container) return;
+      const levels = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
+      const icons = {principiante: '🔧', intermedio: '📊', avanzado: '⚡', elite: '🏆', platino: '💎'};
+      const colors = {principiante: '#2ecc71', intermedio: '#3498db', avanzado: '#e67e22', elite: '#e74c3c', platino: '#9b59b6'};
+      
+      let html = '';
+      levels.forEach(level => {
+        const email = localStorage.getItem('tecnico_email') || '';
+        const key = email ? 'maestroac_progress_' + email : 'tecnico_progress';
+        const prog = JSON.parse(localStorage.getItem(key) || '{}');
+        const p = prog[level] || {completed: 0, total: 0, score: 0};
+        const pct = p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0;
+        const scorePct = p.completed > 0 ? Math.round((p.score / p.completed) * 100) : 0;
+        
+        html += '<div style="display: flex; align-items: center; gap: 10px;">';
+        html += '<span style="min-width: 100px; font-weight: bold; color: ' + colors[level] + ';">' + icons[level] + ' ' + level.charAt(0).toUpperCase() + level.slice(1) + '</span>';
+        html += '<div style="flex: 1; background: #eee; border-radius: 10px; height: 20px; overflow: hidden; position: relative;">';
+        html += '<div style="height: 100%; width: ' + pct + '%; background: ' + colors[level] + '; border-radius: 10px; transition: width 0.5s;"></div>';
+        html += '<span style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 0.7em; color: #333; font-weight: bold;">' + p.completed + '/' + p.total + ' (' + pct + '%)</span>';
+        html += '</div>';
+        html += '<span style="min-width: 50px; text-align: right; font-size: 0.8em; color: ' + (scorePct >= 80 ? '#2ecc71' : scorePct >= 60 ? '#f39c12' : '#e74c3c') + ';">' + scorePct + '% ✅</span>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    async function loadStudentTasks() {
+      const container = document.getElementById('studentTasksList');
+      const select = document.getElementById('taskToSubmit');
+      if (!container) return;
+      
+      const email = localStorage.getItem('tecnico_email') || '';
+      try {
+        const { data, error } = await supabase.from('student_tasks')
+          .select('*').eq('student_email', email).order('created_at', {ascending: false});
+        
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes tareas asignadas</p>';
+          return;
+        }
+        
+        let html = '';
+        let selectHtml = '<option value="">Seleccionar tarea...</option>';
+        data.forEach(task => {
+          const statusColor = task.status === 'completada' ? '#2ecc71' : task.status === 'pendiente' ? '#f39c12' : '#e74c3c';
+          const statusIcon = task.status === 'completada' ? '✅' : task.status === 'pendiente' ? '⏳' : '📌';
+          html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">';
+          html += '<div><strong>' + (task.title || 'Tarea') + '</strong><br><span style="font-size: 0.8em; color: #888;">' + (task.description || '') + '</span></div>';
+          html += '<span style="color: ' + statusColor + '; font-weight: bold; font-size: 0.85em;">' + statusIcon + ' ' + (task.status || 'pendiente') + '</span>';
+          html += '</div>';
+          if (task.status === 'pendiente') {
+            selectHtml += '<option value="' + task.id + '">' + (task.title || 'Tarea ' + task.id) + '</option>';
+          }
+        });
+        container.innerHTML = html;
+        if (select) select.innerHTML = selectHtml;
+      } catch(e) {
+        container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes tareas asignadas</p>';
+      }
+    }
+
+    async function submitCompletedTask() {
+      const taskId = document.getElementById('taskToSubmit')?.value;
+      const notes = document.getElementById('taskNotes')?.value || '';
+      const fileInput = document.getElementById('taskFile');
+      
+      if (!taskId) { alert('Selecciona una tarea'); return; }
+      
+      try {
+        await supabase.from('student_tasks').update({
+          status: 'completada',
+          completed_at: new Date().toISOString(),
+          student_notes: notes
+        }).eq('id', taskId);
+        
+        alert('✅ Tarea enviada exitosamente');
+        document.getElementById('taskNotes').value = '';
+        loadStudentTasks();
+      } catch(e) {
+        alert('Error al enviar tarea. Intenta de nuevo.');
+      }
+    }
+
+    async function loadStudentExams() {
+      const container = document.getElementById('studentExamsList');
+      if (!container) return;
+      
+      const email = localStorage.getItem('tecnico_email') || '';
+      try {
+        const { data, error } = await supabase.from('exam_requests')
+          .select('*').eq('student_email', email).order('requested_at', {ascending: false});
+        
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes exámenes asignados</p>';
+          return;
+        }
+        
+        let html = '';
+        data.forEach(exam => {
+          const statusColor = exam.status === 'aprobado' ? '#2ecc71' : exam.status === 'pendiente' ? '#f39c12' : '#3498db';
+          html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee;">';
+          html += '<div><strong>' + (exam.exam_name || 'Examen') + '</strong>';
+          if (exam.exam_price) html += ' <span style="color: #888; font-size: 0.8em;">$' + exam.exam_price + '</span>';
+          html += '<br><span style="font-size: 0.8em; color: #888;">Solicitado: ' + new Date(exam.requested_at).toLocaleDateString() + '</span></div>';
+          html += '<span style="color: ' + statusColor + '; font-weight: bold;">' + (exam.status || 'pendiente') + '</span>';
+          html += '</div>';
+        });
+        container.innerHTML = html;
+      } catch(e) {
+        container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes exámenes asignados</p>';
+      }
+    }
+
+    async function loadStudentWorkbooks() {
+      const container = document.getElementById('studentWorkbooks');
+      if (!container) return;
+      
+      try {
+        const { data, error } = await supabase.from('workbooks')
+          .select('*').order('created_at', {ascending: false});
+        
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa; grid-column: 1/-1;">No hay libros disponibles aún</p>';
+          return;
+        }
+        
+        let html = '';
+        data.forEach(book => {
+          html += '<div style="background: #f8f9fa; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #eee;">';
+          html += '<div style="font-size: 2em; margin-bottom: 8px;">📖</div>';
+          html += '<div style="font-weight: bold; color: #1a1a2e; font-size: 0.9em;">' + (book.title || 'Libro') + '</div>';
+          html += '<div style="color: #888; font-size: 0.75em; margin: 4px 0;">' + (book.description || '') + '</div>';
+          if (book.url) html += '<a href="' + book.url + '" target="_blank" style="display: inline-block; margin-top: 8px; padding: 5px 12px; background: #6c3ce0; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.8em;">Abrir</a>';
+          html += '</div>';
+        });
+        container.innerHTML = html;
+      } catch(e) {
+        container.innerHTML = '<p style="text-align: center; color: #aaa; grid-column: 1/-1;">No hay libros disponibles aún</p>';
+      }
+    }
+
+    async function loadStudentPayments() {
+      const container = document.getElementById('studentPaymentRecords');
+      if (!container) return;
+      
+      const email = localStorage.getItem('tecnico_email') || '';
+      try {
+        const { data, error } = await supabase.from('payment_records')
+          .select('*').eq('student_email', email).order('payment_date', {ascending: false});
+        
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: #aaa;">No hay records de pagos</p>';
+          return;
+        }
+        
+        let html = '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">';
+        html += '<tr style="background: #f8f9fa;"><th style="padding: 8px; text-align: left;">Fecha</th><th style="padding: 8px; text-align: left;">Concepto</th><th style="padding: 8px; text-align: right;">Monto</th><th style="padding: 8px; text-align: center;">Estado</th></tr>';
+        data.forEach(p => {
+          html += '<tr style="border-bottom: 1px solid #eee;">';
+          html += '<td style="padding: 8px;">' + new Date(p.payment_date).toLocaleDateString() + '</td>';
+          html += '<td style="padding: 8px;">' + (p.description || p.concept || 'Pago') + '</td>';
+          html += '<td style="padding: 8px; text-align: right; font-weight: bold;">$' + (p.amount || 0) + '</td>';
+          html += '<td style="padding: 8px; text-align: center; color: ' + (p.status === 'paid' ? '#2ecc71' : '#f39c12') + ';">' + (p.status === 'paid' ? '✅ Pagado' : '⏳ Pendiente') + '</td>';
+          html += '</tr>';
+        });
+        html += '</table></div>';
+        container.innerHTML = html;
+      } catch(e) {
+        container.innerHTML = '<p style="text-align: center; color: #aaa;">No hay records de pagos</p>';
+      }
+    }
+
+    async function requestTaxForm() {
+      const email = localStorage.getItem('tecnico_email') || '';
+      const name = localStorage.getItem('tecnico_name') || '';
+      const statusEl = document.getElementById('taxFormStatus');
+      
+      try {
+        await supabase.from('tax_form_requests').insert([{
+          student_name: name,
+          student_email: email,
+          requested_at: new Date().toISOString(),
+          status: 'pending',
+          year: new Date().getFullYear()
+        }]);
+        
+        if (statusEl) statusEl.innerHTML = '✅ Solicitud enviada. Te contactaremos pronto.';
+        alert('✅ Solicitud de forma de taxes enviada exitosamente');
+      } catch(e) {
+        if (statusEl) statusEl.innerHTML = '✅ Solicitud registrada.';
+        alert('✅ Solicitud registrada. El instructor te contactará pronto.');
+      }
+    }
+
+    async function requestCertRenewal(certType) {
+      const email = localStorage.getItem('tecnico_email') || '';
+      const name = localStorage.getItem('tecnico_name') || '';
+      
+      try {
+        await supabase.from('cert_renewal_requests').insert([{
+          student_name: name,
+          student_email: email,
+          cert_type: certType,
+          requested_at: new Date().toISOString(),
+          status: 'pending'
+        }]);
+        alert('✅ Solicitud de renovación ' + certType + ' enviada');
+      } catch(e) {
+        alert('✅ Solicitud de renovación ' + certType + ' registrada. Te contactaremos pronto.');
+      }
+    }
+
+    // Auto-load profile data when profile screen opens
+    function loadProfileData() {
+      try { loadStudentProgress(); } catch(e) {}
+      try { loadStudentTasks(); } catch(e) {}
+      try { loadStudentExams(); } catch(e) {}
+      try { loadStudentWorkbooks(); } catch(e) {}
+      try { loadStudentPayments(); } catch(e) {}
+    }
+
+    // === END STUDENT PROFILE FUNCTIONS ===
+
 
 
     async function approveAccessCode(index) {

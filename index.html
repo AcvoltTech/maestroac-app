@@ -5278,6 +5278,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       document.getElementById(screenId).classList.add('active');
       // Save current screen for "back to app" navigation
       localStorage.setItem('maestroac_last_screen', screenId);
+      // Hide "back to app" button on login/register screens
+      var backBtn = document.getElementById('backToAppBtn');
+      if (backBtn) {
+        if (screenId === 'loginScreen' || screenId === 'registerScreen' || screenId === 'adminLoginScreen') {
+          backBtn.style.display = 'none';
+        }
+      }
     }
 
     // Handle the "Comenzar" button - check if profile exists

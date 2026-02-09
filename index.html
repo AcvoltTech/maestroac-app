@@ -1583,6 +1583,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <h1>📋 Mi Asistencia</h1>
           <p class="subtitle">Control de horas de entrenamiento</p>
         </div>
+        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:15px;">← Volver al Menú</button>
         <div class="attendance-card">
           <div id="attendanceStatusBadge" class="attendance-status status-inactive">⭕ Sin Check-in</div>
           <div id="attendanceTimer" class="attendance-timer">00:00:00</div>
@@ -6357,6 +6358,24 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       const displaySection = document.getElementById('technicianNumberDisplay');
       const generatorSection = document.getElementById('technicianNumberGenerator');
 
+      // Restore technicianNumber from localStorage if not in currentUser
+      if (currentUser && !currentUser.technicianNumber) {
+        try {
+          var saved = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+          if (saved.technicianNumber) {
+            currentUser.technicianNumber = saved.technicianNumber;
+            currentUser.technicianNumberDate = saved.technicianNumberDate;
+          }
+          if (!currentUser.technicianNumber) {
+            saved = JSON.parse(localStorage.getItem('tecnico_user_backup') || '{}');
+            if (saved.technicianNumber) {
+              currentUser.technicianNumber = saved.technicianNumber;
+              currentUser.technicianNumberDate = saved.technicianNumberDate;
+            }
+          }
+        } catch(e) {}
+      }
+
       if (currentUser && currentUser.technicianNumber) {
         displaySection.style.display = 'block';
         generatorSection.style.display = 'none';
@@ -6377,6 +6396,22 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     
     function ensureStudentId() {
       if (currentUser && !currentUser.studentId) {
+        // Try to restore from localStorage before generating new
+        try {
+          var saved = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+          if (saved.studentId) {
+            currentUser.studentId = saved.studentId;
+            currentUser.studentIdDate = saved.studentIdDate;
+            return;
+          }
+          saved = JSON.parse(localStorage.getItem('tecnico_user_backup') || '{}');
+          if (saved.studentId) {
+            currentUser.studentId = saved.studentId;
+            currentUser.studentIdDate = saved.studentIdDate;
+            return;
+          }
+        } catch(e) {}
+        // Only generate new if truly not saved anywhere
         currentUser.studentId = generateStudentId();
         currentUser.studentIdDate = new Date().toISOString();
         localStorage.setItem('tecnico_user', JSON.stringify(currentUser));

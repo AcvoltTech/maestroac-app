@@ -6,19 +6,19 @@
     <meta name="theme-color" content="#f39c12">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="MaestroAC">
+    <meta name="apple-mobile-web-app-title" content="Maestro ACVOLT">
     <link rel="apple-touch-icon" href="icons/icon-152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
     <link rel="apple-touch-icon" sizes="167x167" href="icons/icon-167.png">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="MaestroAC">
+    <meta name="application-name" content="Maestro ACVOLT">
     <meta name="msapplication-TileColor" content="#1a1a2e">
     <meta name="msapplication-TileImage" content="icons/icon-144.png">
     <meta name="msapplication-config" content="browserconfig.xml">
     
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MaestroAC - Certificación HVAC Profesional">
+    <meta property="og:title" content="Maestro ACVOLT - Certificación HVAC Profesional">
     <meta property="og:description" content="App #1 de certificación HVAC en español. 1,124 preguntas para EPA 608, NATE, OSHA 30. Por Maestro Mario - Nivel 33.">
     <meta property="og:image" content="icons/icon-512.png">
     <meta name="twitter:card" content="summary_large_image">
@@ -27,7 +27,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1565C0">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>MaestroAC - HVAC Training App</title>
+  <title>Maestro ACVOLT - HVAC Training App</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; min-height: 100vh; color: #1e293b; }
@@ -640,8 +640,32 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     <!-- Login Screen -->
     <div class="screen active" id="loginScreen">
       <div class="header">
-        <div class="logo">🔐</div>
-        <h1>MaestroAC</h1>
+        <div class="logo" style="font-size:14px; line-height:1;">
+          <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Left gauge (blue/low pressure) -->
+            <circle cx="30" cy="38" r="22" fill="none" stroke="#3498db" stroke-width="3"/>
+            <circle cx="30" cy="38" r="18" fill="rgba(52,152,219,0.15)"/>
+            <line x1="30" y1="38" x2="22" y2="26" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="30" cy="38" r="2" fill="#e74c3c"/>
+            <text x="30" y="52" text-anchor="middle" fill="#3498db" font-size="5" font-weight="bold">PSI</text>
+            <!-- Right gauge (red/high pressure) -->
+            <circle cx="70" cy="38" r="22" fill="none" stroke="#e74c3c" stroke-width="3"/>
+            <circle cx="70" cy="38" r="18" fill="rgba(231,76,60,0.15)"/>
+            <line x1="70" y1="38" x2="80" y2="28" stroke="#e74c3c" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="70" cy="38" r="2" fill="#e74c3c"/>
+            <text x="70" y="52" text-anchor="middle" fill="#e74c3c" font-size="5" font-weight="bold">PSI</text>
+            <!-- Hoses -->
+            <path d="M30 60 Q30 75 40 80" stroke="#3498db" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M50 65 Q50 78 50 85" stroke="#f1c40f" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M70 60 Q70 75 60 80" stroke="#e74c3c" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <!-- Manifold bar -->
+            <rect x="18" y="58" width="64" height="6" rx="3" fill="#2c3e50"/>
+            <!-- Valve knobs -->
+            <circle cx="35" cy="61" r="4" fill="#3498db"/>
+            <circle cx="65" cy="61" r="4" fill="#e74c3c"/>
+          </svg>
+        </div>
+        <h1>MAESTRO ACVOLT</h1>
         <h2>Acceso al Sistema</h2>
         <p class="subtitle">Ingresa con tu correo electrónico</p>
       </div>
@@ -662,8 +686,6 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <span style="color:#64748b; cursor:pointer; text-decoration:underline;" onclick="showScreen('registerScreen')">¿No tienes cuenta? Regístrate gratis</span>
         </div>
         <div style="text-align:center; margin-top:15px;">
-            <button class="btn btn-secondary" onclick="cerrarSesion()" style="margin-top:10px; background:rgba(231,76,60,0.2); border:1px solid #e74c3c; color:#e74c3c; font-size:13px; padding:8px 20px;">Cerrar Sesion</button>
-            </div>
             <div style="text-align: center; margin-top: 10px;">
           <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔑 Acceso Administrador</span>
         </div>
@@ -674,7 +696,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     <div class="screen" id="registerScreen">
       <div class="header">
         <div class="logo">📝</div>
-        <h1>MaestroAC</h1>
+        <h1>MAESTRO ACVOLT</h1>
         <h2>Crear Cuenta Gratis</h2>
         <p class="subtitle">Acceso al Nivel 1 Principiante gratis</p>
       </div>
@@ -742,7 +764,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     <div class="screen" id="emailPendingScreen">
       <div class="header">
         <div class="logo">📧</div>
-        <h1>MaestroAC</h1>
+        <h1>MAESTRO ACVOLT</h1>
         <h2>Confirma tu Correo</h2>
       </div>
       <div class="card" style="text-align:center;">
@@ -1135,7 +1157,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     <div class="screen" id="welcomeScreen">
       <div class="header">
         <img src="logo.png" alt="ACVOLT" class="logo-img">
-        <h1>MaestroAC</h1>
+        <h1>MAESTRO ACVOLT</h1>
         <p class="subtitle">Bienvenido</p>
       </div>
       <div class="card">
@@ -1156,6 +1178,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div style="text-align:center; margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
           <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔐 Acceso Administrador</span>
         </div>
+        <div style="text-align:center; margin-top:15px;">
+          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:13px; padding:8px 20px;">🚪 Cerrar Sesión</button>
+        </div>
       </div>
     </div>
 
@@ -1163,7 +1188,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     <div class="screen" id="registerScreen">
       <div class="header">
         <img src="logo.png" alt="ACVOLT" class="logo-img">
-        <h1>MaestroAC</h1>
+        <h1>MAESTRO ACVOLT</h1>
         <h2>Registro de Técnico</h2>
       </div>
       <div class="card">
@@ -2181,7 +2206,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       modal.innerHTML = `
         <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:25px;max-width:400px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
           <div style="font-size:50px;margin-bottom:10px;">🔓</div>
-          <h3 style="color:#f39c12;margin-bottom:8px;">Desbloquea MaestroAC Completo</h3>
+          <h3 style="color:#f39c12;margin-bottom:8px;">Desbloquea Maestro ACVOLT Completo</h3>
           <p style="color:#64748b;font-size:14px;margin-bottom:15px;">Acceso a los 5 niveles con 3,500 preguntas, todos los niveles de certificación y progreso ilimitado.</p>
           
           <div style="background:rgba(46,204,113,0.15);border:2px solid rgba(46,204,113,0.4);border-radius:15px;padding:15px;margin-bottom:12px;">
@@ -2200,8 +2225,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <p style="color:#64748b;font-size:11px;margin-bottom:12px;">Después de pagar, envía tu comprobante por WhatsApp o correo para activar tu acceso en menos de 24 horas.</p>
           
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-            <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, acabo de pagar por MaestroAC App completa. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
-            <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra MaestroAC App&body=Hola, acabo de pagar por MaestroAC App completa. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+            <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
+            <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Maestro ACVOLT App&body=Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
           </div>
 
           <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;margin-bottom:12px;">
@@ -4823,6 +4848,12 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         loadUserProgress(email);
         logActivity('login', 'Inicio de sesión');
 
+        // Sync tecnico_user so handleComenzar finds it
+        if (currentUser && currentUser.nombre) {
+          localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+          localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+        }
+
         const savedState = loadLastQuizState();
         if (savedState && savedState.levelKey && savedState.questionIndex > 0) {
           showScreen('welcomeScreen');
@@ -5038,6 +5069,18 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             const email = session.user.email;
             localStorage.setItem('tecnico_authenticated', 'true');
             localStorage.setItem('tecnico_email', email);
+            // Also populate tecnico_user from maestroac_users if available
+            const initUsers = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
+            if (initUsers[email] && initUsers[email].nombre && !localStorage.getItem('tecnico_user')) {
+                localStorage.setItem('tecnico_user', JSON.stringify({
+                    nombre: initUsers[email].nombre,
+                    email: email,
+                    telefono: initUsers[email].telefono || '',
+                    ciudad: initUsers[email].ciudad || '',
+                    experiencia: initUsers[email].experiencia || '',
+                    registrationDate: initUsers[email].registrationDate
+                }));
+            }
             
             // Mark as verified locally
             const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
@@ -5053,14 +5096,40 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       if (isAuthenticated()) {
         const email = localStorage.getItem('tecnico_email');
         const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
-        if (users[email]) {
+        if (users[email] && users[email].nombre) {
           currentUser = {
             nombre: users[email].nombre,
             email: email,
             telefono: users[email].telefono || '',
+            ciudad: users[email].ciudad || '',
+            experiencia: users[email].experiencia || '',
             registrationDate: users[email].registrationDate
           };
+          // Sync tecnico_user so handleComenzar finds it
+          localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+          localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
           loadUserProgress(email);
+        } else if (email && supabaseClient) {
+          // No local data - try loading from Supabase technicians table (new device)
+          try {
+            const { data: techData } = await supabaseClient.from('technicians').select('*').eq('email', email).single();
+            if (techData && techData.nombre) {
+              currentUser = {
+                nombre: techData.nombre,
+                email: email,
+                telefono: techData.telefono || '',
+                ciudad: techData.ciudad || '',
+                experiencia: techData.experiencia || '',
+                registrationDate: techData.registration_date
+              };
+              // Cache locally for future loads
+              users[email] = { ...currentUser, password: '(supabase-auth)', verified: true };
+              localStorage.setItem('maestroac_users', JSON.stringify(users));
+              localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+              localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+              loadUserProgress(email);
+            }
+          } catch(e) { console.log('[MaestroAC] Load technician on init:', e); }
         }
         const savedState = loadLastQuizState();
         if (savedState && savedState.levelKey && savedState.questionIndex > 0) {
@@ -5150,7 +5219,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     // Handle the "Comenzar" button - check if profile exists
-    function handleComenzar() {
+    async function handleComenzar() {
       let savedUser = localStorage.getItem('tecnico_user');
       if (!savedUser) savedUser = localStorage.getItem('tecnico_user_backup');
       if (savedUser) {
@@ -5189,7 +5258,54 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           console.error('Error loading saved user:', e);
         }
       }
-      // No valid profile found, show registration screen
+      // Fallback: check maestroac_users (Supabase Auth registered users)
+      const authEmail = localStorage.getItem('tecnico_email');
+      if (authEmail) {
+          const allUsers = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
+          const authUser = allUsers[authEmail];
+          if (authUser && authUser.nombre) {
+              currentUser = {
+                  nombre: authUser.nombre,
+                  email: authEmail,
+                  telefono: authUser.telefono || '',
+                  ciudad: authUser.ciudad || '',
+                  experiencia: authUser.experiencia || '',
+                  registrationDate: authUser.registrationDate
+              };
+              localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+              localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+              document.getElementById('userGreeting').textContent = 'Hola, ' + currentUser.nombre.split(' ')[0];
+              showNotifBell();
+              showScreen('levelsScreen');
+              return;
+          }
+      }
+      // No valid profile found anywhere, try Supabase as last resort
+      if (authEmail && supabaseClient) {
+          try {
+              const { data: techData } = await supabaseClient.from('technicians').select('*').eq('email', authEmail).single();
+              if (techData && techData.nombre) {
+                  currentUser = {
+                      nombre: techData.nombre,
+                      email: authEmail,
+                      telefono: techData.telefono || '',
+                      ciudad: techData.ciudad || '',
+                      experiencia: techData.experiencia || '',
+                      registrationDate: techData.registration_date
+                  };
+                  // Cache locally for future loads
+                  const cacheUsers = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
+                  cacheUsers[authEmail] = { ...currentUser, password: '(supabase-auth)', verified: true };
+                  localStorage.setItem('maestroac_users', JSON.stringify(cacheUsers));
+                  localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+                  localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+                  document.getElementById('userGreeting').textContent = 'Hola, ' + currentUser.nombre.split(' ')[0];
+                  showNotifBell();
+                  showScreen('levelsScreen');
+                  return;
+              }
+          } catch(e) { console.log('[MaestroAC] Supabase fallback in Comenzar:', e); }
+      }
       showScreen('registerScreen');
     }
 
@@ -6483,7 +6599,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <p style="color:#94a3b8;font-size:12px;margin-bottom:10px;">Después de pagar, envía tu comprobante para activar:</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
               <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent('Hola, acabo de pagar $250 por los certificados de MaestroAC. Mi correo es: '+(currentUser?currentUser.email:''))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
-              <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Certificados MaestroAC&body=Hola, acabo de pagar $250 por los certificados. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+              <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Certificados Maestro ACVOLT&body=Hola, acabo de pagar $250 por los certificados. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
             </div>
           </div>
 
@@ -7420,7 +7536,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     function copyMembershipCode() {
       const code = document.getElementById('adminMemberCodeValue').textContent;
-      const text = '🎥 Tu código de acceso a CLASES EN VIVO de MaestroAC:\n\n' + code + '\n\n1. Abre maestromario.com\n2. Inicia sesión con tu cuenta\n3. Toca \"Clases en Vivo\"\n4. Ingresa tu código: ' + code + '\n5. ¡Bienvenido a las clases exclusivas!\n\n- Maestro Mario | ACVOLT Tech School';
+      const text = '🎥 Tu código de acceso a CLASES EN VIVO de Maestro ACVOLT:\n\n' + code + '\n\n1. Abre maestromario.com\n2. Inicia sesión con tu cuenta\n3. Toca \"Clases en Vivo\"\n4. Ingresa tu código: ' + code + '\n5. ¡Bienvenido a las clases exclusivas!\n\n- Maestro Mario | ACVOLT Tech School';
       
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => alert('📋 Código de membresía copiado.'));
@@ -8492,7 +8608,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     function copyAccessCode() {
       const code = document.getElementById('adminCodeValue').textContent;
-      const text = '🔑 Tu código de acceso a MaestroAC:\n\n' + code + '\n\n1. Abre maestromario.com\n2. Inicia sesión con tu cuenta\n3. Toca un nivel bloqueado 🔒\n4. Ingresa tu código: ' + code + '\n5. ¡Listo! Acceso completo desbloqueado\n\n- Maestro Mario | ACVOLT Tech School';
+      const text = '🔑 Tu código de acceso a Maestro ACVOLT:\n\n' + code + '\n\n1. Abre maestromario.com\n2. Inicia sesión con tu cuenta\n3. Toca un nivel bloqueado 🔒\n4. Ingresa tu código: ' + code + '\n5. ¡Listo! Acceso completo desbloqueado\n\n- Maestro Mario | ACVOLT Tech School';
       
       if (navigator.clipboard) {
         navigator.clipboard.writeText(text).then(() => alert('📋 Código copiado al portapapeles.'));
@@ -8592,7 +8708,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       }
 
       logActivity('code_redeemed', code);
-      addNotification('payment', '💳 ¡App MaestroAC desbloqueada! Ahora tienes acceso a todos los niveles.', '🔓');
+      addNotification('payment', '💳 ¡App Maestro ACVOLT desbloqueada! Ahora tienes acceso a todos los niveles.', '🔓');
       const modal = input.closest('div[style*="position:fixed"]');
       if (modal) modal.remove();
       alert('🎉 ¡Código activado! Acceso completo desbloqueado.');

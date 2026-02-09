@@ -1066,6 +1066,20 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           </div>
         </div>
 
+        
+        <!-- Access Codes Section -->
+        <div class="admin-section admin-grid-full">
+          <div class="admin-section-header">
+            <div class="admin-section-title">
+              <h3>🔑 Códigos de Acceso</h3>
+              <button onclick="renderAccessCodes()" style="background:#27ae60;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;">🔄 Actualizar</button>
+            </div>
+          </div>
+          <div id="accessCodesList" style="max-height:400px;overflow-y:auto;">
+            <p style="color:#999;text-align:center;padding:20px;">Cargando solicitudes...</p>
+          </div>
+        </div>
+
         </div><!-- close admin-grid-2col -->
         </div><!-- close admin-main-content -->
 
@@ -1296,6 +1310,14 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <input type="tel" id="telefono" placeholder="(123) 456-7890">
           </div>
           <div class="form-group">
+            <label>Ciudad</label>
+            <input type="text" id="ciudad" placeholder="Tu ciudad">
+          </div>
+          <div class="form-group">
+            <label>Estado</label>
+            <input type="text" id="estado" placeholder="Tu estado (ej: California)">
+          </div>
+          <div class="form-group">
             <label>Número EPA 608</label>
             <input type="text" id="epa" placeholder="Número de certificación EPA">
           </div>
@@ -1362,6 +1384,22 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       </div>
 
       <!-- Memberships Grid -->
+      <!-- Access Code Section -->
+      <div style="background:linear-gradient(135deg,#2c3e50,#3498db);border-radius:16px;padding:20px;margin:20px 0;text-align:center;color:white;">
+        <h3 style="margin:0 0 8px 0;font-size:18px;">🔓 Desbloquear Niveles</h3>
+        <p style="margin:0 0 15px 0;font-size:13px;opacity:0.9;">Ingresa tu código de acceso o solicita uno</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <input type="text" id="accessCodeInput" placeholder="Ingresa tu código" 
+            style="padding:10px 15px;border-radius:8px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:white;font-size:14px;width:180px;text-align:center;text-transform:uppercase;" 
+            maxlength="8">
+          <button onclick="redeemAccessCode()" 
+            style="padding:10px 20px;border-radius:8px;border:none;background:#27ae60;color:white;font-weight:bold;cursor:pointer;font-size:14px;">✅ Activar</button>
+        </div>
+        <button onclick="requestAccessCode()" 
+          style="margin-top:12px;padding:8px 20px;border-radius:8px;border:2px solid rgba(255,255,255,0.4);background:transparent;color:white;cursor:pointer;font-size:13px;">📩 Solicitar Código de Acceso</button>
+        <div id="accessCodeMessage" style="margin-top:10px;font-size:13px;display:none;"></div>
+      </div>
+
       <div style="margin-top:20px;">
         <h3 style="color:#9b59b6; text-align:center; margin-bottom:12px; font-size:16px;">👑 Membresías en Vivo</h3>
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
@@ -1729,6 +1767,14 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <div class="profile-field">
               <span class="profile-label">Teléfono:</span>
               <span class="profile-value" id="profileTelefono">-</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-label">Ciudad:</span>
+              <span class="profile-value" id="profileCiudad">-</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-label">Estado:</span>
+              <span class="profile-value" id="profileEstado">-</span>
             </div>
           </div>
 
@@ -5418,6 +5464,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         nombre: document.getElementById('nombre').value,
         email: document.getElementById('email').value,
         telefono: document.getElementById('telefono').value,
+        ciudad: document.getElementById('ciudad').value,
+        estado: document.getElementById('estado').value,
         epa: document.getElementById('epa').value,
         nate: document.getElementById('nate').value,
         esco: document.getElementById('esco').value
@@ -6411,6 +6459,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       document.getElementById('profileNombre').textContent = currentUser.nombre || '-';
       document.getElementById('profileEmail').textContent = currentUser.email || '-';
       document.getElementById('profileTelefono').textContent = currentUser.telefono || '-';
+            document.getElementById('profileCiudad').textContent = currentUser.ciudad || '-';
+      document.getElementById('profileEstado').textContent = currentUser.estado || '-';
       document.getElementById('profileEPA').textContent = currentUser.epa || 'No registrado';
       document.getElementById('profileNATE').textContent = currentUser.nate || 'No registrado';
       document.getElementById('profileESCO').textContent = currentUser.esco || 'No registrado';
@@ -9596,7 +9646,240 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
     // Initialize on load
     document.addEventListener('DOMContentLoaded', init);
-  </script>
+  
+
+    // =============== ACCESS CODE SYSTEM ===============
+    
+    function generateAccessCode() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let code = '';
+      for (let i = 0; i < 8; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+      return code;
+    }
+
+    function validateStudentProfile(user) {
+      const missing = [];
+      if (!user.nombre || user.nombre.trim().length < 3) missing.push('Nombre completo');
+      if (!user.email || !user.email.includes('@')) missing.push('Correo electr\u00F3nico');
+      if (!user.telefono || user.telefono.trim().length < 7) missing.push('Tel\u00E9fono');
+      if (!user.ciudad || user.ciudad.trim().length < 2) missing.push('Ciudad');
+      if (!user.estado || user.estado.trim().length < 2) missing.push('Estado');
+      return missing;
+    }
+
+    async function requestAccessCode() {
+      const msgDiv = document.getElementById('accessCodeMessage');
+      msgDiv.style.display = 'block';
+      
+      const user = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+      const missing = validateStudentProfile(user);
+      
+      if (missing.length > 0) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.innerHTML = '\u26A0\uFE0F Completa tu perfil primero:<br><strong>' + missing.join(', ') + '</strong><br><small>Ve a "Mi Perfil" para actualizar tus datos</small>';
+        return;
+      }
+      
+      const request = {
+        id: 'req_' + Date.now(),
+        student_name: user.nombre,
+        student_email: user.email,
+        student_phone: user.telefono,
+        student_city: user.ciudad,
+        student_state: user.estado,
+        tech_number: user.technicianNumber || localStorage.getItem('tecnico_number') || '',
+        student_id: user.studentId || localStorage.getItem('tecnico_studentId') || '',
+        status: 'pending',
+        code: null,
+        requested_at: new Date().toISOString()
+      };
+      
+      try {
+        const { data, error } = await supabase.from('access_code_requests').insert([request]);
+        if (error) throw error;
+      } catch(e) {
+        console.warn('Supabase save failed, using localStorage', e);
+      }
+      
+      let requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+      requests.push(request);
+      localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
+      
+      addNotification('\uD83D\uDCE9 Solicitud de c\u00F3digo de acceso enviada');
+      msgDiv.style.color = '#27ae60';
+      msgDiv.innerHTML = '\u2705 Solicitud enviada. El administrador revisar\u00E1 tu solicitud y te enviar\u00E1 un c\u00F3digo.';
+    }
+
+    async function redeemAccessCode() {
+      const input = document.getElementById('accessCodeInput');
+      const msgDiv = document.getElementById('accessCodeMessage');
+      const code = input.value.trim().toUpperCase();
+      msgDiv.style.display = 'block';
+      
+      if (!code || code.length < 6) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = '\u26A0\uFE0F Ingresa un c\u00F3digo v\u00E1lido';
+        return;
+      }
+      
+      let valid = false;
+      
+      try {
+        const { data, error } = await supabase
+          .from('access_code_requests')
+          .select('*')
+          .eq('code', code)
+          .eq('status', 'approved')
+          .single();
+        
+        if (data && !error) {
+          valid = true;
+          await supabase.from('access_code_requests').update({ status: 'redeemed', redeemed_at: new Date().toISOString() }).eq('id', data.id);
+        }
+      } catch(e) {
+        console.warn('Supabase check failed, checking localStorage', e);
+      }
+      
+      if (!valid) {
+        const requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+        const found = requests.find(r => r.code === code && r.status === 'approved');
+        if (found) {
+          valid = true;
+          found.status = 'redeemed';
+          found.redeemed_at = new Date().toISOString();
+          localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
+        }
+      }
+      
+      if (valid) {
+        localStorage.setItem('maestroac_full_access', 'true');
+        localStorage.setItem('maestroac_access_code', code);
+        addNotification('\uD83D\uDD13 Niveles desbloqueados con c\u00F3digo: ' + code);
+        msgDiv.style.color = '#27ae60';
+        msgDiv.innerHTML = '\u2705 \u00A1C\u00F3digo activado! Todos los niveles est\u00E1n desbloqueados.';
+        input.value = '';
+        setTimeout(() => renderLevels(), 500);
+      } else {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = '\u274C C\u00F3digo inv\u00E1lido o no aprobado. Contacta al administrador.';
+      }
+    }
+
+    async function renderAccessCodes() {
+      const container = document.getElementById('accessCodesList');
+      if (!container) return;
+      
+      let requests = [];
+      
+      try {
+        const { data, error } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        if (data && !error) requests = data;
+      } catch(e) {
+        console.warn('Loading from localStorage');
+      }
+      
+      if (requests.length === 0) {
+        requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+      }
+      
+      if (requests.length === 0) {
+        container.innerHTML = '<p style="color:#999;text-align:center;padding:20px;">No hay solicitudes de c\u00F3digos</p>';
+        return;
+      }
+      
+      let html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+      html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
+      
+      requests.forEach((req, i) => {
+        const statusColors = { pending: '#f39c12', approved: '#27ae60', redeemed: '#3498db', rejected: '#e74c3c' };
+        const statusLabels = { pending: '\u23F3 Pendiente', approved: '\u2705 Aprobado', redeemed: '\uD83D\uDD13 Canjeado', rejected: '\u274C Rechazado' };
+        const bgColor = i % 2 === 0 ? '#f8f9fa' : 'white';
+        
+        html += '<tr style="background:' + bgColor + ';">';
+        html += '<td style="padding:8px;font-weight:bold;">' + (req.student_name || '-') + '</td>';
+        html += '<td style="padding:8px;font-size:11px;">' + (req.student_email || '') + '<br>' + (req.student_phone || '') + '</td>';
+        html += '<td style="padding:8px;">' + (req.student_city || '') + ', ' + (req.student_state || '') + '</td>';
+        html += '<td style="padding:8px;text-align:center;">' + (req.tech_number || '-') + '</td>';
+        html += '<td style="padding:8px;text-align:center;font-family:monospace;font-weight:bold;font-size:14px;color:#2c3e50;">' + (req.code || '---') + '</td>';
+        html += '<td style="padding:8px;"><span style="background:' + (statusColors[req.status] || '#999') + ';color:white;padding:3px 8px;border-radius:12px;font-size:11px;">' + (statusLabels[req.status] || req.status) + '</span></td>';
+        html += '<td style="padding:8px;">';
+        
+        if (req.status === 'pending') {
+          html += '<button onclick="approveAccessCode(' + i + ')" style="background:#27ae60;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\u2705 Generar</button>';
+          html += '<button onclick="rejectAccessCode(' + i + ')" style="background:#e74c3c;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\u274C Rechazar</button>';
+        } else if (req.status === 'approved') {
+          html += '<button onclick="copyCodeToClipboard(\'' + req.code + '\')" style="background:#3498db;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;">\uD83D\uDCCB Copiar</button>';
+        }
+        
+        html += '</td></tr>';
+      });
+      
+      html += '</table>';
+      container.innerHTML = html;
+    }
+
+    async function approveAccessCode(index) {
+      let requests = [];
+      try {
+        const { data } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        if (data) requests = data;
+      } catch(e) {}
+      
+      if (requests.length === 0) {
+        requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+      }
+      
+      if (requests[index]) {
+        const code = generateAccessCode();
+        requests[index].status = 'approved';
+        requests[index].code = code;
+        requests[index].approved_at = new Date().toISOString();
+        
+        try {
+          await supabase.from('access_code_requests').update({ 
+            status: 'approved', code: code, approved_at: new Date().toISOString() 
+          }).eq('id', requests[index].id);
+        } catch(e) {}
+        
+        localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
+        renderAccessCodes();
+        alert('C\u00F3digo generado: ' + code + '\n\nEnv\u00EDa este c\u00F3digo al estudiante: ' + requests[index].student_name);
+      }
+    }
+
+    async function rejectAccessCode(index) {
+      let requests = [];
+      try {
+        const { data } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        if (data) requests = data;
+      } catch(e) {}
+      
+      if (requests.length === 0) {
+        requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+      }
+      
+      if (requests[index]) {
+        requests[index].status = 'rejected';
+        
+        try {
+          await supabase.from('access_code_requests').update({ status: 'rejected' }).eq('id', requests[index].id);
+        } catch(e) {}
+        
+        localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
+        renderAccessCodes();
+      }
+    }
+
+    function copyCodeToClipboard(code) {
+      navigator.clipboard.writeText(code).then(() => {
+        alert('C\u00F3digo copiado: ' + code);
+      }).catch(() => {
+        prompt('Copia este c\u00F3digo:', code);
+      });
+    }
+
+    // =============== END ACCESS CODE SYSTEM ===============
+</script>
     <!-- Printable Certificate -->
     <div id="printableCertificate" class="printable-certificate">
       <div class="cert-header">

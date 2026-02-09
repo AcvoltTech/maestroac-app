@@ -686,6 +686,15 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           </div>
           <button type="submit" class="btn btn-primary" style="font-size:18px; padding:16px;">🔓 INICIAR SESIÓN</button>
         </form>
+        <div style="text-align:center; margin-top:12px;">
+          <span onclick="showForgotPassword()" style="color:#3498db; cursor:pointer; font-size:15px; text-decoration:underline;">🔑 ¿Olvidaste tu contraseña?</span>
+        </div>
+        <div id="forgotPasswordBox" style="display:none; margin-top:15px; padding:15px; background:rgba(52,152,219,0.1); border:1px solid rgba(52,152,219,0.3); border-radius:12px;">
+          <p style="color:#3498db; font-size:14px; font-weight:bold; margin:0 0 10px; text-align:center;">Ingresa tu correo para recibir un link de recuperación</p>
+          <input type="email" id="forgotEmail" placeholder="tucorreo@ejemplo.com" style="width:100%; padding:12px; border-radius:8px; border:1px solid rgba(52,152,219,0.4); background:rgba(255,255,255,0.05); color:#ddd; font-size:15px; box-sizing:border-box; margin-bottom:10px;">
+          <button onclick="sendPasswordReset()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #3498db, #2980b9); font-size:15px; padding:12px;">📧 ENVIAR LINK DE RECUPERACIÓN</button>
+          <div id="forgotPasswordMsg" style="display:none; margin-top:10px; text-align:center; font-size:14px;"></div>
+        </div>
       </div>
 
       <!-- Separador -->
@@ -8941,6 +8950,47 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     function getClassTypeLabel(type) {
       var labels = { presencial: '🏫 Presencial', zoom: '📹 Zoom', computadora: '🖥️ Computadora', movil: '📱 Móvil' };
       return labels[type] || type;
+    }
+
+    function showForgotPassword() {
+      var box = document.getElementById('forgotPasswordBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+      var loginEmail = document.getElementById('loginEmail').value.trim();
+      if (loginEmail) document.getElementById('forgotEmail').value = loginEmail;
+    }
+
+    async function sendPasswordReset() {
+      var email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+      var msgDiv = document.getElementById('forgotPasswordMsg');
+      if (!email) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Ingresa tu correo electrónico';
+        return;
+      }
+      if (!supabaseClient) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        return;
+      }
+      try {
+        var { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+          redirectTo: 'https://maestromario.com'
+        });
+        msgDiv.style.display = 'block';
+        if (error) {
+          msgDiv.style.color = '#e74c3c';
+          msgDiv.textContent = 'Error: ' + error.message;
+        } else {
+          msgDiv.style.color = '#2ecc71';
+          msgDiv.innerHTML = '✅ ¡Link enviado! Revisa tu correo <strong>' + email + '</strong> y sigue las instrucciones para cambiar tu contraseña.';
+        }
+      } catch(e) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+      }
     }
     function getClassTypeIcon(type) {
       var icons = { presencial: '🏫', zoom: '📹', computadora: '🖥️', movil: '📱' };

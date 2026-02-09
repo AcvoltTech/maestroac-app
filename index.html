@@ -689,9 +689,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       </div>
 
       <!-- Separador -->
-      <div style="text-align:center; margin:15px 0; position:relative;">
-        <div style="border-top:1px solid rgba(255,255,255,0.15); position:absolute; top:50%; left:0; right:0;"></div>
-        <span style="background:#0f172a; padding:0 15px; color:#64748b; font-size:14px; position:relative;">ó</span>
+      <div style="text-align:center; margin:20px 0; position:relative;">
+        <div style="border-top:2px solid rgba(255,255,255,0.15); position:absolute; top:50%; left:20%; right:20%;"></div>
+        <span style="background:#0f172a; padding:5px 20px; color:#f39c12; font-size:18px; font-weight:bold; position:relative; border:1px solid rgba(243,156,18,0.3); border-radius:20px;">ó</span>
       </div>
 
       <!-- Zona de Registro -->
@@ -1578,9 +1578,10 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <div id="attendanceStatusBadge" class="attendance-status status-inactive">⭕ Sin Check-in</div>
           <div id="attendanceTimer" class="attendance-timer">00:00:00</div>
           <p style="margin-bottom:5px; color:#64748b; font-size:14px;">Tipo de clase:</p>
-          <div class="attendance-type-selector">
+          <div class="attendance-type-selector" style="flex-wrap:wrap;">
             <div class="type-option selected" id="typePresencial" onclick="selectClassType('presencial')">🏫 Presencial</div>
-            <div class="type-option" id="typeZoom" onclick="selectClassType('zoom')">💻 Zoom</div>
+            <div class="type-option" id="typeZoom" onclick="selectClassType('zoom')">📹 Zoom</div>
+            <div class="type-option" id="typeComputadora" onclick="selectClassType('computadora')">🖥️ Computadora</div>
             <div class="type-option" id="typeMovil" onclick="selectClassType('movil')">📱 Móvil</div>
           </div>
           <button id="btnCheckIn" class="btn-checkin btn-checkin-in" onclick="doCheckIn()">✅ HACER CHECK-IN</button>
@@ -8937,10 +8938,20 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       return false;
     }
 
+    function getClassTypeLabel(type) {
+      var labels = { presencial: '🏫 Presencial', zoom: '📹 Zoom', computadora: '🖥️ Computadora', movil: '📱 Móvil' };
+      return labels[type] || type;
+    }
+    function getClassTypeIcon(type) {
+      var icons = { presencial: '🏫', zoom: '📹', computadora: '🖥️', movil: '📱' };
+      return icons[type] || '📋';
+    }
+
     function selectClassType(type) {
       selectedClassType = type;
       document.getElementById('typePresencial').classList.toggle('selected', type === 'presencial');
       document.getElementById('typeZoom').classList.toggle('selected', type === 'zoom');
+      document.getElementById('typeComputadora').classList.toggle('selected', type === 'computadora');
       document.getElementById('typeMovil').classList.toggle('selected', type === 'movil');
     }
 
@@ -8970,11 +8981,11 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         currentAttendanceId = data.id;
         currentCheckInTime = new Date(data.check_in);
         sessionCheckedIn = true; // Unlock quizzes/levels for this session
-        addNotification('checkin', '✅ Check-in registrado — ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : selectedClassType === 'zoom' ? '💻 Zoom' : '📱 Móvil'), '📋');
+        addNotification('checkin', '✅ Check-in registrado — ' + getClassTypeLabel(selectedClassType), '📋');
         document.getElementById('btnCheckIn').style.display = 'none';
         document.getElementById('btnCheckOut').style.display = 'block';
         document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
-        document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (selectedClassType === 'presencial' ? '🏫 Presencial' : selectedClassType === 'zoom' ? '💻 Zoom' : '📱 Móvil');
+        document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + getClassTypeLabel(selectedClassType);
         document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
         attendanceTimerInterval = setInterval(updateTimer, 1000);
         updateTimer();
@@ -9036,7 +9047,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           document.getElementById('btnCheckIn').style.display = 'none';
           document.getElementById('btnCheckOut').style.display = 'block';
           document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
-          document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + (session.class_type === 'presencial' ? '🏫 Presencial' : session.class_type === 'zoom' ? '💻 Zoom' : '📱 Móvil');
+          document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + getClassTypeLabel(session.class_type);
           document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
           if (!attendanceTimerInterval) { attendanceTimerInterval = setInterval(updateTimer, 1000); updateTimer(); }
         }
@@ -9062,7 +9073,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             var date = new Date(r.check_in).toLocaleDateString('es-MX', {day:'numeric', month:'short'});
             var timeIn = new Date(r.check_in).toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
             var h = (r.total_minutes / 60).toFixed(1);
-            return '<div class="history-item"><span class="history-date">' + date + ' - ' + timeIn + '</span><span class="history-type ' + (r.class_type === 'presencial' ? 'type-presencial' : 'type-zoom') + '">' + (r.class_type === 'presencial' ? '🏫' : '💻') + ' ' + r.class_type + '</span><span class="history-hours">' + h + 'h</span></div>';
+            return '<div class="history-item"><span class="history-date">' + date + ' - ' + timeIn + '</span><span class="history-type">' + getClassTypeIcon(r.class_type) + ' ' + r.class_type + '</span><span class="history-hours">' + h + 'h</span></div>';
           }).join('');
         }
       } catch (err) { console.error('Error cargando asistencia:', err); }

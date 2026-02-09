@@ -5511,7 +5511,38 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       
       // Check for partial quiz progress
       checkPartialQuizProgress();
-    }
+    
+      // === FIX: Sync progress totals with actual question bank ===
+      const levelNames = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
+      const progressKeys = ['tecnico_progress', 'tecnico_progress_backup'];
+      // Also sync email-specific keys
+      const currentEmail = localStorage.getItem('tecnico_email') || '';
+      if (currentEmail) progressKeys.push('maestroac_progress_' + currentEmail);
+      
+      progressKeys.forEach(key => {
+        try {
+          const stored = localStorage.getItem(key);
+          if (stored) {
+            const prog = JSON.parse(stored);
+            let changed = false;
+            levelNames.forEach(lvl => {
+              if (prog[lvl] && typeof questions !== 'undefined' && questions[lvl]) {
+                const realTotal = questions[lvl].length;
+                if (prog[lvl].total !== realTotal) {
+                  prog[lvl].total = realTotal;
+                  changed = true;
+                }
+              }
+            });
+            if (changed) {
+              localStorage.setItem(key, JSON.stringify(prog));
+              console.log('Synced progress totals for: ' + key);
+            }
+          }
+        } catch(e) { console.warn('Sync error for ' + key, e); }
+      });
+      // === END FIX ===
+}
     
     // Check if there's partial quiz progress to resume
     function checkPartialQuizProgress() {

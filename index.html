@@ -691,7 +691,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
         <div id="forgotPasswordBox" style="display:none; margin-top:15px; padding:15px; background:rgba(52,152,219,0.1); border:1px solid rgba(52,152,219,0.3); border-radius:12px;">
           <p style="color:#3498db; font-size:14px; font-weight:bold; margin:0 0 10px; text-align:center;">Ingresa tu correo para recibir un link de recuperación</p>
-          <input type="email" id="forgotEmail" placeholder="tucorreo@ejemplo.com" style="width:100%; padding:12px; border-radius:8px; border:1px solid rgba(52,152,219,0.4); background:rgba(255,255,255,0.05); color:#ddd; font-size:15px; box-sizing:border-box; margin-bottom:10px;">
+          <input type="email" id="forgotEmail" placeholder="tucorreo@ejemplo.com" style="width:100%; padding:12px; border-radius:8px; border:2px solid rgba(52,152,219,0.4); background:white; color:#333; font-size:15px; box-sizing:border-box; margin-bottom:10px;">
           <button onclick="sendPasswordReset()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #3498db, #2980b9); font-size:15px; padding:12px;">📧 ENVIAR LINK DE RECUPERACIÓN</button>
           <div id="forgotPasswordMsg" style="display:none; margin-top:10px; text-align:center; font-size:14px;"></div>
         </div>
@@ -4875,6 +4875,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 
         loadUserProgress(email);
         logActivity('login', 'Inicio de sesión');
+        addNotification('register', '🔓 Sesión iniciada — ¡Bienvenido ' + (currentUser.nombre ? currentUser.nombre.split(' ')[0] : 'Técnico') + '!', '🔓');
 
         // Sync tecnico_user so handleComenzar finds it
         if (currentUser && currentUser.nombre) {
@@ -5803,6 +5804,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', levelId, null, levelId, 'quizScreen');
       logActivity('quiz_start', levelId);
+      var _lvlName = levels.find(function(l) { return l.id === levelId; });
+      addNotification('quiz', '📝 Quiz iniciado — Nivel ' + (_lvlName ? _lvlName.name : levelId) + ' (' + currentQuestions.length + ' preguntas)', '📝');
       showScreen('quizScreen');
       showQuestion();
     }
@@ -9319,10 +9322,14 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       }
     }
     
-    function toggleNotifPanel() {
+    function toggleNotifPanel(e) {
+      if (e) e.stopPropagation();
       const panel = document.getElementById('notifPanel');
-      panel.classList.toggle('open');
-      if (panel.classList.contains('open')) {
+      const isOpen = panel.classList.contains('open');
+      if (isOpen) {
+        panel.classList.remove('open');
+      } else {
+        panel.classList.add('open');
         // Mark all as read
         const notifs = getNotifications();
         notifs.forEach(n => n.read = true);
@@ -9335,8 +9342,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     // Close panel when clicking outside
     document.addEventListener('click', function(e) {
       const panel = document.getElementById('notifPanel');
-      const bell = document.querySelector('.notif-bell-btn');
-      if (panel && panel.classList.contains('open') && !panel.contains(e.target) && e.target !== bell && !bell.contains(e.target)) {
+      const bellContainer = document.getElementById('notifBellContainer');
+      if (panel && panel.classList.contains('open') && !panel.contains(e.target) && bellContainer && !bellContainer.contains(e.target)) {
         panel.classList.remove('open');
       }
     });
@@ -9472,7 +9479,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     </script>
     <!-- Notification Bell -->
     <div class="notif-bell-container" id="notifBellContainer" style="display:none;">
-      <button class="notif-bell-btn" onclick="toggleNotifPanel()">
+      <button class="notif-bell-btn" onclick="toggleNotifPanel(event)">
         🔔
         <span class="notif-badge hidden" id="notifBadge">0</span>
       </button>

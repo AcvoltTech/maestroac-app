@@ -299,6 +299,9 @@
     .admin-link { color: #f39c12; text-decoration: underline; cursor: pointer; font-size: 14px; margin-top: 15px; display: inline-block; }
     .admin-link:hover { color: #ffd700; }
     .admin-container { max-width: 1400px !important; width:100% !important; margin:0 auto; padding:15px 25px !important; min-height:100vh; }
+    /* When admin dashboard is active, expand the parent container */
+    #adminDashboardScreen.active { position:fixed; top:0; left:0; right:0; bottom:0; z-index:400; overflow-y:auto; background:linear-gradient(135deg,#fef9f0,#fff7ed); width:100vw !important; max-width:100vw !important; padding:0; }
+    #adminTechnicianProfileScreen.active { position:fixed; top:0; left:0; right:0; bottom:0; z-index:400; overflow-y:auto; background:linear-gradient(135deg,#fef9f0,#fff7ed); width:100vw !important; max-width:100vw !important; padding:0; }
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
     .admin-title { display: flex; align-items: center; gap: 10px; }
     .admin-title h1 { font-size: 24px; margin: 0; }

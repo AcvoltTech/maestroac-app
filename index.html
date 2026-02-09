@@ -298,11 +298,11 @@
     /* Admin Section Styles */
     .admin-link { color: #f39c12; text-decoration: underline; cursor: pointer; font-size: 14px; margin-top: 15px; display: inline-block; }
     .admin-link:hover { color: #ffd700; }
-    .admin-container { max-width: 900px; }
+    .admin-container { max-width: 1400px; width:100%; padding:10px 20px; }
     .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
     .admin-title { display: flex; align-items: center; gap: 10px; }
     .admin-title h1 { font-size: 24px; margin: 0; }
-    .admin-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .admin-stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 25px; }
     .admin-stat-card { background: #f8fafc; border-radius: 12px; padding: 20px; text-align: center; transition: transform 0.2s, background 0.2s; }
     .admin-stat-card:hover { background: #ffffff; transform: translateY(-2px); }
     .admin-stat-value { font-size: 32px; font-weight: bold; color: #f39c12; }
@@ -310,6 +310,22 @@
     .admin-section { background: #f8fafc; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
     .admin-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
     .admin-section-title { font-size: 18px; font-weight: bold; color: #f39c12; }
+    /* Admin 2-column layout for wide screens */
+    .admin-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .admin-grid-full { grid-column: 1 / -1; }
+    /* Force landscape message on mobile portrait */
+    .admin-landscape-msg { display:none; text-align:center; padding:60px 20px; }
+    .admin-landscape-msg .icon { font-size:60px; margin-bottom:15px; }
+    .admin-landscape-msg p { color:#64748b; font-size:16px; line-height:1.6; }
+    .admin-main-content { display:block; }
+    @media (max-width: 768px) and (orientation: portrait) {
+      .admin-landscape-msg { display:block; }
+      .admin-main-content { display:none; }
+    }
+    @media (max-width: 900px) {
+      .admin-grid-2col { grid-template-columns: 1fr; }
+      .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
     .technician-list { max-height: 400px; overflow-y: auto; }
     .technician-card { background: #ffffff; border-radius: 10px; padding: 15px; margin-bottom: 10px; cursor: pointer; transition: all 0.3s; border-left: 4px solid #3498db; }
     .technician-card:hover { background: #f8fafc; transform: translateX(5px); }
@@ -888,6 +904,16 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <button class="back-btn" onclick="adminLogout()">🚪 Cerrar Sesión</button>
         </div>
 
+        <!-- Landscape message for mobile portrait -->
+        <div class="admin-landscape-msg">
+          <div class="icon">📱🔄</div>
+          <p><strong>Gira tu teléfono en modo horizontal</strong><br>para ver el Panel de Administrador completo.</p>
+          <p style="font-size:40px; margin-top:20px;">↻</p>
+        </div>
+
+        <!-- Main admin content (hidden in mobile portrait) -->
+        <div class="admin-main-content">
+
         <!-- Quick Stats -->
         <div class="admin-stats-grid" id="adminStatsGrid">
           <div class="admin-stat-card" onclick="showStatDetail('tecnicos')" style="cursor:pointer;">
@@ -917,8 +943,11 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <div id="statDetailContent"></div>
         </div>
 
+        <!-- 2 Column Grid Layout -->
+        <div class="admin-grid-2col">
+
         <!-- Technicians List Section -->
-        <div class="admin-section">
+        <div class="admin-section admin-grid-full">
           <div class="admin-section-header">
             <span class="admin-section-title">👥 Técnicos Inscritos</span>
             <span id="technicianCount" style="color: #64748b; font-size: 14px;">0 técnicos</span>
@@ -941,7 +970,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
 
         <!-- Activity Chart -->
-        <div class="admin-section">
+        <div class="admin-section admin-grid-full">
           <div class="admin-section-header">
             <span class="admin-section-title">📊 Rendimiento por Nivel</span>
           </div>
@@ -951,7 +980,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
 
         <!-- ===== SECCIÓN ASISTENCIA ADMIN ===== -->
-        <div class="admin-section">
+        <div class="admin-section admin-grid-full">
           <div class="admin-section-header">
             <span class="admin-section-title">📋 Control de Asistencia</span>
           </div>
@@ -1033,6 +1062,9 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             </div>
           </div>
         </div>
+
+        </div><!-- close admin-grid-2col -->
+        </div><!-- close admin-main-content -->
 
       </div>
     </div>

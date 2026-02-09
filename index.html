@@ -983,6 +983,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
               <option value="all">Todos los tipos</option>
               <option value="presencial">Presencial</option>
               <option value="zoom">Zoom</option>
+              <option value="computadora">Computadora</option>
+              <option value="movil">Móvil</option>
             </select>
           </div>
           <div style="overflow-x:auto;">
@@ -1003,10 +1005,37 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             </table>
           </div>
         </div>
+
+        <!-- ===== EXÁMENES SOLICITADOS ===== -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🎓 Exámenes Solicitados</span>
+            <span id="examRequestCount" style="color:#64748b; font-size:14px;">0 solicitudes</span>
+          </div>
+          <div id="adminExamRequestsList" style="max-height:400px; overflow-y:auto;">
+            <div class="no-data-message">
+              <div class="no-data-icon">🎓</div>
+              <p>No hay solicitudes de examen aún.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== ACTIVIDAD DE ESTUDIANTES ===== -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📊 Actividad de Estudiantes</span>
+            <button onclick="loadAdminStudentActivity()" style="background:#f39c12;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">🔄 Actualizar</button>
+          </div>
+          <div id="adminStudentActivityList" style="max-height:500px; overflow-y:auto;">
+            <div class="no-data-message">
+              <div class="no-data-icon">📊</div>
+              <p>Cargando actividad...</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
-    <!-- Admin Technician Profile Screen -->
     <div class="screen" id="adminTechnicianProfileScreen">
       <div class="container admin-container">
         <div class="admin-header">
@@ -6050,6 +6079,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
       `;
       document.body.appendChild(modal);
+      // Log exam request to Supabase
+      logExamRequest(course.name, course.examPrice, userName, userEmail, techNumber, studentId, progressSummary);
     }
 
     function startQuickQuiz() {
@@ -8019,6 +8050,163 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       updateAdminStats();
       renderTechnicianList();
       renderLevelPerformanceChart();
+      loadAdminExamRequests();
+      loadAdminStudentActivity();
+    }
+
+    // Log exam request to Supabase
+    async function logExamRequest(examName, examPrice, nombre, email, techNumber, studentId, results) {
+      try {
+        if (!supabaseClient) return;
+        await supabaseClient.from('exam_requests').insert({
+          exam_name: examName,
+          exam_price: examPrice,
+          student_name: nombre,
+          student_email: email,
+          tech_number: techNumber,
+          student_id: studentId,
+          results_summary: results,
+          status: 'pending',
+          requested_at: new Date().toISOString()
+        });
+      } catch(e) { console.log('[Admin] Exam request log error:', e); }
+      // Also save locally as fallback
+      try {
+        var requests = JSON.parse(localStorage.getItem('maestroac_exam_requests') || '[]');
+        requests.push({ examName:examName, examPrice:examPrice, nombre:nombre, email:email, techNumber:techNumber, studentId:studentId, results:results, date: new Date().toISOString(), status:'pending' });
+        localStorage.setItem('maestroac_exam_requests', JSON.stringify(requests));
+      } catch(e) {}
+    }
+
+    // Load exam requests for admin
+    async function loadAdminExamRequests() {
+      var container = document.getElementById('adminExamRequestsList');
+      if (!container) return;
+      var requests = [];
+      
+      // Try Supabase first
+      try {
+        if (supabaseClient) {
+          var { data } = await supabaseClient.from('exam_requests').select('*').order('requested_at', { ascending: false }).limit(50);
+          if (data && data.length > 0) requests = data;
+        }
+      } catch(e) { console.log('[Admin] Load exam requests from Supabase:', e); }
+
+      // Fallback to localStorage
+      if (requests.length === 0) {
+        try {
+          requests = JSON.parse(localStorage.getItem('maestroac_exam_requests') || '[]').reverse();
+        } catch(e) {}
+      }
+
+      document.getElementById('examRequestCount').textContent = requests.length + ' solicitudes';
+
+      if (requests.length === 0) {
+        container.innerHTML = '<div class="no-data-message"><div class="no-data-icon">🎓</div><p>No hay solicitudes de examen aún.</p></div>';
+        return;
+      }
+
+      container.innerHTML = requests.map(function(r) {
+        var date = new Date(r.requested_at || r.date).toLocaleDateString('es-MX', {year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        var statusColor = r.status === 'approved' ? '#2ecc71' : r.status === 'rejected' ? '#e74c3c' : '#f39c12';
+        var statusText = r.status === 'approved' ? '✅ Aprobado' : r.status === 'rejected' ? '❌ Rechazado' : '⏳ Pendiente';
+        return '<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(243,156,18,0.2);border-radius:12px;padding:12px;margin-bottom:8px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+            '<strong style="color:#f39c12;font-size:14px;">🎓 ' + (r.exam_name || r.examName) + '</strong>' +
+            '<span style="color:' + statusColor + ';font-size:12px;font-weight:bold;">' + statusText + '</span>' +
+          '</div>' +
+          '<p style="color:#e2e8f0;font-size:13px;margin:0 0 4px;">👤 ' + (r.student_name || r.nombre) + ' — ' + (r.student_email || r.email) + '</p>' +
+          '<p style="color:#94a3b8;font-size:12px;margin:0 0 4px;">🔢 ' + (r.tech_number || r.techNumber || 'N/A') + ' | 🪪 ' + (r.student_id || r.studentId || 'N/A') + '</p>' +
+          '<p style="color:#94a3b8;font-size:11px;margin:0 0 4px;">📊 ' + (r.results_summary || r.results || 'N/A') + '</p>' +
+          '<p style="color:#64748b;font-size:11px;margin:0;">📅 ' + date + ' | 💰 ' + (r.exam_price || r.examPrice) + '</p>' +
+        '</div>';
+      }).join('');
+    }
+
+    // Load student activity for admin
+    async function loadAdminStudentActivity() {
+      var container = document.getElementById('adminStudentActivityList');
+      if (!container) return;
+      var activities = [];
+
+      // Try Supabase activity_log
+      try {
+        if (supabaseClient) {
+          var { data } = await supabaseClient.from('activity_log').select('*').order('created_at', { ascending: false }).limit(100);
+          if (data && data.length > 0) activities = data;
+        }
+      } catch(e) { console.log('[Admin] Load activity:', e); }
+
+      // Fallback: build from technicians data
+      if (activities.length === 0) {
+        allTechnicians.forEach(function(tech) {
+          if (tech.progress) {
+            Object.keys(tech.progress).forEach(function(lvl) {
+              var p = tech.progress[lvl];
+              if (p && p.completed > 0) {
+                var pct = Math.round((p.score / p.completed) * 100);
+                activities.push({
+                  type: pct >= 100 ? 'level_complete_100' : pct >= 70 ? 'level_passed' : 'level_progress',
+                  email: tech.email,
+                  nombre: tech.nombre,
+                  level: lvl,
+                  score: pct,
+                  completed: p.completed,
+                  created_at: tech.lastActive || new Date().toISOString()
+                });
+              }
+            });
+          }
+        });
+        activities.sort(function(a,b) { return new Date(b.created_at) - new Date(a.created_at); });
+      }
+
+      if (activities.length === 0) {
+        container.innerHTML = '<div class="no-data-message"><div class="no-data-icon">📊</div><p>No hay actividad registrada.</p></div>';
+        return;
+      }
+
+      var levelIcons = { principiante:'🟢', intermedio:'🔵', avanzado:'🟡', elite:'🟠', platino:'💎' };
+      container.innerHTML = activities.slice(0, 80).map(function(a) {
+        var date = new Date(a.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        var icon = '📋';
+        var color = '#94a3b8';
+        var text = '';
+        
+        if (a.type === 'level_complete_100' || (a.score && a.score >= 100)) {
+          icon = '🏆'; color = '#f39c12';
+          text = '¡100% en ' + (a.level || a.detail || '') + '!';
+        } else if (a.type === 'level_passed' || (a.score && a.score >= 70)) {
+          icon = '✅'; color = '#2ecc71';
+          text = 'Pasó ' + (a.level || a.detail || '') + ' con ' + (a.score || '') + '%';
+        } else if (a.type === 'level_progress') {
+          icon = '📝'; color = '#3498db';
+          text = 'Progreso en ' + (a.level || a.detail || '') + ': ' + (a.score || '') + '%';
+        } else if (a.type === 'login') {
+          icon = '🔓'; color = '#6366f1';
+          text = 'Inicio de sesión';
+        } else if (a.type === 'quiz_start') {
+          icon = '📝'; color = '#3498db';
+          text = 'Inició quiz: ' + (a.detail || '');
+        } else if (a.type === 'checkin') {
+          icon = '✅'; color = '#2ecc71';
+          text = 'Check-in';
+        } else if (a.type === 'checkout') {
+          icon = '🚪'; color = '#e74c3c';
+          text = 'Check-out';
+        } else {
+          text = a.type + (a.detail ? ': ' + a.detail : '');
+        }
+
+        var lvlIcon = a.level ? (levelIcons[a.level] || '📋') : '';
+        return '<div style="display:flex;gap:10px;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);align-items:center;">' +
+          '<span style="font-size:20px;">' + icon + '</span>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<p style="color:' + color + ';font-size:13px;font-weight:bold;margin:0;">' + lvlIcon + ' ' + text + '</p>' +
+            '<p style="color:#64748b;font-size:11px;margin:2px 0 0;">👤 ' + (a.nombre || a.email || 'Técnico') + ' — ' + date + '</p>' +
+          '</div>' +
+        '</div>';
+      }).join('');
     }
 
     // Update admin statistics

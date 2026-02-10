@@ -7413,9 +7413,24 @@ window.toggleFormula = function(id) {
     }
     
     function getCredentialPhoto() {
+      // Buscar foto en múltiples keys
+      let photo = null;
+      
       if (currentUser && currentUser.email) {
-        const photo = localStorage.getItem('maestroac_photo_' + currentUser.email);
-        if (photo) return '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
+        photo = localStorage.getItem('maestroac_photo_' + currentUser.email);
+      }
+      if (!photo) {
+        photo = localStorage.getItem('maestroac_photo_' + localStorage.getItem('tecnico_email'));
+      }
+      if (!photo) {
+        photo = localStorage.getItem('maestroac_photo_' + localStorage.getItem('maestroac_email'));
+      }
+      if (!photo) {
+        photo = localStorage.getItem('maestroac_photo_default');
+      }
+      
+      if (photo) {
+        return '<img src="' + photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:8px;">';
       }
       return '👤';
     }

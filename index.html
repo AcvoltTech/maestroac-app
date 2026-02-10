@@ -946,6 +946,41 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <div id="statDetailContent"></div>
         </div>
 
+        <!-- ============ BANDEJA DE ENTRADA DEL ADMINISTRADOR ============ -->
+        <div class="admin-section admin-grid-full" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #e74c3c; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <h3 style="color: #e74c3c; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
+              📥 Bandeja de Entrada
+              <span id="inboxTotalCount" style="background: #e74c3c; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 0.7em;">0 nuevos</span>
+            </h3>
+            <button onclick="loadAdminInbox()" style="padding: 8px 15px; background: #e74c3c; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">🔄 Actualizar</button>
+          </div>
+
+          <!-- Filtros de la Bandeja -->
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button onclick="filterInbox('all')" id="inboxFilterAll" class="inbox-filter-btn active" style="padding: 8px 15px; background: #f39c12; color: #000; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em; font-weight: bold;">📬 Todos</button>
+            <button onclick="filterInbox('tareas')" id="inboxFilterTareas" class="inbox-filter-btn" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em;">📝 Tareas <span id="countTareas" style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;margin-left:5px;">0</span></button>
+            <button onclick="filterInbox('pagos')" id="inboxFilterPagos" class="inbox-filter-btn" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em;">💰 Pagos <span id="countPagos" style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;margin-left:5px;">0</span></button>
+            <button onclick="filterInbox('taxes')" id="inboxFilterTaxes" class="inbox-filter-btn" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em;">📄 Taxes <span id="countTaxes" style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;margin-left:5px;">0</span></button>
+            <button onclick="filterInbox('renovaciones')" id="inboxFilterRenovaciones" class="inbox-filter-btn" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border: none; border-radius: 20px; cursor: pointer; font-size: 0.85em;">🏅 Renovaciones <span id="countRenovaciones" style="background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px;margin-left:5px;">0</span></button>
+          </div>
+
+          <!-- Lista de Items de la Bandeja -->
+          <div id="adminInboxList" style="max-height: 400px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px;">
+            <div style="color: #888; text-align: center; padding: 40px;">
+              <div style="font-size: 3em; margin-bottom: 15px;">📭</div>
+              <p>Cargando bandeja de entrada...</p>
+            </div>
+          </div>
+
+          <!-- Acciones Rápidas -->
+          <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+            <button onclick="markAllAsRead()" style="padding: 8px 15px; background: rgba(46,204,113,0.2); color: #2ecc71; border: 1px solid #2ecc71; border-radius: 6px; cursor: pointer; font-size: 0.85em;">✅ Marcar todo como leído</button>
+            <button onclick="exportInboxToCSV()" style="padding: 8px 15px; background: rgba(52,152,219,0.2); color: #3498db; border: 1px solid #3498db; border-radius: 6px; cursor: pointer; font-size: 0.85em;">📥 Exportar a CSV</button>
+          </div>
+        </div>
+        <!-- ============ FIN BANDEJA DE ENTRADA ============ -->
+
         <!-- 2 Column Grid Layout -->
         <div class="admin-grid-2col">
 
@@ -5919,6 +5954,7 @@ window.toggleFormula = function(id) {
         try { loadAttendanceData(); } catch(e) {}
         try { loadAdminStudentActivity(); } catch(e) {}
         try { loadAdminExamRequests(); } catch(e) {}
+        try { loadAdminInbox(); } catch(e) {}
       }
     }
 
@@ -10923,6 +10959,314 @@ window.toggleFormula = function(id) {
     }
     // ============================================
     // END PAYMENT SYSTEM FUNCTIONS
+    // ============================================
+
+    // ============================================
+    // ADMIN INBOX - BANDEJA DE ENTRADA
+    // ============================================
+    let adminInboxItems = [];
+    let currentInboxFilter = 'all';
+
+    async function loadAdminInbox() {
+      const container = document.getElementById('adminInboxList');
+      if (!container) return;
+      
+      container.innerHTML = '<div style="color: #f39c12; text-align: center; padding: 20px;">⏳ Cargando...</div>';
+      adminInboxItems = [];
+      
+      try {
+        // 1. Cargar TAREAS ENVIADAS
+        if (supabaseClient && isOnline) {
+          try {
+            const { data: tareas } = await supabaseClient
+              .from('submitted_tasks')
+              .select('*')
+              .order('submitted_at', { ascending: false });
+            if (tareas) {
+              tareas.forEach(t => {
+                adminInboxItems.push({
+                  type: 'tareas',
+                  icon: '📝',
+                  title: 'Tarea Enviada',
+                  subtitle: t.task_type || 'Documento',
+                  student: t.student_name || 'Estudiante',
+                  email: t.student_email || '',
+                  date: t.submitted_at,
+                  status: t.status || 'pending',
+                  notes: t.notes || '',
+                  file: t.file_url || null,
+                  id: t.id,
+                  raw: t
+                });
+              });
+            }
+          } catch(e) { console.log('No tasks table:', e); }
+          
+          // 2. Cargar SOLICITUDES DE PAGO
+          try {
+            const { data: pagos } = await supabaseClient
+              .from('payment_intents')
+              .select('*')
+              .order('created_at', { ascending: false });
+            if (pagos) {
+              pagos.forEach(p => {
+                adminInboxItems.push({
+                  type: 'pagos',
+                  icon: '💰',
+                  title: 'Solicitud de Pago',
+                  subtitle: '$' + (p.amount || 0).toFixed(2) + ' - ' + (p.payment_method || 'N/A').toUpperCase(),
+                  student: p.student_name || 'Estudiante',
+                  email: p.student_email || '',
+                  date: p.created_at,
+                  status: p.status || 'pending',
+                  notes: 'Concepto: ' + (p.concept || 'No especificado'),
+                  id: p.id,
+                  raw: p
+                });
+              });
+            }
+          } catch(e) { console.log('No payments table:', e); }
+          
+          // 3. Cargar SOLICITUDES DE TAXES
+          try {
+            const { data: taxes } = await supabaseClient
+              .from('tax_form_requests')
+              .select('*')
+              .order('requested_at', { ascending: false });
+            if (taxes) {
+              taxes.forEach(t => {
+                adminInboxItems.push({
+                  type: 'taxes',
+                  icon: '📄',
+                  title: 'Solicitud Forma de Taxes',
+                  subtitle: 'Año ' + (t.year || new Date().getFullYear()),
+                  student: t.student_name || 'Estudiante',
+                  email: t.student_email || '',
+                  date: t.requested_at,
+                  status: t.status || 'pending',
+                  id: t.id,
+                  raw: t
+                });
+              });
+            }
+          } catch(e) { console.log('No taxes table:', e); }
+          
+          // 4. Cargar SOLICITUDES DE RENOVACIÓN
+          try {
+            const { data: renovaciones } = await supabaseClient
+              .from('cert_renewal_requests')
+              .select('*')
+              .order('requested_at', { ascending: false });
+            if (renovaciones) {
+              renovaciones.forEach(r => {
+                adminInboxItems.push({
+                  type: 'renovaciones',
+                  icon: '🏅',
+                  title: 'Solicitud de Renovación',
+                  subtitle: r.cert_type || 'Certificación',
+                  student: r.student_name || 'Estudiante',
+                  email: r.student_email || '',
+                  date: r.requested_at,
+                  status: r.status || 'pending',
+                  id: r.id,
+                  raw: r
+                });
+              });
+            }
+          } catch(e) { console.log('No renewals table:', e); }
+        }
+        
+        // También cargar de localStorage como backup
+        const localPayments = JSON.parse(localStorage.getItem('maestroac_payment_intents') || '[]');
+        localPayments.forEach(p => {
+          if (!adminInboxItems.find(i => i.type === 'pagos' && i.raw && i.raw.created_at === p.created_at)) {
+            adminInboxItems.push({
+              type: 'pagos',
+              icon: '💰',
+              title: 'Solicitud de Pago (Local)',
+              subtitle: '$' + (p.amount || 0).toFixed(2) + ' - ' + (p.payment_method || 'N/A').toUpperCase(),
+              student: p.student_name || 'Estudiante',
+              email: p.student_email || '',
+              date: p.created_at,
+              status: p.status || 'pending',
+              notes: 'Concepto: ' + (p.concept || 'No especificado'),
+              raw: p
+            });
+          }
+        });
+        
+        // Ordenar por fecha (más reciente primero)
+        adminInboxItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Actualizar contadores
+        updateInboxCounts();
+        
+        // Renderizar
+        renderInboxItems();
+        
+      } catch(e) {
+        console.error('Error loading inbox:', e);
+        container.innerHTML = '<div style="color: #e74c3c; text-align: center; padding: 20px;">❌ Error cargando datos</div>';
+      }
+    }
+
+    function updateInboxCounts() {
+      const counts = {
+        tareas: adminInboxItems.filter(i => i.type === 'tareas').length,
+        pagos: adminInboxItems.filter(i => i.type === 'pagos').length,
+        taxes: adminInboxItems.filter(i => i.type === 'taxes').length,
+        renovaciones: adminInboxItems.filter(i => i.type === 'renovaciones').length
+      };
+      
+      document.getElementById('countTareas').textContent = counts.tareas;
+      document.getElementById('countPagos').textContent = counts.pagos;
+      document.getElementById('countTaxes').textContent = counts.taxes;
+      document.getElementById('countRenovaciones').textContent = counts.renovaciones;
+      
+      const total = counts.tareas + counts.pagos + counts.taxes + counts.renovaciones;
+      const pendingCount = adminInboxItems.filter(i => i.status === 'pending' || i.status === 'pending_verification').length;
+      document.getElementById('inboxTotalCount').textContent = pendingCount + ' pendientes';
+    }
+
+    function filterInbox(filter) {
+      currentInboxFilter = filter;
+      
+      // Update button styles
+      document.querySelectorAll('.inbox-filter-btn').forEach(btn => {
+        btn.style.background = 'rgba(255,255,255,0.1)';
+        btn.style.color = '#fff';
+      });
+      const activeBtn = document.getElementById('inboxFilter' + filter.charAt(0).toUpperCase() + filter.slice(1));
+      if (activeBtn) {
+        activeBtn.style.background = '#f39c12';
+        activeBtn.style.color = '#000';
+      }
+      
+      renderInboxItems();
+    }
+
+    function renderInboxItems() {
+      const container = document.getElementById('adminInboxList');
+      if (!container) return;
+      
+      let items = adminInboxItems;
+      if (currentInboxFilter !== 'all') {
+        items = adminInboxItems.filter(i => i.type === currentInboxFilter);
+      }
+      
+      if (items.length === 0) {
+        container.innerHTML = '<div style="color: #888; text-align: center; padding: 40px;"><div style="font-size: 3em; margin-bottom: 15px;">📭</div><p>No hay items en esta categoría</p></div>';
+        return;
+      }
+      
+      let html = '';
+      items.forEach((item, idx) => {
+        const statusColor = item.status === 'pending' || item.status === 'pending_verification' ? '#e74c3c' : '#2ecc71';
+        const statusText = item.status === 'pending' || item.status === 'pending_verification' ? '⏳ Pendiente' : '✅ Atendido';
+        const dateStr = item.date ? new Date(item.date).toLocaleString('es-MX', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'N/A';
+        
+        html += `
+          <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin-bottom: 10px; border-left: 4px solid ${statusColor};">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap;">
+              <div style="flex: 1; min-width: 200px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                  <span style="font-size: 1.5em;">${item.icon}</span>
+                  <div>
+                    <div style="color: #fff; font-weight: bold;">${item.title}</div>
+                    <div style="color: #f39c12; font-size: 0.85em;">${item.subtitle}</div>
+                  </div>
+                </div>
+                <div style="color: #aaa; font-size: 0.85em; margin-bottom: 5px;">
+                  👤 <strong>${item.student}</strong> ${item.email ? '| 📧 ' + item.email : ''}
+                </div>
+                ${item.notes ? '<div style="color: #888; font-size: 0.8em; margin-top: 5px;">📝 ' + item.notes + '</div>' : ''}
+              </div>
+              <div style="text-align: right; min-width: 120px;">
+                <div style="color: ${statusColor}; font-size: 0.85em; font-weight: bold; margin-bottom: 5px;">${statusText}</div>
+                <div style="color: #666; font-size: 0.75em;">${dateStr}</div>
+                <div style="margin-top: 10px; display: flex; gap: 5px; justify-content: flex-end; flex-wrap: wrap;">
+                  ${item.status === 'pending' || item.status === 'pending_verification' ? 
+                    `<button onclick="markItemAsAttended('${item.type}', '${item.id}')" style="padding: 5px 10px; background: #2ecc71; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75em;">✅ Atender</button>` : ''}
+                  ${item.email ? `<button onclick="contactStudent('${item.email}', '${item.student}')" style="padding: 5px 10px; background: #3498db; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75em;">📧 Contactar</button>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+
+    async function markItemAsAttended(type, id) {
+      if (!id) {
+        alert('Item marcado como atendido');
+        return;
+      }
+      
+      try {
+        let tableName = '';
+        let statusField = 'status';
+        
+        switch(type) {
+          case 'tareas': tableName = 'submitted_tasks'; break;
+          case 'pagos': tableName = 'payment_intents'; break;
+          case 'taxes': tableName = 'tax_form_requests'; break;
+          case 'renovaciones': tableName = 'cert_renewal_requests'; break;
+        }
+        
+        if (tableName && supabaseClient && isOnline) {
+          await supabaseClient.from(tableName).update({ status: 'attended' }).eq('id', id);
+        }
+        
+        // Update local state
+        const item = adminInboxItems.find(i => i.id === id);
+        if (item) item.status = 'attended';
+        
+        updateInboxCounts();
+        renderInboxItems();
+        
+        alert('✅ Marcado como atendido');
+      } catch(e) {
+        console.error('Error updating status:', e);
+        alert('✅ Marcado como atendido (local)');
+      }
+    }
+
+    function contactStudent(email, name) {
+      const subject = encodeURIComponent('ACVOLT Tech School - Seguimiento');
+      const body = encodeURIComponent('Hola ' + name + ',\n\nGracias por tu solicitud. Te contactamos respecto a...\n\nSaludos,\nMaestro Mario\nACVOLT Tech School');
+      window.open('mailto:' + email + '?subject=' + subject + '&body=' + body, '_blank');
+    }
+
+    function markAllAsRead() {
+      adminInboxItems.forEach(item => {
+        item.status = 'attended';
+      });
+      updateInboxCounts();
+      renderInboxItems();
+      alert('✅ Todos los items marcados como atendidos');
+    }
+
+    function exportInboxToCSV() {
+      let csv = 'Tipo,Titulo,Estudiante,Email,Fecha,Estado,Notas\n';
+      
+      adminInboxItems.forEach(item => {
+        csv += `"${item.type}","${item.title} - ${item.subtitle}","${item.student}","${item.email || ''}","${item.date || ''}","${item.status}","${item.notes || ''}"\n`;
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bandeja_entrada_' + new Date().toISOString().slice(0,10) + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    // ============================================
+    // END ADMIN INBOX
     // ============================================
 
     async function requestCertRenewal(certType) {

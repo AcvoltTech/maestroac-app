@@ -10304,6 +10304,19 @@ window.toggleFormula = function(id) {
 
     // === STUDENT PROFILE FUNCTIONS ===
 
+    function toggleFormula(id) {
+      var el = document.getElementById(id);
+      var arrow = document.getElementById(id + '_arrow');
+      if (!el) return;
+      if (el.style.display === 'none') {
+        el.style.display = 'block';
+        if (arrow) arrow.textContent = String.fromCharCode(9660);
+      } else {
+        el.style.display = 'none';
+        if (arrow) arrow.textContent = String.fromCharCode(9654);
+      }
+    }
+
     function joinLiveClass() {
       const zoomLink = localStorage.getItem('maestroac_zoom_link') || '';
       if (zoomLink) {

@@ -2200,6 +2200,31 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <p style="color: rgba(255,255,255,0.6); font-size: 0.85em; margin-bottom: 15px;">Administra tus créditos de educación continua para certificaciones</p>
         
         <div id="certCreditsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px;">
+          <!-- ACVOLT NIVEL 33 - PRIMERO -->
+          <div style="background: linear-gradient(135deg, rgba(243,156,18,0.2), rgba(230,126,34,0.15)); border-radius: 12px; padding: 15px; border-left: 4px solid #f39c12; grid-column: span 2;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <img src="logo.png" alt="ACVOLT" style="width: 40px; height: 40px; border-radius: 8px; background: #fff; padding: 3px;">
+              <div>
+                <div style="color: #f39c12; font-weight: bold; font-size: 1.1em;">ACVOLT TECH SCHOOL - NIVEL 33</div>
+                <div style="color: rgba(255,255,255,0.7); font-size: 0.75em;">Certificación HVACR Profesional</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <div>
+                <div style="color: #fff; font-size: 0.8em;">Progreso: <span id="nivel33Progress" style="color: #2ecc71; font-weight: bold;">0/5 niveles</span></div>
+                <div style="color: #888; font-size: 0.75em;">Principiante → Platino</div>
+              </div>
+              <div>
+                <div style="color: #fff; font-size: 0.8em;">Estado: <span id="nivel33Status" style="color: #f39c12; font-weight: bold;">En Progreso</span></div>
+                <div style="color: #888; font-size: 0.75em;">Instructor: Mario Flores Corona</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button onclick="showScreen('levelsScreen')" style="padding: 8px 15px; background: #f39c12; color: #000; border: none; border-radius: 6px; font-size: 0.8em; cursor: pointer; font-weight: bold;">📚 Continuar Estudiando</button>
+              <button onclick="showScreen('certificatesScreen')" style="padding: 8px 15px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid #f39c12; border-radius: 6px; font-size: 0.8em; cursor: pointer;">🏅 Ver Mis Certificados</button>
+            </div>
+          </div>
+          
           <!-- NATE -->
           <div style="background: rgba(255,255,255,0.08); border-radius: 12px; padding: 15px; border-left: 3px solid #3498db;">
             <div style="color: #3498db; font-weight: bold; font-size: 0.95em;">NATE</div>
@@ -7302,6 +7327,7 @@ window.toggleFormula = function(id) {
       const idPurchased = localStorage.getItem('maestroac_id_purchased_' + (currentUser.email || ''));
       const nombre = currentUser.nombre || 'Técnico HVAC';
       const studentId = currentUser.studentId || 'N/A';
+      const techNumber = currentUser.technicianNumber || localStorage.getItem('tecnico_number') || 'No asignado';
       const registroDate = currentUser.studentIdDate ? new Date(currentUser.studentIdDate).toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('es-MX', { year:'numeric', month:'long', day:'numeric' });
       
       container.innerHTML = `
@@ -7324,6 +7350,7 @@ window.toggleFormula = function(id) {
             <div style="flex:1;">
               <div style="font-size:18px;font-weight:bold;margin-bottom:6px;">${nombre}</div>
               <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:3px;">ID: <span style="color:#FFD700;font-family:monospace;font-weight:bold;font-size:13px;">${studentId}</span></div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:3px;">Técnico #: <span style="color:#2ecc71;font-family:monospace;font-weight:bold;font-size:11px;">${techNumber}</span></div>
               <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-bottom:3px;">Registro: ${registroDate}</div>
               <div style="font-size:11px;color:rgba(255,255,255,0.7);">San Bernardino, CA</div>
             </div>
@@ -7349,6 +7376,12 @@ window.toggleFormula = function(id) {
           <div style="background:linear-gradient(135deg,rgba(255,215,0,0.1),rgba(243,156,18,0.1));border:2px solid rgba(255,215,0,0.3);border-radius:12px;padding:12px;display:inline-block;">
             <span style="font-family:monospace;font-size:20px;font-weight:bold;color:#f39c12;letter-spacing:2px;">${studentId}</span>
           </div>
+          ${techNumber !== 'No asignado' ? `
+          <p style="color:#64748b;font-size:12px;margin-top:10px;margin-bottom:5px;">Tu Número de Técnico:</p>
+          <div style="background:linear-gradient(135deg,rgba(46,204,113,0.1),rgba(39,174,96,0.1));border:2px solid rgba(46,204,113,0.3);border-radius:12px;padding:12px;display:inline-block;">
+            <span style="font-family:monospace;font-size:16px;font-weight:bold;color:#2ecc71;letter-spacing:1px;">${techNumber}</span>
+          </div>
+          ` : ''}
         </div>
         
         ${!idPurchased ? `

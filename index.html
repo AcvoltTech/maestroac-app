@@ -1119,6 +1119,74 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
                 </div>
                 <div id="activeCodesList" style="color: #ccc;">Cargando códigos activos...</div>
             </div>
+
+            <!-- ============ BATCH EMAIL SECTION ============ -->
+            <div style="background: linear-gradient(135deg, rgba(155,89,182,0.2) 0%, rgba(142,68,173,0.15) 100%); border-radius: 12px; padding: 20px; margin-top: 20px; border: 1px solid rgba(155,89,182,0.4);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                    <h4 style="color: #9b59b6; font-size: 1.2em;">📧 Envío Masivo de Códigos (Batch)</h4>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <span id="batchSelectedCount" style="color: #9b59b6; font-size: 0.9em; font-weight: bold;">0 seleccionados</span>
+                        <button onclick="loadStudentsForBatch()" style="padding: 8px 15px; background: #9b59b6; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">🔄 Cargar Estudiantes</button>
+                    </div>
+                </div>
+                
+                <!-- Batch Controls -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; align-items: center;">
+                    <input type="text" id="batchSearchStudent" placeholder="🔍 Buscar estudiante..." oninput="filterBatchStudents()" style="flex: 1; min-width: 180px; padding: 10px; border-radius: 8px; border: 1px solid #666; background: #1a1a2e; color: #fff;">
+                    <select id="batchCodeLevel" style="padding: 10px; border-radius: 8px; border: 1px solid #666; background: #1a1a2e; color: #fff;">
+                        <option value="clases_vivo">🎬 Clases en Vivo (Zoom)</option>
+                        <option value="full_app">🔓 App Completa</option>
+                        <option value="principiante">🔧 Principiante</option>
+                        <option value="intermedio">📊 Intermedio</option>
+                        <option value="avanzado">⚡ Avanzado</option>
+                    </select>
+                    <select id="batchCodeDuration" style="padding: 10px; border-radius: 8px; border: 1px solid #666; background: #1a1a2e; color: #fff;">
+                        <option value="7">7 días</option>
+                        <option value="30" selected>30 días</option>
+                        <option value="90">90 días</option>
+                    </select>
+                </div>
+
+                <!-- Quick Select Buttons -->
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button onclick="selectBatchStudents(20)" style="padding: 6px 12px; background: rgba(155,89,182,0.3); color: #d4a5ff; border: 1px solid #9b59b6; border-radius: 6px; cursor: pointer; font-size: 0.85em;">Seleccionar 20</button>
+                    <button onclick="selectBatchStudents(50)" style="padding: 6px 12px; background: rgba(155,89,182,0.3); color: #d4a5ff; border: 1px solid #9b59b6; border-radius: 6px; cursor: pointer; font-size: 0.85em;">Seleccionar 50</button>
+                    <button onclick="selectAllBatchStudents()" style="padding: 6px 12px; background: rgba(155,89,182,0.3); color: #d4a5ff; border: 1px solid #9b59b6; border-radius: 6px; cursor: pointer; font-size: 0.85em;">Seleccionar Todos</button>
+                    <button onclick="deselectAllBatchStudents()" style="padding: 6px 12px; background: rgba(231,76,60,0.3); color: #ff8a80; border: 1px solid #e74c3c; border-radius: 6px; cursor: pointer; font-size: 0.85em;">❌ Deseleccionar</button>
+                </div>
+
+                <!-- Student List with Checkboxes -->
+                <div id="batchStudentList" style="max-height: 350px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px; margin-bottom: 15px;">
+                    <div style="color: #888; text-align: center; padding: 30px;">
+                        <div style="font-size: 2em; margin-bottom: 10px;">👥</div>
+                        <p>Haz clic en "Cargar Estudiantes" para ver la lista</p>
+                    </div>
+                </div>
+
+                <!-- Batch Actions -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+                    <div style="color: #aaa; font-size: 0.85em;">
+                        💡 <strong>Tip:</strong> Selecciona hasta 20 estudiantes por batch para mejor deliverabilidad de emails
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="generateBatchCodes()" style="padding: 12px 25px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1em;">
+                            🔑 Generar Códigos para Seleccionados
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generated Codes Results -->
+                <div id="batchCodesResult" style="display: none; margin-top: 15px; background: rgba(46,204,113,0.15); border: 1px solid #2ecc71; border-radius: 8px; padding: 15px;">
+                    <h5 style="color: #2ecc71; margin-bottom: 10px;">✅ Códigos Generados</h5>
+                    <div id="batchCodesContent" style="max-height: 200px; overflow-y: auto;"></div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                        <button onclick="copyAllBatchCodes()" style="padding: 10px 20px; background: #2ecc71; color: #000; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">📋 Copiar Todo</button>
+                        <button onclick="exportBatchToCSV()" style="padding: 10px 20px; background: #3498db; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">📥 Exportar CSV</button>
+                        <button onclick="openBatchEmailClient()" style="padding: 10px 20px; background: #e67e22; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;">📧 Abrir en Email</button>
+                    </div>
+                </div>
+            </div>
+            <!-- ============ END BATCH EMAIL SECTION ============ -->
         </div>
 
         </div><!-- close admin-grid-2col -->
@@ -10835,6 +10903,377 @@ window.toggleFormula = function(id) {
       // If going to protected screen, need check-in first
       showScreen(target);
     }
+
+    // ============================================
+    // BATCH EMAIL SYSTEM - Envío Masivo de Códigos
+    // ============================================
+    let batchStudents = [];
+    let batchSelectedStudents = new Set();
+    let batchGeneratedCodes = [];
+
+    // Load all students for batch selection
+    async function loadStudentsForBatch() {
+      const container = document.getElementById('batchStudentList');
+      container.innerHTML = '<div style="color: #9b59b6; text-align: center; padding: 20px;">⏳ Cargando estudiantes...</div>';
+      
+      try {
+        // First try to load from Supabase
+        if (supabaseClient && isOnline) {
+          const { data: users, error } = await supabaseClient
+            .from('users')
+            .select('id, nombre, email, telefono, fecha_registro, nivel_actual')
+            .order('fecha_registro', { ascending: false });
+          
+          if (!error && users && users.length > 0) {
+            batchStudents = users.map(u => ({
+              id: u.id,
+              nombre: u.nombre || 'Sin nombre',
+              email: u.email || '',
+              telefono: u.telefono || '',
+              fecha: u.fecha_registro,
+              nivel: u.nivel_actual || 'principiante'
+            }));
+          }
+        }
+        
+        // Also check technicians table
+        if (supabaseClient && isOnline) {
+          const { data: techs } = await supabaseClient
+            .from('technicians')
+            .select('id, nombre, email, telefono, registration_date')
+            .order('registration_date', { ascending: false });
+          
+          if (techs && techs.length > 0) {
+            const existingEmails = batchStudents.map(s => s.email);
+            techs.forEach(t => {
+              if (t.email && !existingEmails.includes(t.email)) {
+                batchStudents.push({
+                  id: t.id,
+                  nombre: t.nombre || 'Sin nombre',
+                  email: t.email,
+                  telefono: t.telefono || '',
+                  fecha: t.registration_date,
+                  nivel: 'tecnico'
+                });
+              }
+            });
+          }
+        }
+        
+        // Also get from allTechnicians array (localStorage)
+        if (typeof allTechnicians !== 'undefined' && allTechnicians.length > 0) {
+          const existingEmails = batchStudents.map(s => s.email);
+          allTechnicians.forEach(t => {
+            if (t.email && !existingEmails.includes(t.email)) {
+              batchStudents.push({
+                id: t.supabaseId || t.email,
+                nombre: t.nombre || 'Sin nombre',
+                email: t.email,
+                telefono: t.telefono || '',
+                fecha: t.registrationDate,
+                nivel: t.nivel_actual || 'local'
+              });
+            }
+          });
+        }
+        
+        // Render the list
+        renderBatchStudentList();
+        
+      } catch(e) {
+        console.error('Error loading students for batch:', e);
+        container.innerHTML = '<div style="color: #e74c3c; text-align: center; padding: 20px;">❌ Error cargando estudiantes: ' + e.message + '</div>';
+      }
+    }
+
+    // Render the student list with checkboxes
+    function renderBatchStudentList(filter = '') {
+      const container = document.getElementById('batchStudentList');
+      
+      let filtered = batchStudents;
+      if (filter) {
+        const f = filter.toLowerCase();
+        filtered = batchStudents.filter(s => 
+          (s.nombre && s.nombre.toLowerCase().includes(f)) || 
+          (s.email && s.email.toLowerCase().includes(f)) ||
+          (s.telefono && s.telefono.includes(f))
+        );
+      }
+      
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color: #888; text-align: center; padding: 30px;">' +
+          '<div style="font-size: 2em; margin-bottom: 10px;">📭</div>' +
+          '<p>No se encontraron estudiantes' + (filter ? ' con ese filtro' : '') + '</p></div>';
+        return;
+      }
+      
+      let html = '<div style="color: #9b59b6; font-size: 0.85em; margin-bottom: 10px; padding: 5px 10px; background: rgba(155,89,182,0.2); border-radius: 6px;">' +
+        '👥 Total: <strong>' + batchStudents.length + '</strong> estudiantes' +
+        (filter ? ' | Mostrando: <strong>' + filtered.length + '</strong>' : '') +
+        '</div>';
+      
+      filtered.forEach((student, idx) => {
+        const isSelected = batchSelectedStudents.has(student.email || student.id);
+        const bgColor = isSelected ? 'rgba(155,89,182,0.3)' : 'rgba(255,255,255,0.05)';
+        const borderColor = isSelected ? '#9b59b6' : 'transparent';
+        
+        html += `
+          <div onclick="toggleBatchStudent('${student.email || student.id}')" 
+               style="display: flex; align-items: center; gap: 12px; padding: 12px; margin: 6px 0; background: ${bgColor}; border: 2px solid ${borderColor}; border-radius: 8px; cursor: pointer; transition: all 0.2s;">
+            <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation(); toggleBatchStudent('${student.email || student.id}')" 
+                   style="width: 20px; height: 20px; accent-color: #9b59b6; cursor: pointer;">
+            <div style="flex: 1; min-width: 0;">
+              <div style="color: #fff; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${student.nombre}</div>
+              <div style="color: #aaa; font-size: 0.85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">📧 ${student.email || 'Sin email'}</div>
+              ${student.telefono ? `<div style="color: #888; font-size: 0.8em;">📱 ${student.telefono}</div>` : ''}
+            </div>
+            <div style="text-align: right; font-size: 0.75em; color: #666;">
+              ${student.fecha ? new Date(student.fecha).toLocaleDateString('es-MX', {month: 'short', day: 'numeric'}) : ''}
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+      updateBatchSelectedCount();
+    }
+
+    // Toggle student selection
+    function toggleBatchStudent(identifier) {
+      if (batchSelectedStudents.has(identifier)) {
+        batchSelectedStudents.delete(identifier);
+      } else {
+        batchSelectedStudents.add(identifier);
+      }
+      renderBatchStudentList(document.getElementById('batchSearchStudent')?.value || '');
+    }
+
+    // Filter students by search
+    function filterBatchStudents() {
+      const filter = document.getElementById('batchSearchStudent')?.value || '';
+      renderBatchStudentList(filter);
+    }
+
+    // Select N students
+    function selectBatchStudents(count) {
+      batchSelectedStudents.clear();
+      const toSelect = batchStudents.slice(0, count);
+      toSelect.forEach(s => {
+        if (s.email) batchSelectedStudents.add(s.email);
+        else if (s.id) batchSelectedStudents.add(s.id);
+      });
+      renderBatchStudentList(document.getElementById('batchSearchStudent')?.value || '');
+    }
+
+    // Select all students
+    function selectAllBatchStudents() {
+      batchStudents.forEach(s => {
+        if (s.email) batchSelectedStudents.add(s.email);
+        else if (s.id) batchSelectedStudents.add(s.id);
+      });
+      renderBatchStudentList(document.getElementById('batchSearchStudent')?.value || '');
+    }
+
+    // Deselect all students
+    function deselectAllBatchStudents() {
+      batchSelectedStudents.clear();
+      renderBatchStudentList(document.getElementById('batchSearchStudent')?.value || '');
+    }
+
+    // Update selected count display
+    function updateBatchSelectedCount() {
+      const countEl = document.getElementById('batchSelectedCount');
+      if (countEl) {
+        const count = batchSelectedStudents.size;
+        countEl.textContent = count + ' seleccionado' + (count !== 1 ? 's' : '');
+        countEl.style.color = count > 0 ? '#2ecc71' : '#9b59b6';
+      }
+    }
+
+    // Generate codes for all selected students
+    async function generateBatchCodes() {
+      if (batchSelectedStudents.size === 0) {
+        alert('Selecciona al menos un estudiante');
+        return;
+      }
+      
+      const level = document.getElementById('batchCodeLevel')?.value || 'clases_vivo';
+      const duration = document.getElementById('batchCodeDuration')?.value || '30';
+      
+      batchGeneratedCodes = [];
+      const prefix = level === 'full_app' ? 'FULL' : (level === 'clases_vivo' ? 'ZOOM' : level.substring(0, 4).toUpperCase());
+      
+      // Get selected student details
+      const selectedStudents = batchStudents.filter(s => 
+        batchSelectedStudents.has(s.email) || batchSelectedStudents.has(s.id)
+      );
+      
+      for (const student of selectedStudents) {
+        const code = prefix + '-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-' + Date.now().toString(36).toUpperCase().slice(-4);
+        
+        // Calculate expiration
+        let expiresAt = null;
+        if (duration !== 'lifetime') {
+          const d = new Date();
+          d.setDate(d.getDate() + parseInt(duration));
+          expiresAt = d.toISOString();
+        }
+        
+        batchGeneratedCodes.push({
+          nombre: student.nombre,
+          email: student.email,
+          telefono: student.telefono,
+          code: code,
+          level: level,
+          duration: duration,
+          expiresAt: expiresAt
+        });
+        
+        // Save to Supabase
+        try {
+          if (supabaseClient && isOnline) {
+            await supabaseClient.from('access_code_requests').insert([{
+              student_name: student.nombre,
+              student_email: student.email || null,
+              student_phone: student.telefono || '',
+              access_level: level,
+              duration_days: duration === 'lifetime' ? 'lifetime' : duration,
+              code: code,
+              status: 'approved',
+              requested_at: new Date().toISOString(),
+              approved_at: new Date().toISOString()
+            }]);
+          }
+        } catch(e) {
+          console.log('Error saving code to Supabase:', e);
+        }
+      }
+      
+      // Display results
+      displayBatchCodesResult();
+      
+      // Refresh active codes
+      if (typeof loadActiveCodes === 'function') loadActiveCodes();
+    }
+
+    // Display generated codes
+    function displayBatchCodesResult() {
+      const container = document.getElementById('batchCodesResult');
+      const content = document.getElementById('batchCodesContent');
+      
+      if (!container || !content) return;
+      
+      let html = '<table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">' +
+        '<tr style="background: rgba(46,204,113,0.2);">' +
+        '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #2ecc71;">Nombre</th>' +
+        '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #2ecc71;">Email</th>' +
+        '<th style="padding: 8px; text-align: left; border-bottom: 1px solid #2ecc71;">Código</th>' +
+        '</tr>';
+      
+      batchGeneratedCodes.forEach(item => {
+        html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <td style="padding: 8px; color: #fff;">${item.nombre}</td>
+          <td style="padding: 8px; color: #aaa;">${item.email || '-'}</td>
+          <td style="padding: 8px; color: #2ecc71; font-family: monospace; font-weight: bold;">${item.code}</td>
+        </tr>`;
+      });
+      
+      html += '</table>';
+      html += '<div style="margin-top: 10px; padding: 10px; background: rgba(243,156,18,0.15); border-radius: 6px; color: #f39c12; font-size: 0.85em;">' +
+        '✅ Se generaron <strong>' + batchGeneratedCodes.length + '</strong> códigos exitosamente</div>';
+      
+      content.innerHTML = html;
+      container.style.display = 'block';
+    }
+
+    // Copy all codes to clipboard
+    function copyAllBatchCodes() {
+      let text = 'CÓDIGOS DE ACCESO GENERADOS\n';
+      text += '===========================\n\n';
+      
+      batchGeneratedCodes.forEach(item => {
+        text += 'Nombre: ' + item.nombre + '\n';
+        text += 'Email: ' + (item.email || 'N/A') + '\n';
+        text += 'Código: ' + item.code + '\n';
+        text += 'Nivel: ' + item.level + '\n';
+        text += 'Duración: ' + item.duration + ' días\n';
+        text += '----------------------------\n';
+      });
+      
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ ' + batchGeneratedCodes.length + ' códigos copiados al portapapeles');
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('✅ ' + batchGeneratedCodes.length + ' códigos copiados al portapapeles');
+      });
+    }
+
+    // Export to CSV
+    function exportBatchToCSV() {
+      let csv = 'Nombre,Email,Teléfono,Código,Nivel,Duración,Expira\n';
+      
+      batchGeneratedCodes.forEach(item => {
+        csv += '"' + item.nombre + '","' + (item.email || '') + '","' + (item.telefono || '') + '","' + item.code + '","' + item.level + '","' + item.duration + ' días","' + (item.expiresAt ? new Date(item.expiresAt).toLocaleDateString() : 'Nunca') + '"\n';
+      });
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'codigos_acceso_' + new Date().toISOString().slice(0,10) + '.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Open email client with all recipients
+    function openBatchEmailClient() {
+      const emails = batchGeneratedCodes.filter(c => c.email).map(c => c.email);
+      
+      if (emails.length === 0) {
+        alert('Ningún estudiante seleccionado tiene email');
+        return;
+      }
+      
+      // Build email body
+      let body = 'Hola,\n\nAquí está tu código de acceso para las clases de ACVOLT Tech School:\n\n';
+      body += '🔑 Tu código personal está adjunto en este correo.\n\n';
+      body += 'Para usarlo:\n';
+      body += '1. Abre la app MaestroAC en maestromario.com\n';
+      body += '2. Ve a la sección de Clases en Vivo\n';
+      body += '3. Ingresa tu código cuando se solicite\n\n';
+      body += '¡Nos vemos en clase!\n';
+      body += 'Maestro Mario - Nivel 33\n';
+      body += 'ACVOLT Tech School';
+      
+      // Use BCC for batch emails (privacy)
+      const bccEmails = emails.join(',');
+      const subject = encodeURIComponent('🔑 Tu Código de Acceso - ACVOLT Tech School');
+      const bodyEncoded = encodeURIComponent(body);
+      
+      // Open mail client
+      window.open('mailto:?bcc=' + bccEmails + '&subject=' + subject + '&body=' + bodyEncoded, '_blank');
+      
+      // Also show a message with individual codes
+      let codesMessage = '📧 Email abierto con ' + emails.length + ' destinatarios\n\n';
+      codesMessage += 'CÓDIGOS INDIVIDUALES PARA COPIAR:\n\n';
+      batchGeneratedCodes.forEach(c => {
+        if (c.email) {
+          codesMessage += c.nombre + ': ' + c.code + '\n';
+        }
+      });
+      
+      alert(codesMessage);
+    }
+    // ============================================
+    // END BATCH EMAIL SYSTEM
+    // ============================================
 
     // Register Service Worker with auto-update
     if ('serviceWorker' in navigator) {

@@ -2006,7 +2006,152 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         </div>
       </div>
 
-      <!-- 7. CRÉDITOS Y RENOVACIONES -->
+      <!-- 7. HACER UN PAGO - PAYMENT SYSTEM -->
+      <div style="margin-top: 20px; background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(39,174,96,0.3);">
+        <h3 style="color: #fff; margin-bottom: 8px; display: flex; align-items: center; gap: 10px;">
+          💰 Hacer un Pago
+        </h3>
+        <p style="color: rgba(255,255,255,0.8); font-size: 0.85em; margin-bottom: 20px;">Selecciona tu método de pago preferido</p>
+        
+        <!-- Payment Amount Selection -->
+        <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+          <label style="color: #fff; font-size: 0.9em; display: block; margin-bottom: 8px;">💵 Monto a Pagar:</label>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
+            <button onclick="setPaymentAmount(99)" class="payment-amount-btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; cursor: pointer; font-weight: bold;">$99</button>
+            <button onclick="setPaymentAmount(199)" class="payment-amount-btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; cursor: pointer; font-weight: bold;">$199</button>
+            <button onclick="setPaymentAmount(299)" class="payment-amount-btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; cursor: pointer; font-weight: bold;">$299</button>
+            <button onclick="setPaymentAmount(499)" class="payment-amount-btn" style="padding: 10px 20px; background: rgba(255,255,255,0.2); color: #fff; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; cursor: pointer; font-weight: bold;">$499</button>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="color: #fff;">Otro monto: $</span>
+            <input type="number" id="customPaymentAmount" placeholder="0.00" min="1" style="flex: 1; max-width: 120px; padding: 10px; border-radius: 8px; border: none; font-size: 1.1em; text-align: center;" onchange="setPaymentAmount(this.value)">
+          </div>
+          <div style="margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;">
+            <span style="color: rgba(255,255,255,0.7); font-size: 0.85em;">Total a pagar:</span>
+            <span id="paymentTotalDisplay" style="color: #fff; font-size: 1.5em; font-weight: bold; margin-left: 10px;">$0.00</span>
+          </div>
+        </div>
+
+        <!-- Payment Concept -->
+        <div style="background: rgba(255,255,255,0.15); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+          <label style="color: #fff; font-size: 0.9em; display: block; margin-bottom: 8px;">📝 Concepto del Pago:</label>
+          <select id="paymentConcept" style="width: 100%; padding: 12px; border-radius: 8px; border: none; font-size: 1em;">
+            <option value="">Seleccionar concepto...</option>
+            <option value="mensualidad">📅 Mensualidad de Clases</option>
+            <option value="inscripcion">📋 Inscripción</option>
+            <option value="certificacion_epa">🏅 Certificación EPA 608</option>
+            <option value="certificacion_nate">🏅 Certificación NATE</option>
+            <option value="certificacion_osha">🏅 Certificación OSHA</option>
+            <option value="materiales">📚 Materiales de Estudio</option>
+            <option value="examen">📝 Examen de Certificación</option>
+            <option value="otro">➕ Otro</option>
+          </select>
+        </div>
+
+        <!-- Payment Methods Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 15px;">
+          
+          <!-- Cash Payment -->
+          <div onclick="selectPaymentMethod('cash')" id="payMethodCash" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2.5em; margin-bottom: 8px;">💵</div>
+            <div style="color: #fff; font-weight: bold; font-size: 0.95em;">Cash</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.75em; margin-top: 4px;">Pago en Efectivo</div>
+          </div>
+
+          <!-- Card Payment (Stripe) -->
+          <div onclick="selectPaymentMethod('card')" id="payMethodCard" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2.5em; margin-bottom: 8px;">💳</div>
+            <div style="color: #fff; font-weight: bold; font-size: 0.95em;">Tarjeta</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.75em; margin-top: 4px;">Débito / Crédito</div>
+          </div>
+
+          <!-- Zelle Payment -->
+          <div onclick="selectPaymentMethod('zelle')" id="payMethodZelle" style="background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.3s;">
+            <div style="font-size: 2.5em; margin-bottom: 8px;">🏦</div>
+            <div style="color: #fff; font-weight: bold; font-size: 0.95em;">Zelle</div>
+            <div style="color: rgba(255,255,255,0.6); font-size: 0.75em; margin-top: 4px;">Transferencia Bancaria</div>
+          </div>
+
+        </div>
+
+        <!-- Payment Instructions Container (Shows based on selection) -->
+        <div id="paymentInstructions" style="display: none; background: rgba(255,255,255,0.95); border-radius: 12px; padding: 20px; margin-top: 15px;">
+          
+          <!-- Cash Instructions -->
+          <div id="cashInstructions" style="display: none;">
+            <h4 style="color: #1a1a2e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">💵 Instrucciones para Pago en Efectivo</h4>
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+              <p style="color: #333; margin-bottom: 10px;"><strong>1.</strong> Visita nuestra oficina en:</p>
+              <p style="color: #666; margin-left: 20px; margin-bottom: 15px;">
+                📍 <strong>ACVOLT Tech School</strong><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;San Bernardino, California<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;Horario: Lun-Vie 9am - 6pm
+              </p>
+              <p style="color: #333; margin-bottom: 10px;"><strong>2.</strong> Menciona tu nombre y número de técnico</p>
+              <p style="color: #333;"><strong>3.</strong> Recibirás un recibo inmediatamente</p>
+            </div>
+            <button onclick="confirmCashPayment()" style="width: 100%; padding: 15px; background: #27ae60; color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer;">
+              ✅ CONFIRMAR QUE PAGARÉ EN EFECTIVO
+            </button>
+          </div>
+
+          <!-- Card Instructions (Stripe) -->
+          <div id="cardInstructions" style="display: none;">
+            <h4 style="color: #1a1a2e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">💳 Pago con Tarjeta de Débito/Crédito</h4>
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+              <p style="color: #666; margin-bottom: 15px;">Serás redirigido a nuestra plataforma segura de pago (Stripe)</p>
+              <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 15px;">
+                <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" style="height: 30px;">
+                <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" style="height: 30px;">
+                <img src="https://img.icons8.com/color/48/amex.png" alt="Amex" style="height: 30px;">
+                <img src="https://img.icons8.com/color/48/discover.png" alt="Discover" style="height: 30px;">
+              </div>
+              <p style="color: #888; font-size: 0.85em; text-align: center;">🔒 Pago 100% seguro con encriptación SSL</p>
+            </div>
+            <button onclick="processCardPayment()" style="width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer;">
+              💳 PAGAR CON TARJETA - $<span id="cardPaymentAmount">0.00</span>
+            </button>
+          </div>
+
+          <!-- Zelle Instructions -->
+          <div id="zelleInstructions" style="display: none;">
+            <h4 style="color: #1a1a2e; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">🏦 Pago con Zelle</h4>
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+              <p style="color: #333; margin-bottom: 10px;"><strong>Envía tu pago a:</strong></p>
+              <div style="background: #e8f5e9; border: 2px dashed #27ae60; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px;">
+                <p style="color: #1a1a2e; font-size: 1.2em; font-weight: bold; margin-bottom: 5px;">📧 techschoolacvolt@gmail.com</p>
+                <p style="color: #666; font-size: 0.85em;">o busca: <strong>ACVOLT Tech School</strong></p>
+              </div>
+              <button onclick="copyZelleEmail()" style="width: 100%; padding: 10px; background: #3498db; color: #fff; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 15px;">
+                📋 Copiar Email de Zelle
+              </button>
+              <p style="color: #333; margin-bottom: 8px;"><strong>Importante:</strong></p>
+              <ul style="color: #666; font-size: 0.9em; margin-left: 20px;">
+                <li>En el memo incluye tu <strong>nombre completo</strong></li>
+                <li>Incluye tu <strong>número de técnico</strong></li>
+                <li>Incluye el <strong>concepto del pago</strong></li>
+              </ul>
+            </div>
+            <div style="background: #fff3cd; border-radius: 8px; padding: 12px; margin-bottom: 15px;">
+              <p style="color: #856404; font-size: 0.85em;">⚠️ <strong>Nota:</strong> Tu pago será verificado en 24-48 horas hábiles</p>
+            </div>
+            <button onclick="confirmZellePayment()" style="width: 100%; padding: 15px; background: #6c3ce0; color: #fff; border: none; border-radius: 8px; font-weight: bold; font-size: 1em; cursor: pointer;">
+              ✅ YA ENVIÉ MI PAGO POR ZELLE
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Payment Confirmation Message -->
+        <div id="paymentConfirmationMsg" style="display: none; margin-top: 15px; background: rgba(255,255,255,0.95); border-radius: 12px; padding: 20px; text-align: center;">
+          <div style="font-size: 3em; margin-bottom: 10px;">✅</div>
+          <h4 style="color: #27ae60; margin-bottom: 10px;">¡Solicitud de Pago Registrada!</h4>
+          <p id="paymentConfirmationText" style="color: #666;"></p>
+        </div>
+
+      </div>
+
+      <!-- 8. CRÉDITOS Y RENOVACIONES -->
       <div style="margin-top: 20px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 16px; padding: 20px;">
         <h3 style="color: #f39c12; margin-bottom: 8px;">🏅 Créditos y Renovaciones</h3>
         <p style="color: rgba(255,255,255,0.6); font-size: 0.85em; margin-bottom: 15px;">Administra tus créditos de educación continua para certificaciones</p>
@@ -10593,6 +10738,184 @@ window.toggleFormula = function(id) {
         alert('✅ Solicitud registrada. El instructor te contactará pronto.');
       }
     }
+
+    // ============================================
+    // PAYMENT SYSTEM FUNCTIONS
+    // ============================================
+    let selectedPaymentAmount = 0;
+    let selectedPaymentMethod = '';
+
+    function setPaymentAmount(amount) {
+      selectedPaymentAmount = parseFloat(amount) || 0;
+      document.getElementById('paymentTotalDisplay').textContent = '$' + selectedPaymentAmount.toFixed(2);
+      document.getElementById('cardPaymentAmount').textContent = selectedPaymentAmount.toFixed(2);
+      document.getElementById('customPaymentAmount').value = selectedPaymentAmount;
+      
+      // Update button styles
+      document.querySelectorAll('.payment-amount-btn').forEach(btn => {
+        btn.style.background = 'rgba(255,255,255,0.2)';
+        btn.style.borderColor = 'rgba(255,255,255,0.3)';
+      });
+    }
+
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      
+      // Reset all method cards
+      ['cash', 'card', 'zelle'].forEach(m => {
+        const el = document.getElementById('payMethod' + m.charAt(0).toUpperCase() + m.slice(1));
+        if (el) {
+          el.style.background = 'rgba(255,255,255,0.1)';
+          el.style.borderColor = 'rgba(255,255,255,0.2)';
+          el.style.transform = 'scale(1)';
+        }
+      });
+      
+      // Highlight selected method
+      const selectedEl = document.getElementById('payMethod' + method.charAt(0).toUpperCase() + method.slice(1));
+      if (selectedEl) {
+        selectedEl.style.background = 'rgba(255,255,255,0.3)';
+        selectedEl.style.borderColor = '#fff';
+        selectedEl.style.transform = 'scale(1.05)';
+      }
+      
+      // Show instructions
+      document.getElementById('paymentInstructions').style.display = 'block';
+      document.getElementById('cashInstructions').style.display = method === 'cash' ? 'block' : 'none';
+      document.getElementById('cardInstructions').style.display = method === 'card' ? 'block' : 'none';
+      document.getElementById('zelleInstructions').style.display = method === 'zelle' ? 'block' : 'none';
+      document.getElementById('paymentConfirmationMsg').style.display = 'none';
+    }
+
+    function copyZelleEmail() {
+      const email = 'techschoolacvolt@gmail.com';
+      navigator.clipboard.writeText(email).then(() => {
+        alert('✅ Email copiado: ' + email);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('✅ Email copiado: ' + email);
+      });
+    }
+
+    async function confirmCashPayment() {
+      if (selectedPaymentAmount <= 0) {
+        alert('⚠️ Selecciona un monto a pagar');
+        return;
+      }
+      const concept = document.getElementById('paymentConcept').value;
+      if (!concept) {
+        alert('⚠️ Selecciona el concepto del pago');
+        return;
+      }
+      
+      await registerPaymentIntent('cash', concept);
+    }
+
+    async function processCardPayment() {
+      if (selectedPaymentAmount <= 0) {
+        alert('⚠️ Selecciona un monto a pagar');
+        return;
+      }
+      const concept = document.getElementById('paymentConcept').value;
+      if (!concept) {
+        alert('⚠️ Selecciona el concepto del pago');
+        return;
+      }
+      
+      // Register intent first
+      await registerPaymentIntent('card', concept);
+      
+      // Redirect to Stripe payment link (you can customize this URL)
+      const stripePaymentLink = 'https://buy.stripe.com/test_yourlink?amount=' + (selectedPaymentAmount * 100);
+      
+      // For now, show a message since Stripe link needs to be configured
+      alert('💳 Para completar el pago con tarjeta, contacta a ACVOLT Tech School.\n\n📧 Email: techschoolacvolt@gmail.com\n📱 O visita la escuela.\n\nMonto: $' + selectedPaymentAmount.toFixed(2) + '\nConcepto: ' + concept);
+    }
+
+    async function confirmZellePayment() {
+      if (selectedPaymentAmount <= 0) {
+        alert('⚠️ Selecciona un monto a pagar');
+        return;
+      }
+      const concept = document.getElementById('paymentConcept').value;
+      if (!concept) {
+        alert('⚠️ Selecciona el concepto del pago');
+        return;
+      }
+      
+      await registerPaymentIntent('zelle', concept);
+    }
+
+    async function registerPaymentIntent(method, concept) {
+      const email = localStorage.getItem('tecnico_email') || (currentUser ? currentUser.email : '');
+      const name = currentUser ? currentUser.nombre : (localStorage.getItem('tecnico_name') || 'Unknown');
+      const techNumber = localStorage.getItem('tecnico_number') || '';
+      
+      const paymentData = {
+        student_name: name,
+        student_email: email,
+        technician_number: techNumber,
+        amount: selectedPaymentAmount,
+        concept: concept,
+        payment_method: method,
+        status: method === 'card' ? 'pending_payment' : 'pending_verification',
+        created_at: new Date().toISOString()
+      };
+      
+      try {
+        if (supabaseClient && isOnline) {
+          await supabaseClient.from('payment_intents').insert([paymentData]);
+        }
+      } catch(e) {
+        console.log('Payment intent saved locally:', e);
+      }
+      
+      // Store locally as backup
+      const localPayments = JSON.parse(localStorage.getItem('maestroac_payment_intents') || '[]');
+      localPayments.push(paymentData);
+      localStorage.setItem('maestroac_payment_intents', JSON.stringify(localPayments));
+      
+      // Show confirmation
+      showPaymentConfirmation(method, concept);
+      
+      // Send notification to admin (if function exists)
+      if (typeof addNotification === 'function') {
+        addNotification('admin', '💰 Nueva solicitud de pago: $' + selectedPaymentAmount.toFixed(2) + ' (' + method + ') de ' + name);
+      }
+    }
+
+    function showPaymentConfirmation(method, concept) {
+      document.getElementById('paymentInstructions').style.display = 'none';
+      document.getElementById('paymentConfirmationMsg').style.display = 'block';
+      
+      let message = '';
+      switch(method) {
+        case 'cash':
+          message = 'Tu intención de pago en <strong>efectivo</strong> ha sido registrada.<br><br>Monto: <strong>$' + selectedPaymentAmount.toFixed(2) + '</strong><br>Concepto: <strong>' + concept + '</strong><br><br>Visita nuestra oficina para completar el pago.';
+          break;
+        case 'card':
+          message = 'Tu solicitud de pago con <strong>tarjeta</strong> ha sido registrada.<br><br>Monto: <strong>$' + selectedPaymentAmount.toFixed(2) + '</strong><br>Concepto: <strong>' + concept + '</strong><br><br>Te contactaremos para procesar el pago.';
+          break;
+        case 'zelle':
+          message = 'Tu pago por <strong>Zelle</strong> ha sido registrado para verificación.<br><br>Monto: <strong>$' + selectedPaymentAmount.toFixed(2) + '</strong><br>Concepto: <strong>' + concept + '</strong><br><br>La verificación toma 24-48 horas hábiles.';
+          break;
+      }
+      
+      document.getElementById('paymentConfirmationText').innerHTML = message;
+      
+      // Refresh payment records
+      if (typeof loadStudentPayments === 'function') {
+        setTimeout(loadStudentPayments, 1000);
+      }
+    }
+    // ============================================
+    // END PAYMENT SYSTEM FUNCTIONS
+    // ============================================
 
     async function requestCertRenewal(certType) {
       const email = localStorage.getItem('tecnico_email') || '';

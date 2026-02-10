@@ -2430,8 +2430,17 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             var profileImg=document.getElementById('profilePhotoImg');
             if(profileImg){profileImg.src=compressed;profileImg.style.display='block';}
             try{
-              var emailKey=localStorage.getItem('maestroac_email')||(currentUser?currentUser.email:'default');
-              localStorage.setItem('maestroac_photo_'+emailKey,compressed);
+              // Guardar con múltiples keys para asegurar persistencia
+              var emailKey = (currentUser && currentUser.email) ? currentUser.email : 'default';
+              localStorage.setItem('maestroac_photo_' + emailKey, compressed);
+              localStorage.setItem('maestroac_photo_default', compressed);
+              
+              // También guardar el email para referencia
+              if (currentUser && currentUser.email) {
+                localStorage.setItem('maestroac_email', currentUser.email);
+                localStorage.setItem('tecnico_email', currentUser.email);
+              }
+              
               alert('✅ Foto actualizada correctamente');
             }catch(x){
               alert('⚠️ Error guardando foto: '+x.message);
@@ -2446,11 +2455,15 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
     document.addEventListener("DOMContentLoaded",function(){
       setTimeout(function(){
-        var emailKey=localStorage.getItem('maestroac_email')||(typeof currentUser!=='undefined'&&currentUser?currentUser.email:'default');
-        var p=localStorage.getItem('maestroac_photo_'+emailKey);
-        if(!p)p=localStorage.getItem('maestroac_photo_default');
-        if(p){var img=document.getElementById('profilePhotoImg');if(img){img.src=p;img.style.display='block';}}
-      },500);
+        // Cargar foto de perfil al iniciar
+        var emailKey = localStorage.getItem('tecnico_email') || localStorage.getItem('maestroac_email') || 'default';
+        var p = localStorage.getItem('maestroac_photo_' + emailKey);
+        if (!p) p = localStorage.getItem('maestroac_photo_default');
+        if (p) {
+          var img = document.getElementById('profilePhotoImg');
+          if (img) { img.src = p; img.style.display = 'block'; }
+        }
+      }, 500);
     });
     // SUPABASE CONFIGURATION
     // ============================================
@@ -11289,11 +11302,70 @@ window.toggleFormula = function(id) {
 
     // Auto-load profile data when profile screen opens
     function loadProfileData() {
+      // Cargar datos del estudiante de localStorage primero para asegurar persistencia
+      if (!currentUser || !currentUser.technicianNumber) {
+        try {
+          var saved = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+          if (!saved.technicianNumber) {
+            saved = JSON.parse(localStorage.getItem('tecnico_user_backup') || '{}');
+          }
+          if (saved && currentUser) {
+            if (saved.technicianNumber) {
+              currentUser.technicianNumber = saved.technicianNumber;
+              currentUser.technicianNumberDate = saved.technicianNumberDate;
+            }
+            if (saved.studentId) {
+              currentUser.studentId = saved.studentId;
+              currentUser.studentIdDate = saved.studentIdDate;
+            }
+          }
+        } catch(e) { console.log('Error loading saved user data:', e); }
+      }
+      
+      // Actualizar display del número de técnico
+      try { updateTechnicianNumberDisplay(); } catch(e) {}
+      
+      // Cargar foto de perfil
+      try { loadProfilePhoto(); } catch(e) {}
+      
+      // Cargar credencial de estudiante
+      try { renderStudentCredential(); } catch(e) {}
+      
+      // Cargar demás datos
       try { loadStudentProgress(); } catch(e) {}
       try { loadStudentTasks(); } catch(e) {}
       try { loadStudentExams(); } catch(e) {}
       try { loadStudentWorkbooks(); } catch(e) {}
       try { loadStudentPayments(); } catch(e) {}
+    }
+    
+    // Función para cargar foto de perfil
+    function loadProfilePhoto() {
+      if (!currentUser) return;
+      
+      // Intentar múltiples keys para encontrar la foto
+      var emailKey = currentUser.email || localStorage.getItem('tecnico_email') || localStorage.getItem('maestroac_email') || 'default';
+      var photo = localStorage.getItem('maestroac_photo_' + emailKey);
+      
+      // Si no se encuentra, intentar con otras variantes
+      if (!photo) {
+        photo = localStorage.getItem('maestroac_photo_' + (currentUser.email || ''));
+      }
+      if (!photo) {
+        photo = localStorage.getItem('maestroac_photo_default');
+      }
+      
+      // También guardar el email actual para uso consistente
+      if (currentUser.email) {
+        localStorage.setItem('maestroac_email', currentUser.email);
+        localStorage.setItem('tecnico_email', currentUser.email);
+      }
+      
+      var img = document.getElementById('profilePhotoImg');
+      if (photo && img) {
+        img.src = photo;
+        img.style.display = 'block';
+      }
     }
 
     // === END STUDENT PROFILE FUNCTIONS ===

@@ -1288,7 +1288,10 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <!-- Profile Card -->
         <div class="admin-profile-card" id="adminProfileCard">
           <div class="admin-profile-header">
-            <div class="admin-profile-avatar">👤</div>
+            <div class="admin-profile-avatar" id="adminProfileAvatar" style="width:80px;height:80px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;border:3px solid #f39c12;">
+              <img id="adminViewPhoto" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
+              <span id="adminViewPhotoEmoji">👤</span>
+            </div>
             <div class="admin-profile-info">
               <h2 id="adminViewName">Nombre del Técnico</h2>
               <p id="adminViewTechNumber">TECH-0000-N33-XXXX</p>
@@ -1936,7 +1939,25 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div id="profileContent">
           <!-- Avatar and Level Section -->
           <div class="profile-avatar-section" id="profileAvatarSection">
-            <label for="profilePhotoInput" style="display:block;cursor:pointer;position:relative;display:inline-block;"><div class="profile-avatar nivel-nuevo" id="profileAvatar" style="overflow:hidden;position:relative;"><img id="profilePhotoImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;">👤</div><div class="profile-badge badge-nuevo" id="profileBadge">🔰</div><div style="position:absolute;bottom:5px;right:calc(50% - 55px);background:#f39c12;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid white;z-index:10;">📷</div></label><input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/gif,image/webp,image/*" capture="user" style="opacity:0;position:absolute;width:1px;height:1px;overflow:hidden;" onchange="handleProfilePhoto(this)"><p style="color:#64748b;font-size:11px;margin-top:5px;">Toca para cambiar foto</p>
+            <!-- Foto de perfil con botón visible -->
+            <div style="position:relative;display:inline-block;margin-bottom:15px;">
+              <div class="profile-avatar nivel-nuevo" id="profileAvatar" style="overflow:hidden;position:relative;width:120px;height:120px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:50px;border:4px solid #f39c12;">
+                <img id="profilePhotoImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;">
+                <span id="profileAvatarEmoji">👤</span>
+              </div>
+              <div class="profile-badge badge-nuevo" id="profileBadge" style="position:absolute;top:-5px;right:-5px;">🔰</div>
+            </div>
+            
+            <!-- Botón visible para subir foto -->
+            <div style="margin-bottom:20px;">
+              <label for="profilePhotoInput" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#3498db,#2980b9);color:white;padding:12px 20px;border-radius:25px;cursor:pointer;font-size:14px;font-weight:bold;box-shadow:0 4px 15px rgba(52,152,219,0.3);transition:all 0.3s ease;">
+                <span style="font-size:20px;">📷</span>
+                <span>Subir Mi Foto</span>
+              </label>
+              <input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/gif,image/webp,image/*" capture="user" style="display:none;" onchange="handleProfilePhoto(this)">
+              <p style="color:#64748b;font-size:12px;margin-top:8px;">Toca el botón para agregar o cambiar tu foto</p>
+            </div>
+            
             <div class="profile-level-title titulo-nuevo" id="profileLevelTitle">Técnico Nuevo</div>
             <div class="profile-level-subtitle" id="profileLevelSubtitle">Completa niveles para subir de rango</div>
             <div class="profile-progress-bar">
@@ -2525,10 +2546,15 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             ctx.drawImage(img,0,0,w,h);
             var compressed=canvas.toDataURL('image/jpeg',0.7);
             
+            // Show photo and hide emoji
             var profileImg=document.getElementById('profilePhotoImg');
+            var profileEmoji=document.getElementById('profileAvatarEmoji');
             if(profileImg){
               profileImg.src=compressed;
               profileImg.style.display='block';
+            }
+            if(profileEmoji){
+              profileEmoji.style.display='none';
             }
             
             // Guardar con múltiples keys para asegurar persistencia
@@ -2541,19 +2567,25 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
               localStorage.setItem('maestroac_email', currentUser.email);
               localStorage.setItem('tecnico_email', currentUser.email);
               
-              // Guardar en Supabase (solo la referencia, la imagen es muy grande)
+              // Guardar foto en Supabase para que admin la vea
               if (supabaseClient) {
-                supabaseClient.from('technicians').upsert({
+                // Save photo data to users table
+                supabaseClient.from('users').upsert({
                   email: currentUser.email,
-                  has_photo: true,
+                  nombre: currentUser.nombre || currentUser.email.split('@')[0],
+                  photo_url: compressed,
                   photo_updated: new Date().toISOString()
-                }, { onConflict: 'email' }).then(function() {
-                  console.log('Photo reference saved to Supabase');
+                }, { onConflict: 'email' }).then(function(result) {
+                  if (result.error) {
+                    console.log('Error saving photo to Supabase:', result.error);
+                  } else {
+                    console.log('Photo saved to Supabase successfully');
+                  }
                 }).catch(function(e) { console.log('Photo save error:', e); });
               }
             }
             
-            alert('Foto actualizada correctamente');
+            alert('¡Foto actualizada correctamente!');
           }catch(x){
             alert('Error guardando foto: '+x.message);
           }
@@ -2575,7 +2607,14 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         if (!p) p = localStorage.getItem('maestroac_photo_default');
         if (p) {
           var img = document.getElementById('profilePhotoImg');
-          if (img) { img.src = p; img.style.display = 'block'; }
+          var emoji = document.getElementById('profileAvatarEmoji');
+          if (img) { 
+            img.src = p; 
+            img.style.display = 'block'; 
+          }
+          if (emoji) {
+            emoji.style.display = 'none';
+          }
         }
       }, 500);
       
@@ -9776,7 +9815,7 @@ window.toggleFormula = function(id) {
     }
 
     // View technician profile
-    function viewTechnicianProfile(index) {
+    async function viewTechnicianProfile(index) {
       currentViewingTechnician = allTechnicians[index];
 
       // Update profile info
@@ -9787,6 +9826,34 @@ window.toggleFormula = function(id) {
       document.getElementById('adminViewEPA').textContent = currentViewingTechnician.epa || 'No registrado';
       document.getElementById('adminViewNATE').textContent = currentViewingTechnician.nate || 'No registrado';
       document.getElementById('adminViewESCO').textContent = currentViewingTechnician.esco || 'No registrado';
+
+      // Load technician photo from Supabase
+      var photoImg = document.getElementById('adminViewPhoto');
+      var photoEmoji = document.getElementById('adminViewPhotoEmoji');
+      
+      // Reset to default
+      if (photoImg) { photoImg.style.display = 'none'; photoImg.src = ''; }
+      if (photoEmoji) { photoEmoji.style.display = 'block'; }
+      
+      // Try to load from Supabase users table
+      if (supabaseClient && currentViewingTechnician.email) {
+        try {
+          var { data: techData } = await supabaseClient.from('users')
+            .select('photo_url')
+            .eq('email', currentViewingTechnician.email)
+            .single();
+          
+          if (techData && techData.photo_url) {
+            if (photoImg) {
+              photoImg.src = techData.photo_url;
+              photoImg.style.display = 'block';
+            }
+            if (photoEmoji) {
+              photoEmoji.style.display = 'none';
+            }
+          }
+        } catch(e) { console.log('Error loading technician photo:', e); }
+      }
 
       const regDate = currentViewingTechnician.registrationDate
         ? new Date(currentViewingTechnician.registrationDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })

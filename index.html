@@ -2569,19 +2569,20 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
               
               // Guardar foto en Supabase para que admin la vea
               if (supabaseClient) {
-                // Save photo data to users table
-                supabaseClient.from('users').upsert({
-                  email: currentUser.email,
-                  nombre: currentUser.nombre || currentUser.email.split('@')[0],
-                  photo_url: compressed,
-                  photo_updated: new Date().toISOString()
-                }, { onConflict: 'email' }).then(function(result) {
-                  if (result.error) {
-                    console.log('Error saving photo to Supabase:', result.error);
-                  } else {
-                    console.log('Photo saved to Supabase successfully');
-                  }
-                }).catch(function(e) { console.log('Photo save error:', e); });
+                // Save photo data to users table using update
+                supabaseClient.from('users')
+                  .update({
+                    photo_url: compressed,
+                    photo_updated: new Date().toISOString()
+                  })
+                  .eq('email', currentUser.email)
+                  .then(function(result) {
+                    if (result.error) {
+                      console.log('Error saving photo to Supabase:', result.error);
+                    } else {
+                      console.log('Photo saved to Supabase successfully');
+                    }
+                  }).catch(function(e) { console.log('Photo save error:', e); });
               }
             }
             

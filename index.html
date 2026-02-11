@@ -1922,6 +1922,12 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     </div>
 
     <div class="screen" id="miPerfilScreen">
+      <!-- Botón Flotante Volver - Sigue el scroll -->
+      <div id="floatingBackBtn" style="position:fixed;bottom:20px;right:20px;z-index:100;transition:all 0.3s ease;">
+        <button onclick="showScreen('welcomeScreen')" style="background:linear-gradient(135deg,#E31937,#C62828);color:white;border:none;padding:15px 25px;border-radius:50px;font-size:16px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(227,25,55,0.4);display:flex;align-items:center;gap:8px;">
+          ← Volver
+        </button>
+      </div>
       <div class="header">
         <h1>Mi Perfil</h1>
         <p class="subtitle">Técnico HVACR - Nivel 33</p>
@@ -1930,7 +1936,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div id="profileContent">
           <!-- Avatar and Level Section -->
           <div class="profile-avatar-section" id="profileAvatarSection">
-            <label for="profilePhotoInput" style="display:block;cursor:pointer;position:relative;display:inline-block;"><div class="profile-avatar nivel-nuevo" id="profileAvatar" style="overflow:hidden;position:relative;"><img id="profilePhotoImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;">👤</div><div class="profile-badge badge-nuevo" id="profileBadge">🔰</div><div style="position:absolute;bottom:5px;right:calc(50% - 55px);background:#f39c12;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid white;z-index:10;">📷</div></label><input type="file" id="profilePhotoInput" accept="image/*" capture="environment" style="position:absolute;left:-9999px;opacity:0;width:0;height:0;" onchange="handleProfilePhoto(this)"><p style="color:#64748b;font-size:11px;margin-top:5px;">Toca para cambiar foto</p>
+            <label for="profilePhotoInput" style="display:block;cursor:pointer;position:relative;display:inline-block;"><div class="profile-avatar nivel-nuevo" id="profileAvatar" style="overflow:hidden;position:relative;"><img id="profilePhotoImg" src="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;">👤</div><div class="profile-badge badge-nuevo" id="profileBadge">🔰</div><div style="position:absolute;bottom:5px;right:calc(50% - 55px);background:#f39c12;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;border:2px solid white;z-index:10;">📷</div></label><input type="file" id="profilePhotoInput" accept="image/jpeg,image/png,image/gif,image/webp,image/*" capture="user" style="opacity:0;position:absolute;width:1px;height:1px;overflow:hidden;" onchange="handleProfilePhoto(this)"><p style="color:#64748b;font-size:11px;margin-top:5px;">Toca para cambiar foto</p>
             <div class="profile-level-title titulo-nuevo" id="profileLevelTitle">Técnico Nuevo</div>
             <div class="profile-level-subtitle" id="profileLevelSubtitle">Completa niveles para subir de rango</div>
             <div class="profile-progress-bar">
@@ -2486,13 +2492,29 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     // ============================================
     // PROFILE PHOTO
     function handleProfilePhoto(i){
-      if(i.files&&i.files[0]){
-        var file=i.files[0];
-        // Compress image before saving
-        var reader=new FileReader();
-        reader.onload=function(e){
-          var img=new Image();
-          img.onload=function(){
+      if(!i.files || !i.files[0]){
+        alert('No se selecciono ningun archivo');
+        return;
+      }
+      var file=i.files[0];
+      
+      // Validate file type
+      if(!file.type.startsWith('image/')){
+        alert('Por favor selecciona una imagen valida');
+        return;
+      }
+      
+      // Validate file size (max 10MB)
+      if(file.size > 10 * 1024 * 1024){
+        alert('La imagen es muy grande. Maximo 10MB');
+        return;
+      }
+      
+      var reader=new FileReader();
+      reader.onload=function(e){
+        var img=new Image();
+        img.onload=function(){
+          try{
             var canvas=document.createElement('canvas');
             var maxSize=300;
             var w=img.width, h=img.height;
@@ -2502,31 +2524,48 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             var ctx=canvas.getContext('2d');
             ctx.drawImage(img,0,0,w,h);
             var compressed=canvas.toDataURL('image/jpeg',0.7);
+            
             var profileImg=document.getElementById('profilePhotoImg');
-            if(profileImg){profileImg.src=compressed;profileImg.style.display='block';}
-            try{
-              // Guardar con múltiples keys para asegurar persistencia
-              var emailKey = (currentUser && currentUser.email) ? currentUser.email : 'default';
-              localStorage.setItem('maestroac_photo_' + emailKey, compressed);
-              localStorage.setItem('maestroac_photo_default', compressed);
-              
-              // También guardar el email para referencia
-              if (currentUser && currentUser.email) {
-                localStorage.setItem('maestroac_email', currentUser.email);
-                localStorage.setItem('tecnico_email', currentUser.email);
-              }
-              
-              alert('✅ Foto actualizada correctamente');
-            }catch(x){
-              alert('⚠️ Error guardando foto: '+x.message);
+            if(profileImg){
+              profileImg.src=compressed;
+              profileImg.style.display='block';
             }
-          };
-          img.onerror=function(){alert('⚠️ No se pudo leer la imagen');};
-          img.src=e.target.result;
+            
+            // Guardar con múltiples keys para asegurar persistencia
+            var emailKey = (currentUser && currentUser.email) ? currentUser.email : 'default';
+            localStorage.setItem('maestroac_photo_' + emailKey, compressed);
+            localStorage.setItem('maestroac_photo_default', compressed);
+            
+            // También guardar el email para referencia
+            if (currentUser && currentUser.email) {
+              localStorage.setItem('maestroac_email', currentUser.email);
+              localStorage.setItem('tecnico_email', currentUser.email);
+              
+              // Guardar en Supabase (solo la referencia, la imagen es muy grande)
+              if (supabaseClient) {
+                supabaseClient.from('technicians').upsert({
+                  email: currentUser.email,
+                  has_photo: true,
+                  photo_updated: new Date().toISOString()
+                }, { onConflict: 'email' }).then(function() {
+                  console.log('Photo reference saved to Supabase');
+                }).catch(function(e) { console.log('Photo save error:', e); });
+              }
+            }
+            
+            alert('Foto actualizada correctamente');
+          }catch(x){
+            alert('Error guardando foto: '+x.message);
+          }
         };
-        reader.onerror=function(){alert('⚠️ Error leyendo el archivo');};
-        reader.readAsDataURL(file);
-      }
+        img.onerror=function(){alert('No se pudo leer la imagen. Intenta con otra.');};
+        img.src=e.target.result;
+      };
+      reader.onerror=function(){alert('Error leyendo el archivo. Intenta de nuevo.');};
+      reader.readAsDataURL(file);
+      
+      // Reset input for next selection
+      i.value = '';
     }
     document.addEventListener("DOMContentLoaded",function(){
       setTimeout(function(){
@@ -2539,7 +2578,289 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           if (img) { img.src = p; img.style.display = 'block'; }
         }
       }, 500);
+      
+      // Initialize study limit system
+      initStudyLimitSystem();
+      
+      // Initialize anti-screenshot protection
+      initAntiScreenshot();
     });
+
+    // ============================================
+    // STUDY LIMIT SYSTEM - 1 hour study, 1 hour break
+    // ============================================
+    let studyStartTime = null;
+    let studyTimerInterval = null;
+    let isOnBreak = false;
+    let breakEndTime = null;
+    const STUDY_LIMIT_MINUTES = 60; // 1 hour study limit
+    const BREAK_DURATION_MINUTES = 60; // 1 hour break required
+
+    function initStudyLimitSystem() {
+      // Check if user is currently on break
+      var breakData = localStorage.getItem('maestroac_break_until');
+      if (breakData) {
+        var breakUntil = new Date(breakData);
+        if (new Date() < breakUntil) {
+          isOnBreak = true;
+          breakEndTime = breakUntil;
+          showBreakScreen();
+        } else {
+          // Break is over, clear it
+          localStorage.removeItem('maestroac_break_until');
+          localStorage.removeItem('maestroac_study_start');
+        }
+      }
+      
+      // Load study start time if exists
+      var savedStart = localStorage.getItem('maestroac_study_start');
+      if (savedStart && !isOnBreak) {
+        studyStartTime = new Date(savedStart);
+        startStudyTimer();
+      }
+    }
+
+    function startStudySession() {
+      if (isOnBreak) {
+        showBreakScreen();
+        return false;
+      }
+      
+      if (!studyStartTime) {
+        studyStartTime = new Date();
+        localStorage.setItem('maestroac_study_start', studyStartTime.toISOString());
+        startStudyTimer();
+      }
+      return true;
+    }
+
+    function startStudyTimer() {
+      if (studyTimerInterval) clearInterval(studyTimerInterval);
+      
+      studyTimerInterval = setInterval(function() {
+        if (!studyStartTime || isOnBreak) return;
+        
+        var now = new Date();
+        var minutesStudied = Math.floor((now - studyStartTime) / 60000);
+        
+        // Update study time indicator if exists
+        var indicator = document.getElementById('studyTimeIndicator');
+        if (indicator) {
+          var remaining = STUDY_LIMIT_MINUTES - minutesStudied;
+          if (remaining > 0) {
+            indicator.textContent = remaining + ' min restantes';
+            indicator.style.color = remaining <= 10 ? '#e74c3c' : '#27ae60';
+          }
+        }
+        
+        // Check if limit reached
+        if (minutesStudied >= STUDY_LIMIT_MINUTES) {
+          enforceBreak();
+        }
+        
+        // Warning at 50 minutes
+        if (minutesStudied === 50 && !localStorage.getItem('maestroac_warned_50')) {
+          localStorage.setItem('maestroac_warned_50', 'true');
+          showStudyWarning(10);
+        }
+        
+        // Warning at 55 minutes
+        if (minutesStudied === 55 && !localStorage.getItem('maestroac_warned_55')) {
+          localStorage.setItem('maestroac_warned_55', 'true');
+          showStudyWarning(5);
+        }
+      }, 30000); // Check every 30 seconds
+    }
+
+    function showStudyWarning(minutesLeft) {
+      var warning = document.createElement('div');
+      warning.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#f39c12,#e67e22);color:white;padding:15px 25px;border-radius:12px;z-index:10000;box-shadow:0 4px 20px rgba(0,0,0,0.3);text-align:center;animation:slideDown 0.3s ease;';
+      warning.innerHTML = '<strong>⏰ Aviso de Descanso</strong><br><span style="font-size:14px;">Te quedan ' + minutesLeft + ' minutos antes del descanso obligatorio</span>';
+      document.body.appendChild(warning);
+      
+      setTimeout(function() {
+        warning.style.opacity = '0';
+        warning.style.transition = 'opacity 0.5s';
+        setTimeout(function() { warning.remove(); }, 500);
+      }, 5000);
+    }
+
+    function enforceBreak() {
+      isOnBreak = true;
+      breakEndTime = new Date(Date.now() + BREAK_DURATION_MINUTES * 60000);
+      localStorage.setItem('maestroac_break_until', breakEndTime.toISOString());
+      localStorage.removeItem('maestroac_study_start');
+      localStorage.removeItem('maestroac_warned_50');
+      localStorage.removeItem('maestroac_warned_55');
+      studyStartTime = null;
+      
+      if (studyTimerInterval) {
+        clearInterval(studyTimerInterval);
+        studyTimerInterval = null;
+      }
+      
+      showBreakScreen();
+    }
+
+    function showBreakScreen() {
+      // Remove existing break screen if any
+      var existing = document.getElementById('breakScreen');
+      if (existing) existing.remove();
+      
+      var breakScreen = document.createElement('div');
+      breakScreen.id = 'breakScreen';
+      breakScreen.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;padding:20px;text-align:center;';
+      
+      breakScreen.innerHTML = '<div style="max-width:400px;"><div style="font-size:80px;margin-bottom:20px;">☕</div><h1 style="color:#f39c12;font-size:28px;margin-bottom:15px;">Tiempo de Descanso</h1><p style="color:#94a3b8;font-size:16px;margin-bottom:30px;">Has estudiado por 1 hora continua. Tu cerebro necesita descansar para absorber mejor la informacion.</p><div style="background:rgba(243,156,18,0.1);border:2px solid #f39c12;border-radius:15px;padding:25px;margin-bottom:25px;"><p style="color:#f39c12;font-size:14px;margin-bottom:10px;">Tiempo restante de descanso:</p><div id="breakCountdown" style="color:white;font-size:48px;font-weight:bold;">60:00</div></div><div style="color:#64748b;font-size:14px;"><p style="margin-bottom:10px;">💡 Sugerencias durante tu descanso:</p><ul style="text-align:left;list-style:none;padding:0;"><li style="margin:8px 0;">🚶 Camina un poco</li><li style="margin:8px 0;">💧 Toma agua</li><li style="margin:8px 0;">👀 Descansa la vista</li><li style="margin:8px 0;">🍎 Come algo saludable</li></ul></div><p style="color:#4a5568;font-size:12px;margin-top:25px;">Si no mides, estas adivinando 📏<br>- Maestro Mario</p></div>';
+      
+      document.body.appendChild(breakScreen);
+      
+      // Start countdown
+      updateBreakCountdown();
+      var countdownInterval = setInterval(function() {
+        if (!isOnBreak || !breakEndTime) {
+          clearInterval(countdownInterval);
+          return;
+        }
+        
+        var now = new Date();
+        if (now >= breakEndTime) {
+          // Break is over
+          isOnBreak = false;
+          localStorage.removeItem('maestroac_break_until');
+          breakScreen.remove();
+          clearInterval(countdownInterval);
+          
+          // Show welcome back message
+          alert('¡Bienvenido de vuelta! 🎉\n\nTu descanso ha terminado. Puedes continuar estudiando.');
+        } else {
+          updateBreakCountdown();
+        }
+      }, 1000);
+    }
+
+    function updateBreakCountdown() {
+      var countdown = document.getElementById('breakCountdown');
+      if (!countdown || !breakEndTime) return;
+      
+      var now = new Date();
+      var remaining = Math.max(0, breakEndTime - now);
+      var minutes = Math.floor(remaining / 60000);
+      var seconds = Math.floor((remaining % 60000) / 1000);
+      
+      countdown.textContent = String(minutes).padStart(2, '0') + ':' + String(seconds).padStart(2, '0');
+    }
+
+    // ============================================
+    // ANTI-SCREENSHOT PROTECTION
+    // ============================================
+    function initAntiScreenshot() {
+      // CSS to prevent screenshots - hide content during capture
+      var style = document.createElement('style');
+      style.textContent = '@media print { body { display: none !important; } } .protected-content { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }';
+      document.head.appendChild(style);
+      
+      // Detect PrintScreen key
+      document.addEventListener('keyup', function(e) {
+        if (e.key === 'PrintScreen' || e.keyCode === 44) {
+          blackoutScreen();
+          showScreenshotWarning();
+        }
+      });
+      
+      // Detect keyboard shortcuts for screenshots
+      document.addEventListener('keydown', function(e) {
+        // Windows: Win+Shift+S, Win+PrtScn
+        // Mac: Cmd+Shift+3, Cmd+Shift+4
+        if ((e.metaKey || e.ctrlKey) && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === 's' || e.key === 'S')) {
+          e.preventDefault();
+          blackoutScreen();
+          showScreenshotWarning();
+        }
+        // PrtScn variations
+        if (e.keyCode === 44 || e.key === 'PrintScreen') {
+          e.preventDefault();
+          blackoutScreen();
+          showScreenshotWarning();
+        }
+      });
+      
+      // Detect visibility change (some screenshot tools trigger this)
+      var lastHidden = 0;
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          lastHidden = Date.now();
+        } else {
+          // If hidden for very short time (< 500ms), might be screenshot
+          if (Date.now() - lastHidden < 500) {
+            // Possibly a screenshot, but don't be too aggressive
+          }
+        }
+      });
+      
+      // Blur sensitive content when window loses focus (helps with some tools)
+      window.addEventListener('blur', function() {
+        document.body.classList.add('window-blurred');
+      });
+      
+      window.addEventListener('focus', function() {
+        document.body.classList.remove('window-blurred');
+      });
+      
+      // Add blur style
+      var blurStyle = document.createElement('style');
+      blurStyle.textContent = '.window-blurred .card, .window-blurred .question-text, .window-blurred .option { filter: blur(5px); transition: filter 0.2s; }';
+      document.head.appendChild(blurStyle);
+      
+      // Disable right-click context menu
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showScreenshotWarning();
+      });
+      
+      // Disable drag
+      document.addEventListener('dragstart', function(e) {
+        e.preventDefault();
+      });
+    }
+
+    function blackoutScreen() {
+      var blackout = document.createElement('div');
+      blackout.id = 'screenshotBlackout';
+      blackout.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:#000;z-index:999999;';
+      document.body.appendChild(blackout);
+      
+      // Remove after short delay
+      setTimeout(function() {
+        var el = document.getElementById('screenshotBlackout');
+        if (el) el.remove();
+      }, 1000);
+      
+      // Also clear clipboard if possible
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText('Screenshots no permitidos - ACVOLT Tech School').catch(function() {});
+      }
+    }
+
+    function showScreenshotWarning() {
+      var warning = document.createElement('div');
+      warning.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;padding:30px 40px;border-radius:15px;z-index:1000000;box-shadow:0 10px 40px rgba(0,0,0,0.5);text-align:center;animation:shake 0.5s ease;';
+      warning.innerHTML = '<div style="font-size:50px;margin-bottom:15px;">🚫</div><h2 style="margin-bottom:10px;">Screenshots No Permitidos</h2><p style="font-size:14px;opacity:0.9;">El contenido de esta app esta protegido.<br>Por favor estudia directamente en la aplicacion.</p>';
+      document.body.appendChild(warning);
+      
+      // Add shake animation
+      var shakeStyle = document.createElement('style');
+      shakeStyle.textContent = '@keyframes shake { 0%, 100% { transform: translate(-50%,-50%) rotate(0); } 25% { transform: translate(-50%,-50%) rotate(-5deg); } 75% { transform: translate(-50%,-50%) rotate(5deg); } }';
+      document.head.appendChild(shakeStyle);
+      
+      setTimeout(function() {
+        warning.style.opacity = '0';
+        warning.style.transition = 'opacity 0.5s';
+        setTimeout(function() { warning.remove(); }, 500);
+      }, 3000);
+    }
+
+    // ============================================
     // SUPABASE CONFIGURATION
     // ============================================
     const SUPABASE_URL = 'https://htklsowiyjwsjnacnvnr.supabase.co';
@@ -2647,9 +2968,21 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     async function supabaseSaveTechnicianNumber(techNumber, techDate) {
-      if (!supabaseClient || !isOnline || !supabaseUserId) return;
+      if (!supabaseClient || !isOnline) return;
       try {
-        await supabaseClient.from('users').update({ technician_number: techNumber, technician_number_date: techDate }).eq('id', supabaseUserId);
+        // Save to users table if we have supabaseUserId
+        if (supabaseUserId) {
+          await supabaseClient.from('users').update({ technician_number: techNumber, technician_number_date: techDate }).eq('id', supabaseUserId);
+        }
+        // Also save to technicians table using email
+        if (currentUser && currentUser.email) {
+          await supabaseClient.from('technicians').upsert({ 
+            email: currentUser.email, 
+            technician_number: techNumber, 
+            technician_number_date: techDate,
+            nombre: currentUser.nombre || currentUser.email.split('@')[0]
+          }, { onConflict: 'email' });
+        }
       } catch (e) { console.error('Supabase save technician number error:', e); }
     }
 
@@ -6586,6 +6919,17 @@ window.toggleFormula = function(id) {
     }
 
     function startQuiz(levelId) {
+      // Check if user is on mandatory break
+      if (isOnBreak) {
+        showBreakScreen();
+        return;
+      }
+      
+      // Start study session timer
+      if (!startStudySession()) {
+        return; // User is on break
+      }
+      
       // Force check-in before starting any quiz
       if (!sessionCheckedIn) {
         requireCheckIn('quiz');
@@ -6907,6 +7251,9 @@ window.toggleFormula = function(id) {
       document.getElementById('questionCategory').textContent = q.category;
       document.getElementById('questionText').textContent = q.q;
 
+      // Update study time indicator
+      updateStudyTimeIndicator();
+
       const container = document.getElementById('optionsContainer');
       container.innerHTML = '';
       const letters = ['A', 'B', 'C', 'D'];
@@ -6933,6 +7280,40 @@ window.toggleFormula = function(id) {
 
       // Update lastQuizState when question view loads
       updateLastQuizState();
+    }
+
+    function updateStudyTimeIndicator() {
+      // Create indicator if not exists
+      var indicator = document.getElementById('studyTimeIndicator');
+      if (!indicator) {
+        var header = document.querySelector('.question-header');
+        if (header) {
+          indicator = document.createElement('div');
+          indicator.id = 'studyTimeIndicator';
+          indicator.style.cssText = 'font-size:11px;padding:4px 10px;border-radius:12px;background:rgba(39,174,96,0.2);color:#27ae60;';
+          header.appendChild(indicator);
+        }
+      }
+      
+      if (indicator && studyStartTime) {
+        var now = new Date();
+        var minutesStudied = Math.floor((now - studyStartTime) / 60000);
+        var remaining = STUDY_LIMIT_MINUTES - minutesStudied;
+        
+        if (remaining > 10) {
+          indicator.textContent = '⏱️ ' + remaining + ' min';
+          indicator.style.background = 'rgba(39,174,96,0.2)';
+          indicator.style.color = '#27ae60';
+        } else if (remaining > 0) {
+          indicator.textContent = '⚠️ ' + remaining + ' min';
+          indicator.style.background = 'rgba(231,76,60,0.2)';
+          indicator.style.color = '#e74c3c';
+        } else {
+          indicator.textContent = '🛑 Break';
+          indicator.style.background = 'rgba(231,76,60,0.3)';
+          indicator.style.color = '#e74c3c';
+        }
+      }
     }
 
     function selectAnswer(displayIndex) {
@@ -7304,33 +7685,73 @@ window.toggleFormula = function(id) {
       });
     }
 
-    function updateTechnicianNumberDisplay() {
+    async function updateTechnicianNumberDisplay() {
       const displaySection = document.getElementById('technicianNumberDisplay');
       const generatorSection = document.getElementById('technicianNumberGenerator');
 
-      // Restore technicianNumber from localStorage if not in currentUser
+      // Restore technicianNumber from multiple sources
       if (currentUser && !currentUser.technicianNumber) {
-        try {
-          var saved = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
-          if (saved.technicianNumber) {
-            currentUser.technicianNumber = saved.technicianNumber;
-            currentUser.technicianNumberDate = saved.technicianNumberDate;
+        // Try email-specific key first
+        if (currentUser.email) {
+          var emailNumber = localStorage.getItem('tecnico_number_' + currentUser.email);
+          if (emailNumber) {
+            currentUser.technicianNumber = emailNumber;
+            currentUser.technicianNumberDate = localStorage.getItem('tecnico_number_date_' + currentUser.email) || 'Fecha guardada';
           }
-          if (!currentUser.technicianNumber) {
-            saved = JSON.parse(localStorage.getItem('tecnico_user_backup') || '{}');
+        }
+        // Try general key
+        if (!currentUser.technicianNumber) {
+          var generalNumber = localStorage.getItem('tecnico_number');
+          if (generalNumber) {
+            currentUser.technicianNumber = generalNumber;
+            currentUser.technicianNumberDate = localStorage.getItem('tecnico_number_date') || 'Fecha guardada';
+          }
+        }
+        // Try tecnico_user
+        if (!currentUser.technicianNumber) {
+          try {
+            var saved = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
             if (saved.technicianNumber) {
               currentUser.technicianNumber = saved.technicianNumber;
               currentUser.technicianNumberDate = saved.technicianNumberDate;
             }
-          }
-        } catch(e) {}
+          } catch(e) {}
+        }
+        // Try backup
+        if (!currentUser.technicianNumber) {
+          try {
+            var backup = JSON.parse(localStorage.getItem('tecnico_user_backup') || '{}');
+            if (backup.technicianNumber) {
+              currentUser.technicianNumber = backup.technicianNumber;
+              currentUser.technicianNumberDate = backup.technicianNumberDate;
+            }
+          } catch(e) {}
+        }
+        // Try loading from Supabase if still not found
+        if (!currentUser.technicianNumber && supabaseClient && currentUser.email) {
+          try {
+            var { data: techData } = await supabaseClient.from('technicians').select('technician_number, technician_number_date').eq('email', currentUser.email).single();
+            if (techData && techData.technician_number) {
+              currentUser.technicianNumber = techData.technician_number;
+              currentUser.technicianNumberDate = techData.technician_number_date || 'Fecha de Supabase';
+              // Save locally for faster access next time
+              localStorage.setItem('tecnico_number_' + currentUser.email, techData.technician_number);
+              localStorage.setItem('tecnico_number_date_' + currentUser.email, currentUser.technicianNumberDate);
+              localStorage.setItem('tecnico_number', techData.technician_number);
+            }
+          } catch(e) { console.log('Error loading tech number from Supabase:', e); }
+        }
       }
 
       if (currentUser && currentUser.technicianNumber) {
         displaySection.style.display = 'block';
         generatorSection.style.display = 'none';
         document.getElementById('technicianNumberValue').textContent = currentUser.technicianNumber;
-        document.getElementById('technicianNumberDate').textContent = 'Generado: ' + currentUser.technicianNumberDate;
+        document.getElementById('technicianNumberDate').textContent = 'Generado: ' + (currentUser.technicianNumberDate || 'Fecha guardada');
+        // Ensure it stays saved
+        if (currentUser.email) {
+          localStorage.setItem('tecnico_number_' + currentUser.email, currentUser.technicianNumber);
+        }
       } else {
         displaySection.style.display = 'none';
         generatorSection.style.display = 'block';
@@ -7512,23 +7933,35 @@ window.toggleFormula = function(id) {
         return;
       }
 
-      if (currentUser.technicianNumber) {
-        alert('Ya tienes un número de técnico asignado: ' + currentUser.technicianNumber);
+      // Check if already has a technician number (from any storage)
+      var existingNumber = currentUser.technicianNumber;
+      if (!existingNumber && currentUser.email) {
+        existingNumber = localStorage.getItem('tecnico_number_' + currentUser.email);
+      }
+      if (!existingNumber) {
+        existingNumber = localStorage.getItem('tecnico_number');
+      }
+      
+      if (existingNumber) {
+        // Restore it to currentUser and display
+        currentUser.technicianNumber = existingNumber;
+        currentUser.technicianNumberDate = localStorage.getItem('tecnico_number_date_' + (currentUser.email || '')) || localStorage.getItem('tecnico_number_date') || 'Fecha no disponible';
+        localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+        updateTechnicianNumberDisplay();
+        alert('Ya tienes un número de técnico asignado: ' + existingNumber);
         return;
       }
 
       // Generate unique technician number
       const now = new Date();
       const year = now.getFullYear();
-      const month = (now.getMonth() + 1).toString().padStart(2, '0');
-      const day = now.getDate().toString().padStart(2, '0');
 
       // Create unique ID based on timestamp and random characters
       const timestamp = Date.now().toString(36).toUpperCase();
       const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
 
-      // Format: TECH-YEAR-SEQUENTIAL-RANDOM (e.g., TECH-2024-N33-A1B2C3)
-      const technicianNumber = `TECH-${year}-N33-${timestamp.slice(-4)}${randomPart}`;
+      // Format: TECH-YEAR-N33-RANDOM (e.g., TECH-2026-N33-A1B2C3)
+      const technicianNumber = 'TECH-' + year + '-N33-' + timestamp.slice(-4) + randomPart;
 
       const dateStr = now.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -7536,9 +7969,16 @@ window.toggleFormula = function(id) {
       currentUser.technicianNumber = technicianNumber;
       currentUser.technicianNumberDate = dateStr;
 
-      // Persist to localStorage with backup to prevent data loss
+      // Persist to localStorage with MULTIPLE keys to prevent data loss
       localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
       localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+      localStorage.setItem('tecnico_number', technicianNumber);
+      localStorage.setItem('tecnico_number_date', dateStr);
+      if (currentUser.email) {
+        localStorage.setItem('tecnico_number_' + currentUser.email, technicianNumber);
+        localStorage.setItem('tecnico_number_date_' + currentUser.email, dateStr);
+      }
+      
       // Sync technician number to Supabase
       supabaseSaveTechnicianNumber(technicianNumber, dateStr);
 
@@ -7546,7 +7986,7 @@ window.toggleFormula = function(id) {
       updateTechnicianNumberDisplay();
 
       // Show success message
-      alert('¡Felicidades! Tu número de técnico ha sido generado:\n\n' + technicianNumber + '\n\nGuarda este número para tu referencia.');
+      alert('¡Felicidades! Tu número de técnico ha sido generado:\n\n' + technicianNumber + '\n\nGuarda este número, es permanente.');
     }
 
     function renderCertificates() {
@@ -10016,27 +10456,64 @@ window.toggleFormula = function(id) {
     let sessionCheckedIn = false;
 
     // ===== AUTO CHECK-OUT ON EXIT =====
-    // When technician closes browser/tab, save state for auto-checkout on next load
+    // When technician closes browser/tab, auto-checkout immediately
     window.addEventListener('beforeunload', function() {
       if (currentAttendanceId && currentCheckInTime) {
+        // Calculate time and save for checkout
+        var checkOutTime = new Date();
+        var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
+        totalMinutes = Math.min(totalMinutes, 240); // Cap at 4 hours max
+        
+        // Save pending checkout info
         localStorage.setItem('attendance_pending_checkout', JSON.stringify({
           id: currentAttendanceId,
           checkIn: currentCheckInTime.toISOString(),
-          closedAt: new Date().toISOString(),
+          checkOut: checkOutTime.toISOString(),
+          totalMinutes: totalMinutes,
           classType: selectedClassType
         }));
+        
+        // Try to send checkout immediately using sendBeacon (works even when page closes)
+        if (navigator.sendBeacon && supabaseClient) {
+          var checkoutData = JSON.stringify({
+            id: currentAttendanceId,
+            check_out: checkOutTime.toISOString(),
+            total_minutes: totalMinutes
+          });
+          // Note: sendBeacon doesn't support auth headers, so we'll rely on the pending checkout
+        }
       }
     });
 
-    // Also handle visibility change (app backgrounded on mobile)
+    // Also handle visibility change (app backgrounded on mobile) - more aggressive
     document.addEventListener('visibilitychange', function() {
       if (document.visibilityState === 'hidden' && currentAttendanceId && currentCheckInTime) {
+        var checkOutTime = new Date();
+        var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
+        totalMinutes = Math.min(totalMinutes, 240);
+        
         localStorage.setItem('attendance_pending_checkout', JSON.stringify({
           id: currentAttendanceId,
           checkIn: currentCheckInTime.toISOString(),
-          closedAt: new Date().toISOString(),
+          checkOut: checkOutTime.toISOString(),
+          totalMinutes: totalMinutes,
           classType: selectedClassType
         }));
+        
+        // Try to do checkout immediately when app goes to background
+        if (supabaseClient && totalMinutes > 0) {
+          supabaseClient.from('attendance')
+            .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
+            .eq('id', currentAttendanceId)
+            .is('check_out', null)
+            .then(function() {
+              console.log('[Attendance] Auto-checkout on visibility hidden');
+              currentAttendanceId = null;
+              currentCheckInTime = null;
+              localStorage.removeItem('attendance_pending_checkout');
+            })
+            .catch(function(e) { console.log('Auto-checkout error:', e); });
+        }
       }
       if (document.visibilityState === 'visible' && currentAttendanceId) {
         updateTimer();
@@ -10055,13 +10532,12 @@ window.toggleFormula = function(id) {
         var pendingCheckout = localStorage.getItem('attendance_pending_checkout');
         if (pendingCheckout) {
           var pc = JSON.parse(pendingCheckout);
-          var closedAt = new Date(pc.closedAt);
-          var checkInTime = new Date(pc.checkIn);
-          var totalMinutes = Math.round((closedAt - checkInTime) / 60000);
-          totalMinutes = Math.min(totalMinutes, 480); // Cap at 8 hours
+          var checkOutTime = pc.checkOut ? new Date(pc.checkOut) : new Date(pc.closedAt);
+          var totalMinutes = pc.totalMinutes || Math.round((checkOutTime - new Date(pc.checkIn)) / 60000);
+          totalMinutes = Math.min(totalMinutes, 240); // Cap at 4 hours max
           
           await supabaseClient.from('attendance')
-            .update({ check_out: closedAt.toISOString(), total_minutes: totalMinutes })
+            .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
             .eq('id', pc.id)
             .is('check_out', null); // Only update if still open
           
@@ -10069,7 +10545,7 @@ window.toggleFormula = function(id) {
           localStorage.removeItem('attendance_pending_checkout');
         }
 
-        // Find any open sessions older than 8 hours (forgotten checkout)
+        // Find any open sessions older than 4 hours (forgotten checkout)
         var activeRes = await supabaseClient.from('attendance')
           .select('*')
           .eq('student_id', user.id)
@@ -10082,11 +10558,11 @@ window.toggleFormula = function(id) {
           var sessionCheckIn = new Date(session.check_in);
           var hoursSince = (new Date() - sessionCheckIn) / (1000 * 60 * 60);
           
-          if (hoursSince > 8) {
-            // Auto-close - cap at 8 hours
-            var autoCloseTime = new Date(sessionCheckIn.getTime() + 8 * 60 * 60 * 1000);
+          if (hoursSince > 4) {
+            // Auto-close - cap at 4 hours
+            var autoCloseTime = new Date(sessionCheckIn.getTime() + 4 * 60 * 60 * 1000);
             await supabaseClient.from('attendance')
-              .update({ check_out: autoCloseTime.toISOString(), total_minutes: 480 })
+              .update({ check_out: autoCloseTime.toISOString(), total_minutes: 240 })
               .eq('id', session.id);
             console.log('[Attendance] Auto-closed stale session:', session.id);
           }

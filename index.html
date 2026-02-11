@@ -714,6 +714,17 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <button onclick="sendPasswordReset()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #3498db, #2980b9); font-size:15px; padding:12px;">📧 ENVIAR LINK DE RECUPERACIÓN</button>
           <div id="forgotPasswordMsg" style="display:none; margin-top:10px; text-align:center; font-size:14px;"></div>
         </div>
+        <!-- Magic Link / OTP Section -->
+        <div style="text-align:center; margin-top:15px; padding-top:15px; border-top:1px solid rgba(243,156,18,0.2);">
+          <p style="color:#94a3b8; font-size:13px; margin-bottom:10px;">¿Problemas para entrar?</p>
+          <button onclick="showMagicLinkBox()" class="btn btn-secondary" style="background:linear-gradient(135deg, #9b59b6, #8e44ad); color:white; font-size:14px; padding:12px; width:100%;">✨ RECIBIR LINK DE ACCESO POR EMAIL</button>
+        </div>
+        <div id="magicLinkBox" style="display:none; margin-top:15px; padding:15px; background:rgba(155,89,182,0.1); border:1px solid rgba(155,89,182,0.3); border-radius:12px;">
+          <p style="color:#9b59b6; font-size:14px; font-weight:bold; margin:0 0 10px; text-align:center;">Ingresa tu correo y te enviamos un link para entrar sin contraseña</p>
+          <input type="email" id="magicLinkEmail" placeholder="tucorreo@ejemplo.com" style="width:100%; padding:12px; border-radius:8px; border:2px solid rgba(155,89,182,0.4); background:white; color:#333; font-size:15px; box-sizing:border-box; margin-bottom:10px;">
+          <button onclick="sendMagicLink()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #9b59b6, #8e44ad); font-size:15px; padding:12px;">📧 ENVIAR LINK DE ACCESO</button>
+          <div id="magicLinkMsg" style="display:none; margin-top:10px; text-align:center; font-size:14px;"></div>
+        </div>
       </div>
 
       <!-- Separador -->
@@ -10107,6 +10118,63 @@ window.toggleFormula = function(id) {
         msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
       }
     }
+
+    // Show Magic Link box
+    function showMagicLinkBox() {
+      var box = document.getElementById('magicLinkBox');
+      box.style.display = box.style.display === 'none' ? 'block' : 'none';
+      var loginEmail = document.getElementById('loginEmail').value;
+      if (loginEmail) {
+        document.getElementById('magicLinkEmail').value = loginEmail;
+      }
+    }
+
+    // Send Magic Link via Supabase OTP
+    async function sendMagicLink() {
+      var email = document.getElementById('magicLinkEmail').value.trim().toLowerCase();
+      var msgDiv = document.getElementById('magicLinkMsg');
+      
+      if (!email) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Por favor ingresa tu correo electrónico';
+        return;
+      }
+
+      if (!supabaseClient) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        return;
+      }
+
+      msgDiv.style.display = 'block';
+      msgDiv.style.color = '#9b59b6';
+      msgDiv.textContent = 'Enviando link de acceso...';
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithOtp({
+          email: email,
+          options: {
+            emailRedirectTo: 'https://maestromario.com'
+          }
+        });
+
+        if (error) {
+          msgDiv.style.color = '#e74c3c';
+          msgDiv.textContent = 'Error: ' + error.message;
+          return;
+        }
+
+        msgDiv.style.color = '#27ae60';
+        msgDiv.innerHTML = '¡Link enviado!<br><span style="font-size:12px;color:#666;">Revisa tu correo (tambien la carpeta de spam)</span>';
+        
+      } catch (err) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = 'Error: ' + err.message;
+      }
+    }
+
     function getClassTypeIcon(type) {
       var icons = { presencial: '🏫', zoom: '📹', computadora: '🖥️', movil: '📱' };
       return icons[type] || '📋';

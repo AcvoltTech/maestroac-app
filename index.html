@@ -7677,10 +7677,30 @@ window.toggleFormula = function(id) {
       const completedLevels = getUserCompletedLevels();
       const data = levelData[highestLevel];
       
-      // Update avatar
+      // Update avatar - preserve photo if exists
       const avatar = document.getElementById('profileAvatar');
       avatar.className = 'profile-avatar ' + data.avatarClass;
-      avatar.textContent = data.avatar;
+      
+      // Only update emoji, don't replace entire content (preserve photo img)
+      const emojiSpan = document.getElementById('profileAvatarEmoji');
+      if (emojiSpan) {
+        emojiSpan.textContent = data.avatar;
+      }
+      
+      // Check if user has photo and show/hide emoji accordingly
+      var emailKey = localStorage.getItem('tecnico_email') || localStorage.getItem('maestroac_email') || 'default';
+      var savedPhoto = localStorage.getItem('maestroac_photo_' + emailKey);
+      if (!savedPhoto) savedPhoto = localStorage.getItem('maestroac_photo_default');
+      
+      var photoImg = document.getElementById('profilePhotoImg');
+      if (savedPhoto && photoImg) {
+        photoImg.src = savedPhoto;
+        photoImg.style.display = 'block';
+        if (emojiSpan) emojiSpan.style.display = 'none';
+      } else {
+        if (photoImg) photoImg.style.display = 'none';
+        if (emojiSpan) emojiSpan.style.display = 'block';
+      }
       
       // Update badge
       const badge = document.getElementById('profileBadge');

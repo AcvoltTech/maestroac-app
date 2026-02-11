@@ -19,7 +19,7 @@
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Maestro ACVOLT - Certificación HVAC Profesional">
-    <meta property="og:description" content="App #1 de certificación HVAC en español. 1,124 preguntas para EPA 608, NATE, OSHA 30. Por Maestro Mario - Nivel 33.">
+    <meta property="og:description" content="App #1 de certificación HVAC en español. 3,500+ preguntas para EPA 608, NATE, OSHA 30. Por Maestro Mario - Nivel 33.">
     <meta property="og:image" content="icons/icon-512.png">
     <meta name="twitter:card" content="summary_large_image">
 
@@ -703,6 +703,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
             <label>Contraseña</label>
             <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
           </div>
+          <!-- Terms Checkbox -->
+          <div style="margin-bottom:15px; padding:12px; background:rgba(243,156,18,0.1); border-radius:10px; border:1px solid rgba(243,156,18,0.3);">
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:13px; color:#64748b;">
+              <input type="checkbox" id="loginTermsCheckbox" style="margin-top:3px; width:18px; height:18px; cursor:pointer;" required>
+              <span>Al continuar, acepto los <a href="terms.html" target="_blank" style="color:#E31937; font-weight:bold;">Términos de Servicio</a> y la <a href="privacy.html" target="_blank" style="color:#E31937; font-weight:bold;">Política de Privacidad</a> de MaestroAC App y ACVOLT Tech School Inc.</span>
+            </label>
+          </div>
           <button type="submit" class="btn btn-primary" style="font-size:18px; padding:16px;">🔓 INICIAR SESIÓN</button>
         </form>
         <div style="text-align:center; margin-top:12px;">
@@ -722,6 +729,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div id="magicLinkBox" style="display:none; margin-top:15px; padding:15px; background:rgba(155,89,182,0.1); border:1px solid rgba(155,89,182,0.3); border-radius:12px;">
           <p style="color:#9b59b6; font-size:14px; font-weight:bold; margin:0 0 10px; text-align:center;">Ingresa tu correo y te enviamos un link para entrar sin contraseña</p>
           <input type="email" id="magicLinkEmail" placeholder="tucorreo@ejemplo.com" style="width:100%; padding:12px; border-radius:8px; border:2px solid rgba(155,89,182,0.4); background:white; color:#333; font-size:15px; box-sizing:border-box; margin-bottom:10px;">
+          <!-- Terms Checkbox for Magic Link -->
+          <div style="margin-bottom:12px; padding:10px; background:rgba(243,156,18,0.1); border-radius:8px;">
+            <label style="display:flex; align-items:flex-start; gap:8px; cursor:pointer; font-size:12px; color:#64748b;">
+              <input type="checkbox" id="magicLinkTermsCheckbox" style="margin-top:2px; width:16px; height:16px; cursor:pointer;">
+              <span>Acepto los <a href="terms.html" target="_blank" style="color:#9b59b6; font-weight:bold;">Términos</a> y <a href="privacy.html" target="_blank" style="color:#9b59b6; font-weight:bold;">Privacidad</a></span>
+            </label>
+          </div>
           <button onclick="sendMagicLink()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #9b59b6, #8e44ad); font-size:15px; padding:12px;">📧 ENVIAR LINK DE ACCESO</button>
           <div id="magicLinkMsg" style="display:none; margin-top:10px; text-align:center; font-size:14px;"></div>
         </div>
@@ -806,6 +820,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           <div class="form-group">
             <label>Confirmar Contraseña *</label>
             <input type="password" id="regPasswordConfirm" placeholder="Repite tu contraseña" required minlength="6">
+          </div>
+          <!-- Terms Checkbox for Registration -->
+          <div style="margin:15px 0; padding:12px; background:rgba(243,156,18,0.1); border-radius:10px; border:1px solid rgba(243,156,18,0.3);">
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:12px; color:#64748b;">
+              <input type="checkbox" id="registerTermsCheckbox" style="margin-top:3px; width:18px; height:18px; cursor:pointer;" required>
+              <span>Al registrarme, acepto los <a href="terms.html" target="_blank" style="color:#E31937; font-weight:bold;">Términos de Servicio</a>, la <a href="privacy.html" target="_blank" style="color:#E31937; font-weight:bold;">Política de Privacidad</a>. Entiendo que el <strong>periodo gratis es de 30 días</strong> y después requiere suscripción ($20/mes o $200/año).</span>
+            </label>
           </div>
           <button type="submit" class="btn btn-primary">Crear Cuenta</button>
         </form>
@@ -3339,25 +3360,68 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       return appAccessList.includes(currentUser.email);
     }
 
+    // Check if free trial (30 days) is still valid
+    function isTrialValid() {
+      if (!currentUser || !currentUser.email) return false;
+      
+      // Get registration date
+      var regDateStr = localStorage.getItem('maestroac_registration_date_' + currentUser.email);
+      if (!regDateStr) {
+        // If no registration date saved, save it now (first time check)
+        regDateStr = new Date().toISOString();
+        localStorage.setItem('maestroac_registration_date_' + currentUser.email, regDateStr);
+      }
+      
+      var regDate = new Date(regDateStr);
+      var now = new Date();
+      var daysSinceRegistration = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
+      
+      // Trial valid for 30 days
+      return daysSinceRegistration <= 30;
+    }
+
+    // Get days remaining in trial
+    function getTrialDaysRemaining() {
+      if (!currentUser || !currentUser.email) return 0;
+      
+      var regDateStr = localStorage.getItem('maestroac_registration_date_' + currentUser.email);
+      if (!regDateStr) return 30;
+      
+      var regDate = new Date(regDateStr);
+      var now = new Date();
+      var daysSinceRegistration = Math.floor((now - regDate) / (1000 * 60 * 60 * 24));
+      
+      return Math.max(0, 30 - daysSinceRegistration);
+    }
+
     function isLevelLocked(levelId) {
-      // Principiante is always open (FREE)
-      if (levelId === 'principiante') return false;
+      // If user has paid access, check level progression
+      if (hasAppAccess()) {
+        // Principiante is always open for paid users
+        if (levelId === 'principiante') return false;
+        
+        // Still need to complete previous level with 100%
+        const levelOrder = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
+        const currentIndex = levelOrder.indexOf(levelId);
+        if (currentIndex <= 0) return false;
 
-      // All other levels require app purchase
-      if (!hasAppAccess()) return true;
+        const previousLevel = levelOrder[currentIndex - 1];
+        const p = progress[previousLevel];
+        if (!p || p.completed === 0) return true;
 
-      // If purchased, still need to complete previous level with 100%
-      const levelOrder = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
-      const currentIndex = levelOrder.indexOf(levelId);
-      if (currentIndex <= 0) return false;
+        const percentage = Math.round((p.score / p.completed) * 100);
+        const allCompleted = p.completed >= p.total;
+        return !(allCompleted && percentage >= 100);
+      }
+      
+      // For free users: Only Principiante available during trial period
+      if (levelId === 'principiante') {
+        // Check if trial is still valid (30 days)
+        return !isTrialValid();
+      }
 
-      const previousLevel = levelOrder[currentIndex - 1];
-      const p = progress[previousLevel];
-      if (!p || p.completed === 0) return true;
-
-      const percentage = Math.round((p.score / p.completed) * 100);
-      const allCompleted = p.completed >= p.total;
-      return !(allCompleted && percentage >= 100);
+      // All other levels require paid subscription
+      return true;
     }
 
     function showPurchaseModal() {
@@ -3367,19 +3431,27 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:25px;max-width:400px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
           <div style="font-size:50px;margin-bottom:10px;">🔓</div>
           <h3 style="color:#f39c12;margin-bottom:8px;">Desbloquea Maestro ACVOLT Completo</h3>
-          <p style="color:#64748b;font-size:14px;margin-bottom:15px;">Acceso a los 5 niveles con 3,500 preguntas, todos los niveles de certificación y progreso ilimitado.</p>
+          <p style="color:#64748b;font-size:14px;margin-bottom:15px;">Acceso a los 5 niveles con 3,500+ preguntas de certificación HVAC.</p>
+          
+          <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.5);border-radius:10px;padding:10px;margin-bottom:15px;">
+            <p style="color:#f39c12;font-size:12px;margin:0;">⚠️ <strong>Nota:</strong> La suscripción incluye SOLO acceso a cuestionarios. NO incluye clases de video, WhatsApp ni Telegram.</p>
+          </div>
           
           <div style="background:rgba(46,204,113,0.15);border:2px solid rgba(46,204,113,0.4);border-radius:15px;padding:15px;margin-bottom:12px;">
-            <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:3px;">💰 MEJOR VALOR</p>
-            <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:3px;">$240 USD</p>
-            <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Pago único - Acceso de por vida</p>
-            <button onclick="window.open('https://buy.stripe.com/3cIbJ1eaj2cUff96If3sI0g','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240 Una Vez</button>
+            <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:3px;">💰 MEJOR VALOR - ANUAL</p>
+            <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:3px;">$200 USD/año</p>
+            <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Ahorra $40 vs mensual - 12 meses de acceso</p>
+            <button onclick="window.open('https://buy.stripe.com/annual200','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $200/Año</button>
           </div>
 
           <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);border-radius:15px;padding:15px;margin-bottom:15px;">
             <p style="color:#1e293b;font-size:22px;font-weight:bold;margin-bottom:3px;">$20 USD/mes</p>
             <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Suscripción mensual - Cancela cuando quieras</p>
             <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">💳 Suscribirme $20/mes</button>
+          </div>
+          
+          <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:10px;margin-bottom:12px;">
+            <p style="color:#e74c3c;font-size:11px;margin:0;">🚫 <strong>Sin reembolsos</strong> después de 3 días de uso de la app.</p>
           </div>
 
           <p style="color:#64748b;font-size:11px;margin-bottom:12px;">Después de pagar, envía tu comprobante por WhatsApp o correo para activar tu acceso en menos de 24 horas.</p>
@@ -10736,6 +10808,15 @@ window.toggleFormula = function(id) {
     async function sendMagicLink() {
       var email = document.getElementById('magicLinkEmail').value.trim().toLowerCase();
       var msgDiv = document.getElementById('magicLinkMsg');
+      var termsCheckbox = document.getElementById('magicLinkTermsCheckbox');
+      
+      // Verify terms accepted
+      if (!termsCheckbox || !termsCheckbox.checked) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.textContent = '⚠️ Debes aceptar los Términos de Servicio y Política de Privacidad';
+        return;
+      }
       
       if (!email) {
         msgDiv.style.display = 'block';
@@ -10771,6 +10852,10 @@ window.toggleFormula = function(id) {
 
         msgDiv.style.color = '#27ae60';
         msgDiv.innerHTML = '¡Link enviado!<br><span style="font-size:12px;color:#666;">Revisa tu correo (tambien la carpeta de spam)</span>';
+        
+        // Save terms acceptance
+        localStorage.setItem('maestroac_terms_accepted', 'true');
+        localStorage.setItem('maestroac_terms_date', new Date().toISOString());
         
       } catch (err) {
         msgDiv.style.color = '#e74c3c';

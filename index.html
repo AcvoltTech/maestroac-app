@@ -12999,7 +12999,7 @@ window.toggleFormula = function(id) {
 <!-- TUTOR IA MAESTRO MARIO WIDGET v2 -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
-#maestroFloat{position:fixed;bottom:90px;right:20px;z-index:900;display:none}
+#maestroFloat{position:fixed;top:50%;right:15px;transform:translateY(-50%);z-index:900;display:none}
 #maestroFloat.visible{display:block}
 .mf-wrap{position:relative;width:70px;height:70px;cursor:pointer}
 .mf-ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid transparent;border-top:3px solid #f97316;border-right:3px solid #f97316;animation:mfSpin 1.5s linear infinite}
@@ -13067,7 +13067,7 @@ window.toggleFormula = function(id) {
 .m-close-btn{background:none;border:1px solid rgba(255,255,255,.2);color:#ccc;padding:6px 16px;border-radius:8px;font-size:13px;cursor:pointer}
 .m-close-btn:hover{border-color:#f97316;color:#f97316}
 .m-powered{font-size:9px;color:#5a6478}.m-powered span{color:#f97316}
-@media(max-width:600px){.m-avatar-img{width:90px;height:90px}.m-banner-title{font-size:22px}.m-stage{height:140px}#maestroFloat{bottom:75px;right:15px}.mf-wrap,.mf-photo{width:60px;height:60px}}
+@media(max-width:600px){.m-avatar-img{width:90px;height:90px}.m-banner-title{font-size:22px}.m-stage{height:140px}#maestroFloat{top:50%;right:10px}.mf-wrap,.mf-photo{width:56px;height:56px}}
 </style>
 
 <div id="maestroFloat">
@@ -13173,13 +13173,15 @@ av.classList.remove('talking');av.classList.add('idle');busy=false;document.getE
 };
 
 function spk(text){
-fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,300)})}).then(function(r){if(!r.ok)throw'e';return r.blob();}).then(function(b){
-if(b.type&&b.type.indexOf('json')>=0)return;
+fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,300)})}).then(function(r){console.log('Voice response status:',r.status);if(!r.ok)throw'status:'+r.status;return r.blob();}).then(function(b){
+console.log('Voice blob type:',b.type,'size:',b.size);
+if(b.size<100||b.type.indexOf('json')>=0)throw'invalid audio';
 var url=URL.createObjectURL(b);aud=new Audio(url);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
-aud.play();aud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');aud=null;};
-}).catch(function(){});
+aud.play().then(function(){console.log('Audio playing');}).catch(function(e){console.log('Audio play blocked:',e);av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');});
+aud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');aud=null;};
+}).catch(function(e){console.log('Voice error:',e);});
 }
 })();
 </script>

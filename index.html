@@ -13188,9 +13188,11 @@ div.className='m-msg '+role;
 var html=content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
 var src=document.getElementById('mAvatarPhoto').src;
 var avH=role==='assistant'?'<img src="'+src+'" alt="M">':'<div style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px">T</div>';
-div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+'</div>';
+var cleanText=content.replace(/\*\*/g,'').replace(/`/g,'').replace(/"/g,'&quot;').replace(/\n/g,' ');
+var spkBtn=role==='assistant'?'<div style="margin-top:8px"><button onclick="playMaestroVoice(this)" data-text="'+cleanText+'" style="background:linear-gradient(135deg,#f97316,#ea580c);border:none;color:white;padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-weight:bold">&#9654; Escuchar</button></div>':'';
+div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+spkBtn+'</div>';
 area.appendChild(div);area.scrollTop=area.scrollHeight;
-if(role==='assistant'){var clean=content.replace(/\*\*/g,'').replace(/`/g,'');spk(clean);}
+if(role==='assistant'){var clean=content.replace(/\*\*/g,'').replace(/`/g,'').replace(/\n/g,' ');spk(clean.substring(0,1500));}
 }
 
 function showT(){var area=document.getElementById('mChatArea'),div=document.createElement('div');div.className='m-typing';div.id='mTp';var src=document.getElementById('mAvatarPhoto').src;div.innerHTML='<div class="m-msg-avatar"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div><div class="m-typing-dots"><span></span><span></span><span></span></div>';area.appendChild(div);area.scrollTop=area.scrollHeight;}
@@ -13209,15 +13211,21 @@ av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.ge
 });
 };
 
-function spk(text){
-fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,1000)})}).then(function(r){if(!r.ok)throw'err';return r.blob();}).then(function(b){
+window.playMaestroVoice=function(btn){
+var text=btn.getAttribute('data-text');
+btn.innerHTML='&#9203; Cargando...';btn.disabled=true;
+spk(text,function(){btn.innerHTML='&#9654; Escuchar';btn.disabled=false;});
+};
+
+function spk(text,cb){
+fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,2000)})}).then(function(r){if(!r.ok)throw'err';return r.blob();}).then(function(b){
 if(b.size<100||b.type.indexOf('json')>=0)return;
 var url=URL.createObjectURL(b);_mAud=new Audio(url);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
-_mAud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');});
-_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');_mAud=null;};
-}).catch(function(e){console.log('Voice error:',e);});
+_mAud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');if(cb)cb();});
+_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');_mAud=null;if(cb)cb();};
+}).catch(function(e){console.log('Voice error:',e);if(cb)cb();});
 }
 })();
 </script>

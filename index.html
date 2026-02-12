@@ -2647,8 +2647,8 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       // Initialize study limit system
       initStudyLimitSystem();
       
-      // Initialize anti-screenshot protection
-      initAntiScreenshot();
+      // Anti-screenshot protection DISABLED
+      // initAntiScreenshot();
     });
 
     // ============================================
@@ -2776,7 +2776,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       breakScreen.id = 'breakScreen';
       breakScreen.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;padding:20px;text-align:center;';
       
-      breakScreen.innerHTML = '<div style="max-width:400px;"><div style="font-size:80px;margin-bottom:20px;">☕</div><h1 style="color:#f39c12;font-size:28px;margin-bottom:15px;">Tiempo de Descanso</h1><p style="color:#94a3b8;font-size:16px;margin-bottom:30px;">Has estudiado por 1 hora continua. Tu cerebro necesita descansar para absorber mejor la informacion.</p><div style="background:rgba(243,156,18,0.1);border:2px solid #f39c12;border-radius:15px;padding:25px;margin-bottom:25px;"><p style="color:#f39c12;font-size:14px;margin-bottom:10px;">Tiempo restante de descanso:</p><div id="breakCountdown" style="color:white;font-size:48px;font-weight:bold;">60:00</div></div><div style="color:#64748b;font-size:14px;"><p style="margin-bottom:10px;">💡 Sugerencias durante tu descanso:</p><ul style="text-align:left;list-style:none;padding:0;"><li style="margin:8px 0;">🚶 Camina un poco</li><li style="margin:8px 0;">💧 Toma agua</li><li style="margin:8px 0;">👀 Descansa la vista</li><li style="margin:8px 0;">🍎 Come algo saludable</li></ul></div><p style="color:#4a5568;font-size:12px;margin-top:25px;">Si no mides, estas adivinando 📏<br>- Maestro Mario</p></div>';
+      breakScreen.innerHTML = '<div style="max-width:400px;"><div style="font-size:80px;margin-bottom:20px;">☕</div><h1 style="color:#f39c12;font-size:28px;margin-bottom:15px;">Tiempo de Descanso</h1><p style="color:#94a3b8;font-size:16px;margin-bottom:30px;">Has estudiado por un buen rato. Tu cerebro necesita descansar para absorber mejor la informacion.</p><div style="background:rgba(243,156,18,0.1);border:2px solid #f39c12;border-radius:15px;padding:25px;margin-bottom:25px;"><p style="color:#f39c12;font-size:14px;margin-bottom:10px;">Tiempo restante de descanso:</p><div id="breakCountdown" style="color:white;font-size:48px;font-weight:bold;">60:00</div></div><button onclick="skipBreak()" style="background:linear-gradient(135deg,#f39c12,#e67e22);color:white;border:none;padding:15px 40px;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:20px;">Continuar Estudiando →</button><div style="color:#64748b;font-size:14px;"><p style="margin-bottom:10px;">💡 Sugerencias durante tu descanso:</p><ul style="text-align:left;list-style:none;padding:0;"><li style="margin:8px 0;">🚶 Camina un poco</li><li style="margin:8px 0;">💧 Toma agua</li><li style="margin:8px 0;">👀 Descansa la vista</li><li style="margin:8px 0;">🍎 Come algo saludable</li></ul></div><p style="color:#4a5568;font-size:12px;margin-top:25px;">Si no mides, estas adivinando 📏<br>- Maestro Mario</p></div>';
       
       document.body.appendChild(breakScreen);
       
@@ -2802,6 +2802,16 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
           updateBreakCountdown();
         }
       }, 1000);
+    }
+
+    function skipBreak() {
+      isOnBreak = false;
+      localStorage.removeItem('maestroac_break_until');
+      localStorage.removeItem('maestroac_study_start');
+      studyStartTime = new Date();
+      localStorage.setItem('maestroac_study_start', studyStartTime.toISOString());
+      var bs = document.getElementById('breakScreen');
+      if (bs) bs.remove();
     }
 
     function updateBreakCountdown() {

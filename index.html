@@ -13084,6 +13084,7 @@ window.toggleFormula = function(id) {
 </div>
 
 <script>
+var _mHist=[],_mBusy=false,_mAud=null;
 (function(){
 var SB_URL='https://htklsowiyjwsjnacnvnr.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
@@ -13146,14 +13147,14 @@ document.getElementById('mBattle').classList.add('active');
 document.getElementById('mBanner').classList.add('show');
 var av=document.getElementById('mAvatarWrap');
 setTimeout(function(){av.classList.add('slide-in');setTimeout(function(){av.classList.remove('slide-in');av.classList.add('idle');},900);},400);
-if(hist.length===0){
+if(_mHist.length===0){
 var n=getName();
 var q=getCurrentQuestion();
 if(q){
 var greeting='\u00bfQu\u00e9 tal, '+n+'? Veo que est\u00e1s en esta pregunta. \u00bfQuieres que te la explique o tienes alguna duda espec\u00edfica?'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting);},1200);
-hist.push({role:'user',content:'Estoy en esta pregunta del examen de pr\u00e1ctica: '+q});
-hist.push({role:'assistant',content:greeting});
+_mHist.push({role:'user',content:'Estoy en esta pregunta del examen de pr\u00e1ctica: '+q});
+_mHist.push({role:'assistant',content:greeting});
 }else{
 var greeting2='\u00bfQu\u00e9 tal, '+n+'? Dime, \u00bfcu\u00e1l es tu pregunta? \u00a1Aqu\u00ed estoy para ayudarte! Aires acondicionados, refrigeraci\u00f3n, el\u00e9ctrico, lo que necesites.'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting2);},1200);
@@ -13164,7 +13165,7 @@ setTimeout(function(){document.getElementById('mInput').focus();},1500);
 };
 
 window.closeMaestroTutor=function(){
-if(aud){aud.pause();aud=null;}
+if(_mAud){_mAud.pause();_mAud=null;}
 document.getElementById('mBattle').classList.remove('active');
 document.getElementById('mBanner').classList.remove('show');
 var av=document.getElementById('mAvatarWrap');av.classList.remove('slide-in','idle','talking');
@@ -13188,25 +13189,25 @@ function hideT(){var el=document.getElementById('mTp');if(el)el.remove();}
 
 window.sendMaestroMsg=function(){
 var inp=document.getElementById('mInput'),txt=inp.value.trim();
-if(!txt||busy)return;busy=true;document.getElementById('mSendBtn').disabled=true;
-addM('user',txt);hist.push({role:'user',content:txt});inp.value='';inp.style.height='auto';
+if(!txt||_mBusy)return;_mBusy=true;document.getElementById('mSendBtn').disabled=true;
+addM('user',txt);_mHist.push({role:'user',content:txt});inp.value='';inp.style.height='auto';
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
 var sys2=SYS+' El nombre del estudiante es: '+getName();
-fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:hist,system:sys2,max_tokens:400})}).then(function(r){return r.json();}).then(function(d){
-hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');hist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
+fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){return r.json();}).then(function(d){
+hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
 }).catch(function(){hideT();addM('assistant','Error de conexion.');}).finally(function(){
-av.classList.remove('talking');av.classList.add('idle');busy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
+av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
 });
 };
 
 function spk(text){
 fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,1000)})}).then(function(r){if(!r.ok)throw'err';return r.blob();}).then(function(b){
 if(b.size<100||b.type.indexOf('json')>=0)return;
-var url=URL.createObjectURL(b);aud=new Audio(url);
+var url=URL.createObjectURL(b);_mAud=new Audio(url);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
-aud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');});
-aud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');aud=null;};
+_mAud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');});
+_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');_mAud=null;};
 }).catch(function(e){console.log('Voice error:',e);});
 }
 })();

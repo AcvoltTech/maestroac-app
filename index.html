@@ -3087,8 +3087,8 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     let currentLevel = null;
     let currentQuestions = [];
     let currentQuestionIndex = 0;
-    let correctAnswers = 0; answeredMap = {};
-    let answeredMap = {}; // tracks which questions have been answered
+    let correctAnswers = 0;
+    var answeredMap = {};
     let startTime = null;
     let certificates = []; // Array to store earned certificates
     let previousScreen = 'welcomeScreen'; // Track previous screen for navigation
@@ -7099,7 +7099,6 @@ window.toggleFormula = function(id) {
       currentQuestions = shuffleArray(quizPool);
       currentQuestionIndex = 0;
       correctAnswers = 0; answeredMap = {};
-      answeredMap = {};
       startTime = Date.now();
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', levelId, null, levelId, 'quizScreen');
@@ -7365,7 +7364,6 @@ window.toggleFormula = function(id) {
       currentQuestions = shuffleArray([...questions.principiante]);
       currentQuestionIndex = 0;
       correctAnswers = 0; answeredMap = {};
-      answeredMap = {};
       startTime = Date.now();
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', 'principiante', null, 'principiante', 'quizScreen');

@@ -13151,9 +13151,9 @@ div.className='m-msg '+role;
 var html=content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
 var src=document.getElementById('mAvatarPhoto').src;
 var avH=role==='assistant'?'<img src="'+src+'" alt="M">':'<div style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px">T</div>';
-div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+'</div>';
+var spkBtn=role==='assistant'?'<div style="margin-top:8px"><button onclick="playVoice(this)" data-text="'+content.replace(/\*\*/g,'').replace(/`/g,'').replace(/"/g,'&quot;').replace(/\n/g,' ')+'" style="background:none;border:1px solid rgba(249,115,22,0.4);color:#f97316;padding:4px 12px;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px"><span>🔊</span> Escuchar</button></div>':'';
+div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+spkBtn+'</div>';
 area.appendChild(div);area.scrollTop=area.scrollHeight;
-if(role==='assistant')spk(content.replace(/\*\*/g,'').replace(/`/g,''));
 }
 
 function showT(){var area=document.getElementById('mChatArea'),div=document.createElement('div');div.className='m-typing';div.id='mTp';var src=document.getElementById('mAvatarPhoto').src;div.innerHTML='<div class="m-msg-avatar"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div><div class="m-typing-dots"><span></span><span></span><span></span></div>';area.appendChild(div);area.scrollTop=area.scrollHeight;}
@@ -13172,7 +13172,13 @@ av.classList.remove('talking');av.classList.add('idle');busy=false;document.getE
 });
 };
 
-function spk(text){
+window.playVoice=function(btn){
+var text=btn.getAttribute('data-text');
+btn.innerHTML='<span>⏳</span> Cargando...';btn.disabled=true;
+spk(text,function(){btn.innerHTML='<span>🔊</span> Escuchar';btn.disabled=false;});
+};
+
+function spk(text,cb){
 fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,1000)})}).then(function(r){console.log('Voice response status:',r.status);if(!r.ok)throw'status:'+r.status;return r.blob();}).then(function(b){
 console.log('Voice blob type:',b.type,'size:',b.size);
 if(b.size<100||b.type.indexOf('json')>=0)throw'invalid audio';
@@ -13180,8 +13186,8 @@ var url=URL.createObjectURL(b);aud=new Audio(url);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
 aud.play().then(function(){console.log('Audio playing');}).catch(function(e){console.log('Audio play blocked:',e);av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');});
-aud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');aud=null;};
-}).catch(function(e){console.log('Voice error:',e);});
+aud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');aud=null;if(cb)cb();};
+}).catch(function(e){console.log('Voice error:',e);if(cb)cb();});
 }
 })();
 </script>

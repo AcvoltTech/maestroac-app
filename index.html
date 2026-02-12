@@ -6453,11 +6453,9 @@ window.onunhandledrejection=function(e){
     }
 
     function showScreen(screenId) {
-      // Clear study timer when leaving study screens
       if (typeof studyTimerInterval !== 'undefined' && studyTimerInterval) {
         var activeScreen = document.querySelector('.screen.active');
         if (activeScreen && (activeScreen.id === 'quizScreen' || activeScreen.id === 'quizOnlyScreen') && screenId !== 'quizScreen' && screenId !== 'quizOnlyScreen') {
-          // Don't clear on quiz-to-quiz navigation
         }
       }
       // Force check-in before accessing any content
@@ -13004,11 +13002,11 @@ window.toggleFormula = function(id) {
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 #maestroFloat{display:none}
-.maestro-q-btn{display:inline-block;margin:14px 0 0;cursor:pointer;position:relative;width:70px;height:70px;float:right}
+.maestro-q-btn{display:block;margin:14px auto 0;cursor:pointer;position:relative;width:55px;height:55px}
 .maestro-q-btn .mf-ring{position:absolute;inset:-4px;border-radius:50%;border:3px solid transparent;border-top:3px solid #f97316;border-right:3px solid #f97316;animation:mfSpin 1.5s linear infinite}
 .maestro-q-btn .mf-ring2{position:absolute;inset:-8px;border-radius:50%;border:2px solid transparent;border-bottom:2px solid #fb923c;border-left:2px solid #fb923c;animation:mfSpin 2.5s linear infinite reverse}
 @keyframes mfSpin{to{transform:rotate(360deg)}}
-.maestro-q-btn .mf-photo{width:70px;height:70px;border-radius:50%;overflow:hidden;box-shadow:0 4px 20px rgba(249,115,22,0.5)}
+.maestro-q-btn .mf-photo{width:55px;height:55px;border-radius:50%;overflow:hidden;box-shadow:0 4px 20px rgba(249,115,22,0.5)}
 .maestro-q-btn .mf-photo img{width:100%;height:100%;object-fit:cover}
 .maestro-q-btn .mf-play{position:absolute;bottom:-2px;right:-2px;width:26px;height:26px;background:linear-gradient(135deg,#f97316,#ea580c);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(249,115,22,0.5);border:2px solid #f8fafc}
 .maestro-q-btn .mf-play svg{width:12px;height:12px;fill:white;margin-left:1px}
@@ -13070,7 +13068,7 @@ window.toggleFormula = function(id) {
 .m-close-btn{background:none;border:1px solid rgba(255,255,255,.2);color:#ccc;padding:6px 16px;border-radius:8px;font-size:13px;cursor:pointer}
 .m-close-btn:hover{border-color:#f97316;color:#f97316}
 .m-powered{font-size:9px;color:#5a6478}.m-powered span{color:#f97316}
-@media(max-width:600px){.m-avatar-img{width:90px;height:90px}.m-banner-title{font-size:22px}.m-stage{height:140px}.maestro-q-btn,.maestro-q-btn .mf-photo{width:56px;height:56px}}
+@media(max-width:600px){.m-avatar-img{width:90px;height:90px}.m-banner-title{font-size:22px}.m-stage{height:140px}.maestro-q-btn{width:48px;height:48px}.maestro-q-btn .mf-photo{width:48px;height:48px}.mf-play{width:20px!important;height:20px!important}.mf-play svg{width:10px!important;height:10px!important}.mf-label{font-size:7px!important}}
 </style>
 
 <div id="maestroFloat" style="display:none"></div>
@@ -13207,9 +13205,7 @@ div.className='m-msg '+role;
 var html=content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
 var src=document.getElementById('mAvatarPhoto').src;
 var avH=role==='assistant'?'<img src="'+src+'" alt="M">':'<div style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px">T</div>';
-var cleanText=content.replace(/\*\*/g,'').replace(/`/g,'').replace(/"/g,'&quot;').replace(/\n/g,' ');
-var spkBtn=role==='assistant'?'<div style="margin-top:8px"><button onclick="playMaestroVoice(this)" data-text="'+cleanText+'" style="background:linear-gradient(135deg,#f97316,#ea580c);border:none;color:white;padding:5px 12px;border-radius:20px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-weight:bold">&#9654; Escuchar</button></div>':'';
-div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+spkBtn+'</div>';
+div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+'</div>';
 area.appendChild(div);area.scrollTop=area.scrollHeight;
 if(role==='assistant'){var clean=content.replace(/\*\*/g,'').replace(/`/g,'').replace(/\n/g,' ');spk(clean.substring(0,1500));}
 }
@@ -13231,22 +13227,39 @@ av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.ge
 });
 };
 
-window.playMaestroVoice=function(btn){
-var text=btn.getAttribute('data-text');
-btn.innerHTML='&#9203; Cargando...';btn.disabled=true;
-spk(text,function(){btn.innerHTML='&#9654; Escuchar';btn.disabled=false;});
-};
-
 function spk(text,cb){
-if(_mAud){_mAud.pause();_mAud.src='';_mAud=null;}
+try{
+if(_mAud){_mAud.pause();_mAud.onended=null;_mAud.onerror=null;_mAud.src='';_mAud=null;}
 if(_mAudUrl){URL.revokeObjectURL(_mAudUrl);_mAudUrl=null;}
-fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,2000)})}).then(function(r){if(!r.ok)throw'err';return r.blob();}).then(function(b){
-if(b.size<100||b.type.indexOf('json')>=0){if(cb)cb();return;}
-_mAudUrl=URL.createObjectURL(b);_mAud=new Audio(_mAudUrl);
+}catch(e){}
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
+fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,2000)})}).then(function(r){
+if(!r.ok)throw new Error('Voice API error');
+return r.blob();
+}).then(function(b){
+if(b.size<100||b.type.indexOf('json')>=0){if(cb)cb();return;}
+_mAudUrl=URL.createObjectURL(b);
+_mAud=new Audio();
+_mAud.oncanplaythrough=function(){
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
-_mAud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');if(cb)cb();});
-_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');URL.revokeObjectURL(_mAudUrl);_mAudUrl=null;_mAud=null;if(cb)cb();};
+_mAud.play().catch(function(){
+av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');
+if(cb)cb();
+});
+};
+_mAud.onended=function(){
+av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');
+try{URL.revokeObjectURL(_mAudUrl);}catch(e){}
+_mAudUrl=null;_mAud=null;
+if(cb)cb();
+};
+_mAud.onerror=function(){
+av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');
+try{URL.revokeObjectURL(_mAudUrl);}catch(e){}
+_mAudUrl=null;_mAud=null;
+if(cb)cb();
+};
+_mAud.src=_mAudUrl;
 }).catch(function(e){console.log('Voice error:',e);if(cb)cb();});
 }
 })();
@@ -13254,7 +13267,7 @@ _mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle')
 
 <!-- SOPORTE MAESTRO MARIO - Chat Simple -->
 <style>
-#soporteBtn{position:fixed;bottom:20px;left:20px;z-index:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:50px;padding:12px 20px;font-size:13px;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,0.4);display:flex;align-items:center;gap:8px;transition:all 0.3s}
+#soporteBtn{position:fixed;bottom:20px;left:20px;z-index:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:50%;width:48px;height:48px;font-size:20px;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.3s;padding:0}
 #soporteBtn:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(37,99,235,0.5)}
 #soporteChat{position:fixed;bottom:70px;left:20px;width:340px;max-height:500px;background:#0d1117;border:1px solid rgba(37,99,235,0.3);border-radius:16px;z-index:901;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 #soporteChat.open{display:flex}
@@ -13275,10 +13288,10 @@ _mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle')
 .sc-typing span{width:6px;height:6px;border-radius:50%;background:#60a5fa;animation:mTy 1.4s ease-in-out infinite}
 .sc-typing span:nth-child(2){animation-delay:.2s}
 .sc-typing span:nth-child(3){animation-delay:.4s}
-@media(max-width:600px){#soporteChat{left:10px;right:10px;width:auto;bottom:65px}#soporteBtn{bottom:15px;left:15px;padding:10px 16px;font-size:12px}}
+@media(max-width:600px){#soporteChat{left:10px;right:10px;width:auto;bottom:70px}#soporteBtn{bottom:15px;left:15px;width:42px;height:42px;font-size:18px}}
 </style>
 
-<button id="soporteBtn" onclick="toggleSoporte()">💬 ¿Necesitas Ayuda?</button>
+<button id="soporteBtn" onclick="toggleSoporte()">💬</button>
 <div id="soporteChat">
 <div class="sc-header">
 <div class="sc-header-title">🛠️ Soporte MaestroAC</div>

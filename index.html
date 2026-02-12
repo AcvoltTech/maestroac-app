@@ -13084,6 +13084,15 @@ window.toggleFormula = function(id) {
 </div>
 
 <script>
+var PROMOS=[
+'\n\n📚 \u00bfQuieres dominar estos temas? Inscr\u00edbete en **La Trinidad del Oficio** \u2014 nuestro programa de 12 meses con Maestro Mario. Info: maestromario.com',
+'\n\n🔧 \u00bfEres t\u00e9cnico independiente? **Trade Master CRM** te ayuda a organizar tus clientes, despacho GPS, estimados y firmas digitales. Vis\u00edtanos: trademastersusa.org',
+'\n\n🎓 **ACVOLT Tech School** \u2014 Clases presenciales y en l\u00ednea de aires acondicionados, calefacci\u00f3n, refrigeraci\u00f3n y el\u00e9ctrico. \u00a1Certif\u00edcate con nosotros! maestromario.com',
+'\n\n🎙\uFE0F Escucha el podcast **Nivel 33** todos los d\u00edas \u2014 liderazgo, t\u00e9cnica, ventas y m\u00e1s para t\u00e9cnicos que quieren crecer. B\u00fascalo en todas las plataformas.',
+'\n\n💼 \u00bfQuieres emprender tu propio negocio de servicios? El programa **Maestros del Oficio** te ense\u00f1a c\u00f3mo. Contacta: maestromario.com',
+'\n\n📲 Descarga la app **MaestroAC** \u2014 ex\u00e1menes de pr\u00e1ctica, videos, niveles y tutor\u00eda con IA. \u00a1Todo gratis para estudiantes de ACVOLT!'
+];
+var _promoIdx=0;
 var _mHist=[],_mBusy=false,_mAud=null;
 (function(){
 var SB_URL='https://htklsowiyjwsjnacnvnr.supabase.co';
@@ -13194,7 +13203,7 @@ addM('user',txt);_mHist.push({role:'user',content:txt});inp.value='';inp.style.h
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
 var sys2=SYS+' El nombre del estudiante es: '+getName();
 fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){return r.json();}).then(function(d){
-hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
+hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');rp+=PROMOS[_promoIdx%PROMOS.length];_promoIdx++;_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
 }).catch(function(){hideT();addM('assistant','Error de conexion.');}).finally(function(){
 av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
 });

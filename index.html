@@ -2846,38 +2846,37 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
       });
       
-      // Detect visibility change (some screenshot tools trigger this)
-      var lastHidden = 0;
-      document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-          lastHidden = Date.now();
-        } else {
-          // If hidden for very short time (< 500ms), might be screenshot
-          if (Date.now() - lastHidden < 500) {
-            // Possibly a screenshot, but don't be too aggressive
+      // Only apply blur protection on desktop, NOT on mobile
+      // Mobile screenshots cannot be blocked and blur causes false triggers
+      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
+        var lastHidden = 0;
+        document.addEventListener('visibilitychange', function() {
+          if (document.hidden) {
+            lastHidden = Date.now();
           }
-        }
-      });
+        });
+        
+        window.addEventListener('blur', function() {
+          document.body.classList.add('window-blurred');
+        });
+        
+        window.addEventListener('focus', function() {
+          document.body.classList.remove('window-blurred');
+        });
+        
+        var blurStyle = document.createElement('style');
+        blurStyle.textContent = '.window-blurred .card, .window-blurred .question-text, .window-blurred .option { filter: blur(5px); transition: filter 0.2s; }';
+        document.head.appendChild(blurStyle);
+      }
       
-      // Blur sensitive content when window loses focus (helps with some tools)
-      window.addEventListener('blur', function() {
-        document.body.classList.add('window-blurred');
-      });
-      
-      window.addEventListener('focus', function() {
-        document.body.classList.remove('window-blurred');
-      });
-      
-      // Add blur style
-      var blurStyle = document.createElement('style');
-      blurStyle.textContent = '.window-blurred .card, .window-blurred .question-text, .window-blurred .option { filter: blur(5px); transition: filter 0.2s; }';
-      document.head.appendChild(blurStyle);
-      
-      // Disable right-click context menu
-      document.addEventListener('contextmenu', function(e) {
-        e.preventDefault();
-        showScreenshotWarning();
-      });
+      // Disable right-click context menu (desktop only)
+      if (!isMobile) {
+        document.addEventListener('contextmenu', function(e) {
+          e.preventDefault();
+          showScreenshotWarning();
+        });
+      }
       
       // Disable drag
       document.addEventListener('dragstart', function(e) {
@@ -10645,13 +10644,16 @@ window.toggleFormula = function(id) {
       }
     });
 
-    // Also handle visibility change (app backgrounded on mobile) - more aggressive
+    // Visibility change - only save pending checkout, do NOT auto-checkout
+    // This prevents kicking students out when they switch apps during class
     document.addEventListener('visibilitychange', function() {
       if (document.visibilityState === 'hidden' && currentAttendanceId && currentCheckInTime) {
         var checkOutTime = new Date();
         var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
         totalMinutes = Math.min(totalMinutes, 240);
         
+        // Only SAVE pending checkout data - do NOT execute checkout
+        // The actual checkout only happens on explicit button click or when session is stale (>4hrs)
         localStorage.setItem('attendance_pending_checkout', JSON.stringify({
           id: currentAttendanceId,
           checkIn: currentCheckInTime.toISOString(),
@@ -10659,24 +10661,13 @@ window.toggleFormula = function(id) {
           totalMinutes: totalMinutes,
           classType: selectedClassType
         }));
-        
-        // Try to do checkout immediately when app goes to background
-        if (supabaseClient && totalMinutes > 0) {
-          supabaseClient.from('attendance')
-            .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
-            .eq('id', currentAttendanceId)
-            .is('check_out', null)
-            .then(function() {
-              console.log('[Attendance] Auto-checkout on visibility hidden');
-              currentAttendanceId = null;
-              currentCheckInTime = null;
-              localStorage.removeItem('attendance_pending_checkout');
-            })
-            .catch(function(e) { console.log('Auto-checkout error:', e); });
-        }
+        console.log('[Attendance] Session saved (app backgrounded) - NOT checking out');
       }
       if (document.visibilityState === 'visible' && currentAttendanceId) {
+        // Restore session when app comes back
+        localStorage.removeItem('attendance_pending_checkout');
         updateTimer();
+        console.log('[Attendance] Session restored (app resumed)');
       }
     });
 
@@ -13113,7 +13104,7 @@ var SB_URL='https://htklsowiyjwsjnacnvnr.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
 var CHAT=SB_URL+'/functions/v1/tutor-ia-chat';
 var VOICE=SB_URL+'/functions/v1/tutor-ia-voice';
-var SYS='Eres Maestro Mario (Mario Flores Corona), instructor master con m\u00e1s de 25 a\u00f1os de experiencia en HVAC, Refrigeraci\u00f3n y Sistemas El\u00e9ctricos. Hablas en espa\u00f1ol, directo pero amable, como un maestro de taller. Usas analog\u00edas pr\u00e1cticas del campo. La frase \"Si no mides, est\u00e1s adivinando\" SOLO la usas cuando el estudiante hace preguntas de DIAGN\u00d3STICO, no la repitas en cada respuesta. Seguridad PRIMERO siempre. M\u00e1ximo 150 palabras. Usa **negritas** para conceptos clave. Usa puntuaci\u00f3n correcta: signos de interrogaci\u00f3n \u00bfpregunta?, signos de exclamaci\u00f3n \u00a1as\u00ed!, comas, puntos, acentos. El estudiante puede preguntar sobre CUALQUIER tema.';
+var SYS='Eres Maestro Mario (Mario Flores Corona), instructor master con m\u00e1s de 25 a\u00f1os de experiencia en Aires Acondicionados, Calefacci\u00f3n, Refrigeraci\u00f3n y Sistemas El\u00e9ctricos. Hablas en espa\u00f1ol, directo pero amable, como un maestro de taller. Usas analog\u00edas pr\u00e1cticas del campo. NUNCA uses palabras en ingl\u00e9s, traduce todo al espa\u00f1ol. En vez de HVAC di \"aires acondicionados y calefacci\u00f3n\". En vez de compressor di \"compresor\". En vez de condenser di \"condensador\". La frase \"Si no mides, est\u00e1s adivinando\" SOLO la usas cuando el estudiante hace preguntas de DIAGN\u00d3STICO, no la repitas en cada respuesta. Seguridad PRIMERO siempre. M\u00e1ximo 150 palabras. Usa **negritas** para conceptos clave. Usa puntuaci\u00f3n correcta: \u00bfpreguntas?, \u00a1exclamaciones!, acentos, \u00f1. Siempre especifica unidades completas: grados Fahrenheit o grados Celsius, nunca solo grados. El estudiante puede preguntar sobre CUALQUIER tema.';
 var hist=[],busy=false,aud=null;
 var screens=['studySectionsScreen','studyCategoryDetailScreen','quizScreen','quizOnlyScreen','videoPlayerScreen','levelsScreen','certCourseScreen'];
 // Show/hide maestro button based on active screen - use MutationObserver instead of overriding showScreen
@@ -13122,7 +13113,16 @@ var _obs=new MutationObserver(checkMaestroVisibility);
 document.addEventListener('DOMContentLoaded',function(){var container=document.querySelector('.container');if(container)_obs.observe(container,{attributes:true,subtree:true,attributeFilter:['class']});});
 setInterval(checkMaestroVisibility,1000);
 
-function getName(){try{var s=localStorage.getItem('maestroac_user');if(s){var u=JSON.parse(s);return u.name||u.nombre||u.firstName||'companero';}}catch(e){}return 'companero';}
+function getName(){
+try{
+if(window.currentUser&&window.currentUser.nombre)return window.currentUser.nombre.split(' ')[0];
+var el=document.getElementById('userGreeting');
+if(el&&el.textContent){var t=el.textContent.replace('Hola, ','').trim();if(t&&t.length>1)return t;}
+var s=localStorage.getItem('maestroac_email');
+if(s)return s.split('@')[0];
+}catch(e){}
+return 'compa\u00f1ero';
+}
 
 window.openMaestroTutor=function(){
 var fl=document.getElementById('mFlash');fl.classList.add('active');setTimeout(function(){fl.classList.remove('active');},800);
@@ -13131,7 +13131,7 @@ document.getElementById('mBattle').classList.add('active');
 document.getElementById('mBanner').classList.add('show');
 var av=document.getElementById('mAvatarWrap');
 setTimeout(function(){av.classList.add('slide-in');setTimeout(function(){av.classList.remove('slide-in');av.classList.add('idle');},900);},400);
-if(hist.length===0){var n=getName();setTimeout(function(){addM('assistant','\u00bfQu\u00e9 tal, '+n+'? Dime, \u00bfcu\u00e1l es tu pregunta? \u00a1Aqu\u00ed estoy para ayudarte! HVAC, refrigeraci\u00f3n, el\u00e9ctrico, lo que necesites.');},1200);}
+if(hist.length===0){var n=getName();setTimeout(function(){addM('assistant','\u00bfQu\u00e9 tal, '+n+'? Dime, \u00bfcu\u00e1l es tu pregunta? \u00a1Aqu\u00ed estoy para ayudarte! Aires acondicionados, refrigeraci\u00f3n, el\u00e9ctrico, lo que necesites.');},1200);}
 setTimeout(function(){document.getElementById('mInput').focus();},1500);
 },500);
 };
@@ -13151,7 +13151,7 @@ div.className='m-msg '+role;
 var html=content.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\n/g,'<br>');
 var src=document.getElementById('mAvatarPhoto').src;
 var avH=role==='assistant'?'<img src="'+src+'" alt="M">':'<div style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px">T</div>';
-var spkBtn=role==='assistant'?'<div style="margin-top:8px"><button onclick="playVoice(this)" data-text="'+content.replace(/\*\*/g,'').replace(/`/g,'').replace(/"/g,'&quot;').replace(/\n/g,' ')+'" style="background:none;border:1px solid rgba(249,115,22,0.4);color:#f97316;padding:4px 12px;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px"><span>🔊</span> Escuchar</button></div>':'';
+var spkBtn=role==='assistant'?'<div style="margin-top:8px"><button onclick="playVoice(this)" data-text="'+content.replace(/\*\*/g,'').replace(/`/g,'').replace(/"/g,'&quot;').replace(/\n/g,' ')+'" style="background:linear-gradient(135deg,#f97316,#ea580c);border:none;color:white;padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-weight:bold;box-shadow:0 2px 8px rgba(249,115,22,0.3)"><span>🔊</span> Escuchar</button></div>':'';
 div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+spkBtn+'</div>';
 area.appendChild(div);area.scrollTop=area.scrollHeight;
 }

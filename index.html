@@ -1714,7 +1714,10 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <strong id="feedbackTitle">Correcto!</strong>
         <p id="feedbackText"></p>
       </div>
-      <button class="btn btn-primary" id="nextBtn" style="display:none; margin-top:20px;" onclick="nextQuestion()">Siguiente →</button>
+      <div id="quizNavBtns" style="display:none; margin-top:20px; gap:10px; justify-content:center;">
+        <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display:none; padding:12px 24px; font-size:15px;">← Anterior</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="padding:12px 24px; font-size:15px;">Siguiente →</button>
+      </div>
     </div>
 
     <!-- Results Screen -->
@@ -7396,7 +7399,7 @@ window.toggleFormula = function(id) {
       });
 
       document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
-      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('quizNavBtns').style.display = 'none';
 
       // Update lastQuizState when question view loads
       updateLastQuizState();
@@ -7460,7 +7463,7 @@ window.toggleFormula = function(id) {
       }
       document.getElementById('feedbackText').textContent = q.explanation;
       feedback.classList.add('show');
-      document.getElementById('nextBtn').style.display = 'block';
+      document.getElementById('quizNavBtns').style.display = 'flex'; document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
       // Track quiz question answered as lastActivity
       updateLastActivity('quiz', currentLevel, null, currentLevel, 'quizScreen');
       logActivity('answer', currentLevel + ' - ' + (originalIndex === q.correct ? 'correct' : 'incorrect'));
@@ -7476,8 +7479,14 @@ window.toggleFormula = function(id) {
       if (currentQuestionIndex >= currentQuestions.length) {
         endQuiz();
       } else {
-        // Update lastQuizState when user clicks "Siguiente"
         updateLastQuizState();
+        showQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
         showQuestion();
       }
     }
@@ -12969,12 +12978,7 @@ window.toggleFormula = function(id) {
       </button>
     </div>
 
-    <!-- Back to App Button (shows when user has an active session) -->
-    <div id="backToAppBtn" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:500;">
-      <button onclick="returnToApp()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; padding:14px 30px; border-radius:50px; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(99,102,241,0.5); display:flex; align-items:center; gap:8px;">
-        ← Volver al App
-      </button>
-    </div>
+<!-- backToAppBtn ELIMINADO -->
 
     <!-- Notification Panel -->
     <div class="notif-panel" id="notifPanel">

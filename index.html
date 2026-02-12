@@ -13113,7 +13113,7 @@ var SB_URL='https://htklsowiyjwsjnacnvnr.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
 var CHAT=SB_URL+'/functions/v1/tutor-ia-chat';
 var VOICE=SB_URL+'/functions/v1/tutor-ia-voice';
-var SYS='Eres Maestro Mario (Mario Flores Corona), instructor master con mas de 25 anos de experiencia en HVAC, Refrigeracion y Sistemas Electricos. Hablas en espanol, directo pero amable, como un maestro de taller. Usas analogias practicas del campo. La frase Si no mides estas adivinando SOLO la usas cuando el estudiante hace preguntas de DIAGNOSTICO, no la repitas en cada respuesta. Seguridad PRIMERO siempre. Maximo 200 palabras. Usa **negritas** para conceptos clave. El estudiante puede preguntar sobre CUALQUIER tema.';
+var SYS='Eres Maestro Mario (Mario Flores Corona), instructor master con m\u00e1s de 25 a\u00f1os de experiencia en HVAC, Refrigeraci\u00f3n y Sistemas El\u00e9ctricos. Hablas en espa\u00f1ol, directo pero amable, como un maestro de taller. Usas analog\u00edas pr\u00e1cticas del campo. La frase \"Si no mides, est\u00e1s adivinando\" SOLO la usas cuando el estudiante hace preguntas de DIAGN\u00d3STICO, no la repitas en cada respuesta. Seguridad PRIMERO siempre. M\u00e1ximo 150 palabras. Usa **negritas** para conceptos clave. Usa puntuaci\u00f3n correcta: signos de interrogaci\u00f3n \u00bfpregunta?, signos de exclamaci\u00f3n \u00a1as\u00ed!, comas, puntos, acentos. El estudiante puede preguntar sobre CUALQUIER tema.';
 var hist=[],busy=false,aud=null;
 var screens=['studySectionsScreen','studyCategoryDetailScreen','quizScreen','quizOnlyScreen','videoPlayerScreen','levelsScreen','certCourseScreen'];
 // Show/hide maestro button based on active screen - use MutationObserver instead of overriding showScreen
@@ -13131,7 +13131,7 @@ document.getElementById('mBattle').classList.add('active');
 document.getElementById('mBanner').classList.add('show');
 var av=document.getElementById('mAvatarWrap');
 setTimeout(function(){av.classList.add('slide-in');setTimeout(function(){av.classList.remove('slide-in');av.classList.add('idle');},900);},400);
-if(hist.length===0){var n=getName();setTimeout(function(){addM('assistant','Que tal, '+n+'? Dime, cual es tu pregunta? Aqui estoy para ayudarte. HVAC, refrigeracion, electrico, lo que necesites.');},1200);}
+if(hist.length===0){var n=getName();setTimeout(function(){addM('assistant','\u00bfQu\u00e9 tal, '+n+'? Dime, \u00bfcu\u00e1l es tu pregunta? \u00a1Aqu\u00ed estoy para ayudarte! HVAC, refrigeraci\u00f3n, el\u00e9ctrico, lo que necesites.');},1200);}
 setTimeout(function(){document.getElementById('mInput').focus();},1500);
 },500);
 };
@@ -13153,7 +13153,7 @@ var src=document.getElementById('mAvatarPhoto').src;
 var avH=role==='assistant'?'<img src="'+src+'" alt="M">':'<div style="width:28px;height:28px;background:#2563eb;border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px">T</div>';
 div.innerHTML='<div class="m-msg-avatar">'+avH+'</div><div class="m-msg-bubble">'+html+'</div>';
 area.appendChild(div);area.scrollTop=area.scrollHeight;
-if(role==='assistant'&&content.length<500)spk(content.replace(/\*\*/g,'').replace(/`/g,''));
+if(role==='assistant')spk(content.replace(/\*\*/g,'').replace(/`/g,''));
 }
 
 function showT(){var area=document.getElementById('mChatArea'),div=document.createElement('div');div.className='m-typing';div.id='mTp';var src=document.getElementById('mAvatarPhoto').src;div.innerHTML='<div class="m-msg-avatar"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div><div class="m-typing-dots"><span></span><span></span><span></span></div>';area.appendChild(div);area.scrollTop=area.scrollHeight;}
@@ -13173,7 +13173,7 @@ av.classList.remove('talking');av.classList.add('idle');busy=false;document.getE
 };
 
 function spk(text){
-fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,300)})}).then(function(r){console.log('Voice response status:',r.status);if(!r.ok)throw'status:'+r.status;return r.blob();}).then(function(b){
+fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,1000)})}).then(function(r){console.log('Voice response status:',r.status);if(!r.ok)throw'status:'+r.status;return r.blob();}).then(function(b){
 console.log('Voice blob type:',b.type,'size:',b.size);
 if(b.size<100||b.type.indexOf('json')>=0)throw'invalid audio';
 var url=URL.createObjectURL(b);aud=new Audio(url);

@@ -2531,6 +2531,16 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
   </div>
 
   <script>
+window.onerror=function(msg,src,line,col,err){
+  console.error('[MaestroAC Error]',msg,'Line:',line);
+  return true;
+};
+window.onunhandledrejection=function(e){
+  console.error('[MaestroAC Promise]',e.reason);
+  e.preventDefault();
+};
+</script>
+<script>
     // ============================================
     // PROFILE PHOTO
     function handleProfilePhoto(i){
@@ -6443,6 +6453,13 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     }
 
     function showScreen(screenId) {
+      // Clear study timer when leaving study screens
+      if (typeof studyTimerInterval !== 'undefined' && studyTimerInterval) {
+        var activeScreen = document.querySelector('.screen.active');
+        if (activeScreen && (activeScreen.id === 'quizScreen' || activeScreen.id === 'quizOnlyScreen') && screenId !== 'quizScreen' && screenId !== 'quizOnlyScreen') {
+          // Don't clear on quiz-to-quiz navigation
+        }
+      }
       // Force check-in before accessing any content
       const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipLoginScreen', 'membershipZoneScreen'];
       if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
@@ -13093,7 +13110,7 @@ var PROMOS=[
 '\n\n📲 Descarga la app **MaestroAC** \u2014 ex\u00e1menes de pr\u00e1ctica, videos, niveles y tutor\u00eda con IA. \u00a1Todo gratis para estudiantes de ACVOLT!'
 ];
 var _promoIdx=0;
-var _mHist=[],_mBusy=false,_mAud=null;
+var _mHist=[],_mBusy=false,_mAud=null,_mAudUrl=null;
 (function(){
 var SB_URL='https://htklsowiyjwsjnacnvnr.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
@@ -13126,7 +13143,8 @@ if(!b.closest('.screen.active'))b.remove();
 });
 }
 
-setInterval(function(){cleanOldBtns();injectBtn();},1000);
+var _mqObserver=new MutationObserver(function(){cleanOldBtns();injectBtn();});
+_mqObserver.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
 
 function getName(){
 try{
@@ -13174,7 +13192,8 @@ setTimeout(function(){document.getElementById('mInput').focus();},1500);
 };
 
 window.closeMaestroTutor=function(){
-if(_mAud){_mAud.pause();_mAud=null;}
+if(_mAud){_mAud.pause();_mAud.src='';_mAud=null;}
+if(_mAudUrl){URL.revokeObjectURL(_mAudUrl);_mAudUrl=null;}
 document.getElementById('mBattle').classList.remove('active');
 document.getElementById('mBanner').classList.remove('show');
 var av=document.getElementById('mAvatarWrap');av.classList.remove('slide-in','idle','talking');
@@ -13201,10 +13220,11 @@ function hideT(){var el=document.getElementById('mTp');if(el)el.remove();}
 window.sendMaestroMsg=function(){
 var inp=document.getElementById('mInput'),txt=inp.value.trim();
 if(!txt||_mBusy)return;_mBusy=true;document.getElementById('mSendBtn').disabled=true;
-addM('user',txt);_mHist.push({role:'user',content:txt});inp.value='';inp.style.height='auto';
+addM('user',txt);_mHist.push({role:'user',content:txt});if(_mHist.length>20)_mHist=_mHist.slice(-20);inp.value='';inp.style.height='auto';
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
 var sys2=SYS+' El nombre del estudiante es: '+getName();
-fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){return r.json();}).then(function(d){
+var ctrl=new AbortController();var tid=setTimeout(function(){ctrl.abort();},30000);
+fetch(CHAT,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){clearTimeout(tid);return r.json();}).then(function(d){
 hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');rp+=PROMOS[_promoIdx%PROMOS.length];_promoIdx++;_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
 }).catch(function(){hideT();addM('assistant','Error de conexion.');}).finally(function(){
 av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
@@ -13218,13 +13238,15 @@ spk(text,function(){btn.innerHTML='&#9654; Escuchar';btn.disabled=false;});
 };
 
 function spk(text,cb){
+if(_mAud){_mAud.pause();_mAud.src='';_mAud=null;}
+if(_mAudUrl){URL.revokeObjectURL(_mAudUrl);_mAudUrl=null;}
 fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,2000)})}).then(function(r){if(!r.ok)throw'err';return r.blob();}).then(function(b){
-if(b.size<100||b.type.indexOf('json')>=0)return;
-var url=URL.createObjectURL(b);_mAud=new Audio(url);
+if(b.size<100||b.type.indexOf('json')>=0){if(cb)cb();return;}
+_mAudUrl=URL.createObjectURL(b);_mAud=new Audio(_mAudUrl);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');
 av.classList.remove('idle');av.classList.add('talking');img.classList.add('speaking');wav.classList.add('active');
 _mAud.play().catch(function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');if(cb)cb();});
-_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');_mAud=null;if(cb)cb();};
+_mAud.onended=function(){av.classList.remove('talking');av.classList.add('idle');img.classList.remove('speaking');wav.classList.remove('active');URL.revokeObjectURL(_mAudUrl);_mAudUrl=null;_mAud=null;if(cb)cb();};
 }).catch(function(e){console.log('Voice error:',e);if(cb)cb();});
 }
 })();
@@ -13302,8 +13324,9 @@ function hideScTyping(){var el=document.getElementById('scTp');if(el)el.remove()
 window.sendSoporte=function(){
 var inp=document.getElementById('scInput'),txt=inp.value.trim();
 if(!txt||scBusy)return;scBusy=true;
-addSc('user',txt);scHist.push({role:'user',content:txt});inp.value='';showScTyping();
-fetch(SC_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SC_KEY,'apikey':SC_KEY},body:JSON.stringify({messages:scHist,system:SC_SYS,max_tokens:300})}).then(function(r){return r.json();}).then(function(d){
+addSc('user',txt);scHist.push({role:'user',content:txt});if(scHist.length>20)scHist=scHist.slice(-20);inp.value='';showScTyping();
+var sCtrl=new AbortController();var sTid=setTimeout(function(){sCtrl.abort();},30000);
+fetch(SC_URL,{method:'POST',signal:sCtrl.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+SC_KEY,'apikey':SC_KEY},body:JSON.stringify({messages:scHist,system:SC_SYS,max_tokens:300})}).then(function(r){clearTimeout(sTid);return r.json();}).then(function(d){
 hideScTyping();
 if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');scHist.push({role:'assistant',content:rp});addSc('bot',rp);}
 else{addSc('bot','Hubo un problema, intenta de nuevo.');}

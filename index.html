@@ -13116,8 +13116,11 @@ var VOICE=SB_URL+'/functions/v1/tutor-ia-voice';
 var SYS='Eres Maestro Mario (Mario Flores Corona), instructor master con mas de 25 anos de experiencia en HVAC, Refrigeracion y Sistemas Electricos. Hablas en espanol, directo pero amable, como un maestro de taller. Usas analogias practicas del campo. La frase Si no mides estas adivinando SOLO la usas cuando el estudiante hace preguntas de DIAGNOSTICO, no la repitas en cada respuesta. Seguridad PRIMERO siempre. Maximo 200 palabras. Usa **negritas** para conceptos clave. El estudiante puede preguntar sobre CUALQUIER tema.';
 var hist=[],busy=false,aud=null;
 var screens=['studySectionsScreen','studyCategoryDetailScreen','quizScreen','quizOnlyScreen','videoPlayerScreen','levelsScreen','certCourseScreen'];
-var _show=window.showScreen;
-if(_show){window.showScreen=function(id){_show(id);var b=document.getElementById('maestroFloat');if(b)b.className=screens.indexOf(id)>=0?'visible':'';}}
+// Show/hide maestro button based on active screen - use MutationObserver instead of overriding showScreen
+function checkMaestroVisibility(){var b=document.getElementById('maestroFloat');if(!b)return;var active=document.querySelector('.screen.active');if(active&&screens.indexOf(active.id)>=0){b.className='visible';}else{b.className='';}}
+var _obs=new MutationObserver(checkMaestroVisibility);
+document.addEventListener('DOMContentLoaded',function(){var container=document.querySelector('.container');if(container)_obs.observe(container,{attributes:true,subtree:true,attributeFilter:['class']});});
+setInterval(checkMaestroVisibility,1000);
 
 function getName(){try{var s=localStorage.getItem('maestroac_user');if(s){var u=JSON.parse(s);return u.name||u.nombre||u.firstName||'companero';}}catch(e){}return 'companero';}
 
@@ -13162,7 +13165,7 @@ if(!txt||busy)return;busy=true;document.getElementById('mSendBtn').disabled=true
 addM('user',txt);hist.push({role:'user',content:txt});inp.value='';inp.style.height='auto';
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
 var sys2=SYS+' El nombre del estudiante es: '+getName();
-fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},body:JSON.stringify({messages:hist,system:sys2,max_tokens:800})}).then(function(r){return r.json();}).then(function(d){
+fetch(CHAT,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:hist,system:sys2,max_tokens:800})}).then(function(r){return r.json();}).then(function(d){
 hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');hist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
 }).catch(function(){hideT();addM('assistant','Error de conexion.');}).finally(function(){
 av.classList.remove('talking');av.classList.add('idle');busy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
@@ -13170,7 +13173,7 @@ av.classList.remove('talking');av.classList.add('idle');busy=false;document.getE
 };
 
 function spk(text){
-fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},body:JSON.stringify({text:text.substring(0,300)})}).then(function(r){if(!r.ok)throw'e';return r.blob();}).then(function(b){
+fetch(VOICE,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({text:text.substring(0,300)})}).then(function(r){if(!r.ok)throw'e';return r.blob();}).then(function(b){
 if(b.type&&b.type.indexOf('json')>=0)return;
 var url=URL.createObjectURL(b);aud=new Audio(url);
 var av=document.getElementById('mAvatarWrap'),img=document.getElementById('mAvatarImg'),wav=document.getElementById('mWaves');

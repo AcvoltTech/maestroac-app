@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1714,10 +1715,11 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <strong id="feedbackTitle">Correcto!</strong>
         <p id="feedbackText"></p>
       </div>
-      <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
-        <button class="btn btn-secondary" id="prevBtn" style="display:none; padding:12px 24px; font-size:15px;" onclick="prevQuestion()">← Anterior</button>
-        <button class="btn btn-primary" id="nextBtn" style="display:none; padding:12px 24px; font-size:15px;" onclick="nextQuestion()">Siguiente →</button>
+      <div id="quizNavBar" style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap;">
+        <button class="btn btn-secondary" id="prevBtn" onclick="prevQuestion()" style="padding:12px 20px; font-size:14px; flex:1; max-width:160px;">← Anterior</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="padding:12px 20px; font-size:14px; flex:1; max-width:160px;">Siguiente →</button>
       </div>
+      <div id="flagCounter" style="text-align:center; margin-top:8px; font-size:12px; color:#94a3b8;"></div>
     </div>
 
     <!-- Results Screen -->
@@ -3086,6 +3088,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     let currentQuestions = [];
     let currentQuestionIndex = 0;
     let correctAnswers = 0;
+    let answeredMap = {}; // tracks which questions have been answered
     let startTime = null;
     let certificates = []; // Array to store earned certificates
     let previousScreen = 'welcomeScreen'; // Track previous screen for navigation
@@ -7096,6 +7099,7 @@ window.toggleFormula = function(id) {
       currentQuestions = shuffleArray(quizPool);
       currentQuestionIndex = 0;
       correctAnswers = 0;
+      answeredMap = {};
       startTime = Date.now();
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', levelId, null, levelId, 'quizScreen');
@@ -7361,6 +7365,7 @@ window.toggleFormula = function(id) {
       currentQuestions = shuffleArray([...questions.principiante]);
       currentQuestionIndex = 0;
       correctAnswers = 0;
+      answeredMap = {};
       startTime = Date.now();
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', 'principiante', null, 'principiante', 'quizScreen');
@@ -7374,35 +7379,67 @@ window.toggleFormula = function(id) {
       document.getElementById('questionCategory').textContent = q.category;
       document.getElementById('questionText').textContent = q.q;
 
-      // Update study time indicator
       updateStudyTimeIndicator();
 
       const container = document.getElementById('optionsContainer');
       container.innerHTML = '';
       const letters = ['A', 'B', 'C', 'D'];
 
-      // Shuffle options: create array of indices, shuffle them
-      const indices = [0, 1, 2, 3];
-      for (let i = indices.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [indices[i], indices[j]] = [indices[j], indices[i]];
+      if (!q._shuffledIndices) {
+        const idx = [0, 1, 2, 3];
+        for (let i = idx.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [idx[i], idx[j]] = [idx[j], idx[i]];
+        }
+        q._shuffledIndices = idx;
       }
-      // Store shuffled mapping so selectAnswer knows which is correct
-      q._shuffledIndices = indices;
+      const indices = q._shuffledIndices;
+      const wasAnswered = answeredMap[currentQuestionIndex];
 
       indices.forEach((origIdx, displayIdx) => {
         const div = document.createElement('div');
         div.className = 'option';
         div.innerHTML = `<div class="option-letter">${letters[displayIdx]}</div><span>${q.options[origIdx]}</span>`;
-        div.onclick = () => selectAnswer(displayIdx);
+        if (wasAnswered) {
+          div.classList.add('disabled');
+          const correctDI = indices.indexOf(q.correct);
+          if (displayIdx === correctDI) div.classList.add('correct');
+          else if (displayIdx === wasAnswered.chosen && !wasAnswered.isCorrect) div.classList.add('incorrect');
+        } else {
+          div.onclick = () => selectAnswer(displayIdx);
+        }
         container.appendChild(div);
       });
 
-      document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
-      document.getElementById('nextBtn').style.display = 'none'; document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+      const feedback = document.getElementById('feedback');
+      if (wasAnswered) {
+        feedback.classList.add('show', wasAnswered.isCorrect ? 'correct' : 'incorrect');
+        document.getElementById('feedbackTitle').textContent = wasAnswered.isCorrect ? '\u2713 \u00a1Correcto!' : '\u2717 Incorrecto';
+        document.getElementById('feedbackText').textContent = q.explanation;
+      } else {
+        feedback.classList.remove('show', 'correct', 'incorrect');
+      }
 
-      // Update lastQuizState when question view loads
+      document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+      document.getElementById('nextBtn').textContent = currentQuestionIndex < currentQuestions.length - 1 ? 'Siguiente \u2192' : 'Terminar Examen';
+      updateFlagCounter();
       updateLastQuizState();
+    }
+
+    function updateFlagCounter() {
+      var total = currentQuestions.length;
+      var answered = Object.keys(answeredMap).length;
+      var pending = total - answered;
+      var el = document.getElementById('flagCounter');
+      if (el) {
+        if (pending > 0 && answered > 0) {
+          el.innerHTML = '\ud83d\udfe2 ' + answered + ' contestadas | \ud83d\udd34 ' + pending + ' sin contestar';
+        } else if (pending === 0) {
+          el.innerHTML = '\u2705 Todas contestadas';
+        } else {
+          el.textContent = '';
+        }
+      }
     }
 
     function updateStudyTimeIndicator() {
@@ -7440,20 +7477,24 @@ window.toggleFormula = function(id) {
     }
 
     function selectAnswer(displayIndex) {
+      if (answeredMap[currentQuestionIndex]) return; // already answered
       const q = currentQuestions[currentQuestionIndex];
       const options = document.querySelectorAll('.option');
       const originalIndex = q._shuffledIndices[displayIndex];
       const correctDisplayIndex = q._shuffledIndices.indexOf(q.correct);
+      const isCorrect = originalIndex === q.correct;
+
+      answeredMap[currentQuestionIndex] = { chosen: displayIndex, isCorrect: isCorrect };
 
       options.forEach((opt, i) => {
         opt.classList.add('disabled');
         opt.onclick = null;
         if (i === correctDisplayIndex) opt.classList.add('correct');
-        else if (i === displayIndex && originalIndex !== q.correct) opt.classList.add('incorrect');
+        else if (i === displayIndex && !isCorrect) opt.classList.add('incorrect');
       });
 
       const feedback = document.getElementById('feedback');
-      if (originalIndex === q.correct) {
+      if (isCorrect) {
         correctAnswers++;
         feedback.classList.add('correct');
         document.getElementById('feedbackTitle').textContent = '✓ ¡Correcto!';
@@ -7463,7 +7504,7 @@ window.toggleFormula = function(id) {
       }
       document.getElementById('feedbackText').textContent = q.explanation;
       feedback.classList.add('show');
-      document.getElementById('nextBtn').style.display = 'block'; document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+      updateFlagCounter();
       // Track quiz question answered as lastActivity
       updateLastActivity('quiz', currentLevel, null, currentLevel, 'quizScreen');
       logActivity('answer', currentLevel + ' - ' + (originalIndex === q.correct ? 'correct' : 'incorrect'));
@@ -7475,10 +7516,21 @@ window.toggleFormula = function(id) {
     }
 
     function nextQuestion() {
-      currentQuestionIndex++;
-      if (currentQuestionIndex >= currentQuestions.length) {
+      if (currentQuestionIndex >= currentQuestions.length - 1) {
+        // Last question - check if all answered
+        var pending = currentQuestions.length - Object.keys(answeredMap).length;
+        if (pending > 0) {
+          // Find first unanswered
+          if (confirm('¡Te faltan ' + pending + ' preguntas por contestar! \u00bfQuieres ir a la primera sin contestar?')) {
+            for (var i = 0; i < currentQuestions.length; i++) {
+              if (!answeredMap[i]) { currentQuestionIndex = i; showQuestion(); return; }
+            }
+          }
+          return;
+        }
         endQuiz();
       } else {
+        currentQuestionIndex++;
         updateLastQuizState();
         showQuestion();
       }

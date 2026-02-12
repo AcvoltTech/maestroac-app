@@ -2644,7 +2644,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
       initStudyLimitSystem();
       
       // Initialize anti-screenshot protection
-      initAntiScreenshot();
+      // initAntiScreenshot(); // DESACTIVADO
     });
 
     // ============================================
@@ -2846,37 +2846,38 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         }
       });
       
-      // Only apply blur protection on desktop, NOT on mobile
-      // Mobile screenshots cannot be blocked and blur causes false triggers
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (!isMobile) {
-        var lastHidden = 0;
-        document.addEventListener('visibilitychange', function() {
-          if (document.hidden) {
-            lastHidden = Date.now();
+      // Detect visibility change (some screenshot tools trigger this)
+      var lastHidden = 0;
+      document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+          lastHidden = Date.now();
+        } else {
+          // If hidden for very short time (< 500ms), might be screenshot
+          if (Date.now() - lastHidden < 500) {
+            // Possibly a screenshot, but don't be too aggressive
           }
-        });
-        
-        window.addEventListener('blur', function() {
-          document.body.classList.add('window-blurred');
-        });
-        
-        window.addEventListener('focus', function() {
-          document.body.classList.remove('window-blurred');
-        });
-        
-        var blurStyle = document.createElement('style');
-        blurStyle.textContent = '.window-blurred .card, .window-blurred .question-text, .window-blurred .option { filter: blur(5px); transition: filter 0.2s; }';
-        document.head.appendChild(blurStyle);
-      }
+        }
+      });
       
-      // Disable right-click context menu (desktop only)
-      if (!isMobile) {
-        document.addEventListener('contextmenu', function(e) {
-          e.preventDefault();
-          showScreenshotWarning();
-        });
-      }
+      // Blur sensitive content when window loses focus (helps with some tools)
+      window.addEventListener('blur', function() {
+        document.body.classList.add('window-blurred');
+      });
+      
+      window.addEventListener('focus', function() {
+        document.body.classList.remove('window-blurred');
+      });
+      
+      // Add blur style
+      var blurStyle = document.createElement('style');
+      blurStyle.textContent = '.window-blurred .card, .window-blurred .question-text, .window-blurred .option { filter: blur(5px); transition: filter 0.2s; }';
+      document.head.appendChild(blurStyle);
+      
+      // Disable right-click context menu
+      document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showScreenshotWarning();
+      });
       
       // Disable drag
       document.addEventListener('dragstart', function(e) {
@@ -10644,16 +10645,13 @@ window.toggleFormula = function(id) {
       }
     });
 
-    // Visibility change - only save pending checkout, do NOT auto-checkout
-    // This prevents kicking students out when they switch apps during class
+    // Also handle visibility change (app backgrounded on mobile) - more aggressive
     document.addEventListener('visibilitychange', function() {
       if (document.visibilityState === 'hidden' && currentAttendanceId && currentCheckInTime) {
         var checkOutTime = new Date();
         var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
         totalMinutes = Math.min(totalMinutes, 240);
         
-        // Only SAVE pending checkout data - do NOT execute checkout
-        // The actual checkout only happens on explicit button click or when session is stale (>4hrs)
         localStorage.setItem('attendance_pending_checkout', JSON.stringify({
           id: currentAttendanceId,
           checkIn: currentCheckInTime.toISOString(),
@@ -10661,13 +10659,12 @@ window.toggleFormula = function(id) {
           totalMinutes: totalMinutes,
           classType: selectedClassType
         }));
-        console.log('[Attendance] Session saved (app backgrounded) - NOT checking out');
+        
+        // NO auto-checkout - solo guardar datos por si se cierra el navegador
+        console.log('[Attendance] Sesion guardada (app en background) - NO checkout');
       }
       if (document.visibilityState === 'visible' && currentAttendanceId) {
-        // Restore session when app comes back
-        localStorage.removeItem('attendance_pending_checkout');
         updateTimer();
-        console.log('[Attendance] Session restored (app resumed)');
       }
     });
 

@@ -1708,20 +1708,27 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <span class="question-category" id="questionCategory">Categoría</span>
         <span class="question-count" id="questionCount">1/50</span>
       </div>
-      <!-- Indicador de estado de pregunta -->
-      <div id="questionStatus" style="display:none; text-align:center; margin-bottom:10px;">
-        <span id="statusBadge" style="padding:4px 12px; border-radius:12px; font-size:12px; font-weight:bold;"></span>
-      </div>
       <div class="question-text" id="questionText">Pregunta...</div>
       <div class="options" id="optionsContainer"></div>
       <div class="feedback" id="feedback">
         <strong id="feedbackTitle">Correcto!</strong>
         <p id="feedbackText"></p>
       </div>
-      <!-- Navegación tipo examen -->
-      <div id="quizNavigation" style="display:flex; justify-content:space-between; margin-top:20px; gap:10px;">
-        <button class="btn" id="prevBtn" onclick="prevQuestion()" style="background:#6b7280; color:white; flex:1; display:none;">← Anterior</button>
-        <button class="btn btn-primary" id="nextBtn" style="flex:1; display:none;" onclick="nextQuestion()">Siguiente →</button>
+      <!-- Navegación tipo examen: botones lado a lado -->
+      <div id="quizNavigation" style="display:flex; justify-content:center; margin-top:20px; gap:15px;">
+        <button class="btn" id="prevBtn" onclick="prevQuestion()" style="background:#6b7280; color:white; padding:12px 25px; border-radius:8px; font-weight:bold; min-width:130px;">← Anterior</button>
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" style="background:#6366f1; color:white; padding:12px 25px; border-radius:8px; font-weight:bold; min-width:130px;">Siguiente →</button>
+      </div>
+      <!-- Indicadores de estado: contestadas (verde) y flags (rojo) -->
+      <div id="quizStatusIndicators" style="display:flex; justify-content:center; margin-top:15px; gap:25px;">
+        <div style="display:flex; align-items:center; gap:8px; background:#dcfce7; padding:8px 16px; border-radius:20px;">
+          <span style="background:#22c55e; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">✓</span>
+          <span style="color:#166534; font-weight:bold;"><span id="answeredCount">0</span> Contestadas</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; background:#fee2e2; padding:8px 16px; border-radius:20px;">
+          <span style="background:#ef4444; color:white; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">🚩</span>
+          <span style="color:#991b1b; font-weight:bold;"><span id="flaggedCount">0</span> Sin contestar</span>
+        </div>
       </div>
     </div>
 
@@ -7387,32 +7394,8 @@ window.toggleFormula = function(id) {
       // Update study time indicator
       updateStudyTimeIndicator();
       
-      // Mostrar indicador de estado de pregunta
-      const statusDiv = document.getElementById('questionStatus');
-      const statusBadge = document.getElementById('statusBadge');
-      const status = questionStatus[currentQuestionIndex];
-      
-      if (status === 'answered') {
-        statusDiv.style.display = 'block';
-        statusBadge.textContent = '✓ YA CONTESTADA';
-        statusBadge.style.background = '#22c55e';
-        statusBadge.style.color = 'white';
-      } else if (status === 'flagged') {
-        statusDiv.style.display = 'block';
-        statusBadge.textContent = '🚩 MARCADA PARA REVISAR';
-        statusBadge.style.background = '#f97316';
-        statusBadge.style.color = 'white';
-      } else {
-        statusDiv.style.display = 'none';
-      }
-      
-      // Mostrar/ocultar botón Anterior
-      const prevBtn = document.getElementById('prevBtn');
-      if (currentQuestionIndex > 0) {
-        prevBtn.style.display = 'block';
-      } else {
-        prevBtn.style.display = 'none';
-      }
+      // Actualizar contadores de estado
+      updateQuizStatusCounters();
 
       const container = document.getElementById('optionsContainer');
       container.innerHTML = '';
@@ -7482,8 +7465,9 @@ window.toggleFormula = function(id) {
       const originalIndex = q._shuffledIndices[displayIndex];
       const correctDisplayIndex = q._shuffledIndices.indexOf(q.correct);
 
-      // Marcar pregunta como contestada
+      // Marcar pregunta como contestada y actualizar contadores
       questionStatus[currentQuestionIndex] = 'answered';
+      updateQuizStatusCounters();
 
       options.forEach((opt, i) => {
         opt.classList.add('disabled');
@@ -7536,6 +7520,22 @@ window.toggleFormula = function(id) {
         updateLastQuizState();
         showQuestion();
       }
+    }
+    
+    function updateQuizStatusCounters() {
+      let answered = 0;
+      let flagged = 0;
+      
+      for (let key in questionStatus) {
+        if (questionStatus[key] === 'answered') {
+          answered++;
+        } else if (questionStatus[key] === 'flagged') {
+          flagged++;
+        }
+      }
+      
+      document.getElementById('answeredCount').textContent = answered;
+      document.getElementById('flaggedCount').textContent = flagged;
     }
 
     function endQuiz() {

@@ -655,15 +655,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 </style>
 </head>
 <body>
-  <!-- BANNER DE MANTENIMIENTO - ELIMINAR CUANDO SE RESUELVA -->
-  <div id="maintenanceBanner" style="background: linear-gradient(135deg, #ff6b35, #e74c3c); color: white; padding: 15px 20px; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; font-size: 15px; position: fixed; top: 0; left: 0; right: 0; z-index: 99999; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-    <div style="max-width: 600px; margin: 0 auto;">
-      <strong>⚠️ Mantenimiento Técnico</strong><br>
-      <span style="font-size: 13px;">Nuestro proveedor de servidores (Supabase) está experimentando problemas en la región US. El equipo técnico ya está trabajando para resolverlo. Gracias por tu paciencia, colega.</span>
-    </div>
-  </div>
-  <div style="height: 80px;"></div>
-  <!-- FIN BANNER DE MANTENIMIENTO -->
+
   
   <div class="container">
     <!-- Login Screen -->
@@ -2949,7 +2941,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     // SUPABASE CONFIGURATION
     // ============================================
     const SUPABASE_URL = 'https://htklsowiyjwsjnacnvnr.supabase.co';
-    const SUPABASE_KEY = 'sb_publishable_Appokp_k6dAzxDjjmlED9g_bLi4kLQs';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
     const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
         auth: {
             persistSession: true,
@@ -13045,12 +13037,7 @@ window.toggleFormula = function(id) {
       </button>
     </div>
 
-    <!-- Back to App Button (shows when user has an active session) -->
-    <div id="backToAppBtn" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:500;">
-      <button onclick="returnToApp()" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:white; border:none; padding:14px 30px; border-radius:50px; font-size:15px; font-weight:bold; cursor:pointer; box-shadow:0 6px 20px rgba(99,102,241,0.5); display:flex; align-items:center; gap:8px;">
-        ← Volver al App
-      </button>
-    </div>
+
 
     <!-- Notification Panel -->
     <div class="notif-panel" id="notifPanel">

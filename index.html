@@ -1708,13 +1708,21 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
         <span class="question-category" id="questionCategory">Categoría</span>
         <span class="question-count" id="questionCount">1/50</span>
       </div>
+      <!-- Indicador de estado de pregunta -->
+      <div id="questionStatus" style="display:none; text-align:center; margin-bottom:10px;">
+        <span id="statusBadge" style="padding:4px 12px; border-radius:12px; font-size:12px; font-weight:bold;"></span>
+      </div>
       <div class="question-text" id="questionText">Pregunta...</div>
       <div class="options" id="optionsContainer"></div>
       <div class="feedback" id="feedback">
         <strong id="feedbackTitle">Correcto!</strong>
         <p id="feedbackText"></p>
       </div>
-      <button class="btn btn-primary" id="nextBtn" style="display:none; margin-top:20px;" onclick="nextQuestion()">Siguiente →</button>
+      <!-- Navegación tipo examen -->
+      <div id="quizNavigation" style="display:flex; justify-content:space-between; margin-top:20px; gap:10px;">
+        <button class="btn" id="prevBtn" onclick="prevQuestion()" style="background:#6b7280; color:white; flex:1; display:none;">← Anterior</button>
+        <button class="btn btn-primary" id="nextBtn" style="flex:1; display:none;" onclick="nextQuestion()">Siguiente →</button>
+      </div>
     </div>
 
     <!-- Results Screen -->
@@ -3086,6 +3094,10 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     let startTime = null;
     let certificates = []; // Array to store earned certificates
     let previousScreen = 'welcomeScreen'; // Track previous screen for navigation
+    
+    // Tracking de estado de preguntas (estilo examen real)
+    let questionStatus = {}; // {index: 'answered'|'flagged'|'unanswered'}
+    
     let progress = {
       principiante: { completed: 0, total: 700, score: 0 },
       intermedio: { completed: 0, total: 700, score: 0 },
@@ -7093,6 +7105,7 @@ window.toggleFormula = function(id) {
       currentQuestions = shuffleArray(quizPool);
       currentQuestionIndex = 0;
       correctAnswers = 0;
+      questionStatus = {}; // Reset estado de preguntas
       startTime = Date.now();
       // Track quiz opened as lastActivity
       updateLastActivity('quiz', levelId, null, levelId, 'quizScreen');
@@ -7373,6 +7386,33 @@ window.toggleFormula = function(id) {
 
       // Update study time indicator
       updateStudyTimeIndicator();
+      
+      // Mostrar indicador de estado de pregunta
+      const statusDiv = document.getElementById('questionStatus');
+      const statusBadge = document.getElementById('statusBadge');
+      const status = questionStatus[currentQuestionIndex];
+      
+      if (status === 'answered') {
+        statusDiv.style.display = 'block';
+        statusBadge.textContent = '✓ YA CONTESTADA';
+        statusBadge.style.background = '#22c55e';
+        statusBadge.style.color = 'white';
+      } else if (status === 'flagged') {
+        statusDiv.style.display = 'block';
+        statusBadge.textContent = '🚩 MARCADA PARA REVISAR';
+        statusBadge.style.background = '#f97316';
+        statusBadge.style.color = 'white';
+      } else {
+        statusDiv.style.display = 'none';
+      }
+      
+      // Mostrar/ocultar botón Anterior
+      const prevBtn = document.getElementById('prevBtn');
+      if (currentQuestionIndex > 0) {
+        prevBtn.style.display = 'block';
+      } else {
+        prevBtn.style.display = 'none';
+      }
 
       const container = document.getElementById('optionsContainer');
       container.innerHTML = '';
@@ -7442,6 +7482,9 @@ window.toggleFormula = function(id) {
       const originalIndex = q._shuffledIndices[displayIndex];
       const correctDisplayIndex = q._shuffledIndices.indexOf(q.correct);
 
+      // Marcar pregunta como contestada
+      questionStatus[currentQuestionIndex] = 'answered';
+
       options.forEach((opt, i) => {
         opt.classList.add('disabled');
         opt.onclick = null;
@@ -7472,11 +7515,24 @@ window.toggleFormula = function(id) {
     }
 
     function nextQuestion() {
+      // Si no contestó, marcar como flagged
+      if (!questionStatus[currentQuestionIndex] || questionStatus[currentQuestionIndex] === 'unanswered') {
+        questionStatus[currentQuestionIndex] = 'flagged';
+      }
+      
       currentQuestionIndex++;
       if (currentQuestionIndex >= currentQuestions.length) {
         endQuiz();
       } else {
         // Update lastQuizState when user clicks "Siguiente"
+        updateLastQuizState();
+        showQuestion();
+      }
+    }
+    
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
         updateLastQuizState();
         showQuestion();
       }

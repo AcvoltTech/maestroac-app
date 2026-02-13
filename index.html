@@ -627,7 +627,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     .filter-bar select { padding: 8px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: white; font-size: 13px; }
 
 /* ===== NOTIFICATION BELL SYSTEM ===== */
-.notif-bell-container { position: fixed; top: 15px; right: 15px; z-index: 500; }
+.notif-bell-container { position: fixed; top: 70px; right: 15px; z-index: 500; }
 .notif-bell-btn { background: linear-gradient(135deg, #6366f1, #8b5cf6); border: none; width: 48px; height: 48px; border-radius: 50%; font-size: 22px; cursor: pointer; position: relative; box-shadow: 0 4px 15px rgba(99,102,241,0.4); transition: transform 0.2s; display: flex; align-items: center; justify-content: center; }
 .notif-bell-btn:hover { transform: scale(1.1); }
 .notif-badge { position: absolute; top: -2px; right: -2px; background: #ef4444; color: white; font-size: 11px; font-weight: bold; min-width: 20px; height: 20px; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
@@ -7419,7 +7419,11 @@ window.toggleFormula = function(id) {
       });
 
       document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
-      document.getElementById('nextBtn').style.display = 'none';
+      
+      // Mostrar botones de navegación siempre
+      document.getElementById('nextBtn').style.display = 'block';
+      // Anterior solo si no es la primera pregunta
+      document.getElementById('prevBtn').style.display = currentQuestionIndex > 0 ? 'block' : 'none';
 
       // Update lastQuizState when question view loads
       updateLastQuizState();
@@ -13222,15 +13226,14 @@ document.getElementById('mBanner').classList.add('show');
 var av=document.getElementById('mAvatarWrap');
 setTimeout(function(){av.classList.add('slide-in');setTimeout(function(){av.classList.remove('slide-in');av.classList.add('idle');},900);},400);
 if(_mHist.length===0){
-var n=getName();
 var q=getCurrentQuestion();
 if(q){
-var greeting='\u00a1Hola Colega '+n+'! Veo que est\u00e1s en esta pregunta. \u00bfQuieres que te la explique o tienes alguna duda espec\u00edfica?'+DISCLAIMER;
+var greeting='\u00a1Hola Colega! \u00bfEn qu\u00e9 puedo ayudarte hoy?'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting);},1200);
 _mHist.push({role:'user',content:'Estoy en esta pregunta del examen de pr\u00e1ctica: '+q});
 _mHist.push({role:'assistant',content:greeting});
 }else{
-var greeting2='\u00a1Hola Colega '+n+'! Dime, \u00bfcu\u00e1l es tu pregunta? \u00a1Aqu\u00ed estoy para ayudarte! Aires acondicionados, refrigeraci\u00f3n, el\u00e9ctrico, lo que necesites.'+DISCLAIMER;
+var greeting2='\u00a1Hola Colega! \u00bfEn qu\u00e9 puedo ayudarte hoy?'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting2);},1200);
 }
 }
@@ -13327,9 +13330,9 @@ if(cb)cb();
 
 <!-- SOPORTE MAESTRO MARIO - Chat Simple -->
 <style>
-#soporteBtn{position:fixed;bottom:80px;left:20px;z-index:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:50%;width:48px;height:48px;font-size:20px;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.3s;padding:0}
+#soporteBtn{position:fixed;top:130px;right:20px;z-index:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:50%;width:48px;height:48px;font-size:20px;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.3s;padding:0}
 #soporteBtn:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(37,99,235,0.5)}
-#soporteChat{position:fixed;bottom:70px;left:20px;width:340px;max-height:500px;background:#0d1117;border:1px solid rgba(37,99,235,0.3);border-radius:16px;z-index:901;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
+#soporteChat{position:fixed;bottom:70px;right:20px;width:340px;max-height:500px;background:#0d1117;border:1px solid rgba(37,99,235,0.3);border-radius:16px;z-index:901;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 #soporteChat.open{display:flex}
 .sc-header{background:linear-gradient(135deg,#2563eb,#1d4ed8);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
 .sc-header-title{color:white;font-size:14px;font-weight:bold;display:flex;align-items:center;gap:8px}

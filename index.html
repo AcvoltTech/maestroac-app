@@ -13228,12 +13228,12 @@ setTimeout(function(){av.classList.add('slide-in');setTimeout(function(){av.clas
 if(_mHist.length===0){
 var q=getCurrentQuestion();
 if(q){
-var greeting='\u00a1Hola Colega! \u00bfEn qu\u00e9 puedo ayudarte hoy?'+DISCLAIMER;
+var greeting='\u00bfQu\u00e9 tal Colega! \u00bfEn qu\u00e9 te puedo ayudar hoy?'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting);},1200);
 _mHist.push({role:'user',content:'Estoy en esta pregunta del examen de pr\u00e1ctica: '+q});
 _mHist.push({role:'assistant',content:greeting});
 }else{
-var greeting2='\u00a1Hola Colega! \u00bfEn qu\u00e9 puedo ayudarte hoy?'+DISCLAIMER;
+var greeting2='\u00bfQu\u00e9 tal Colega! \u00bfEn qu\u00e9 te puedo ayudar hoy?'+DISCLAIMER;
 setTimeout(function(){addM('assistant',greeting2);},1200);
 }
 }
@@ -13270,7 +13270,7 @@ var inp=document.getElementById('mInput'),txt=inp.value.trim();
 if(!txt||_mBusy)return;_mBusy=true;document.getElementById('mSendBtn').disabled=true;
 addM('user',txt);_mHist.push({role:'user',content:txt});if(_mHist.length>20)_mHist=_mHist.slice(-20);inp.value='';inp.style.height='auto';
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
-var sys2=SYS+' El nombre del estudiante es: '+getName();
+var sys2=SYS;
 var ctrl=new AbortController();var tid=setTimeout(function(){ctrl.abort();},30000);
 fetch(CHAT,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){clearTimeout(tid);return r.json();}).then(function(d){
 hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');rp+=PROMOS[_promoIdx%PROMOS.length];_promoIdx++;_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}

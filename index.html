@@ -13265,15 +13265,85 @@ if(role==='assistant'){var clean=content.replace(/\*\*/g,'').replace(/`/g,'').re
 function showT(){var area=document.getElementById('mChatArea'),div=document.createElement('div');div.className='m-typing';div.id='mTp';var src=document.getElementById('mAvatarPhoto').src;div.innerHTML='<div class="m-msg-avatar"><img src="'+src+'" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div><div class="m-typing-dots"><span></span><span></span><span></span></div>';area.appendChild(div);area.scrollTop=area.scrollHeight;}
 function hideT(){var el=document.getElementById('mTp');if(el)el.remove();}
 
+// Sistema de límite de preguntas AI - 5 por semana
+function getAIQuestionsUsed(){
+  var data = localStorage.getItem('maestroai_usage');
+  if(!data) return {count:0, weekStart:Date.now()};
+  var parsed = JSON.parse(data);
+  var weekMs = 7*24*60*60*1000;
+  if(Date.now() - parsed.weekStart > weekMs){
+    return {count:0, weekStart:Date.now()};
+  }
+  return parsed;
+}
+function saveAIQuestion(){
+  var usage = getAIQuestionsUsed();
+  usage.count++;
+  localStorage.setItem('maestroai_usage', JSON.stringify(usage));
+  // Guardar métrica en Supabase
+  if(window.currentUser && window.supabaseClient){
+    window.supabaseClient.from('ai_usage_metrics').insert({
+      user_id: window.currentUser.id,
+      user_email: window.currentUser.email,
+      timestamp: new Date().toISOString()
+    }).then(function(){}).catch(function(){});
+  }
+}
+function isAppPurchased(){
+  if(!window.currentUser) return false;
+  return localStorage.getItem('maestroac_app_purchased_' + window.currentUser.email) === 'true';
+}
+function showAIPaywall(){
+  var modal = document.createElement('div');
+  modal.id = 'aiPaywallModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = '<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;padding:30px;max-width:380px;text-align:center;border:2px solid #f97316;">' +
+    '<div style="font-size:50px;margin-bottom:15px;">🔒</div>' +
+    '<h2 style="color:#f97316;margin-bottom:10px;font-size:22px;">¡Llegaste al límite semanal!</h2>' +
+    '<p style="color:#94a3b8;margin-bottom:20px;font-size:14px;">Has usado tus <strong style="color:white;">5 preguntas gratis</strong> de Maestro Mario AI esta semana.</p>' +
+    '<div style="background:#0d1117;border-radius:12px;padding:15px;margin-bottom:20px;">' +
+    '<p style="color:#22c55e;font-size:28px;font-weight:bold;margin:0;">$20<span style="font-size:14px;color:#64748b;">/mes</span></p>' +
+    '<p style="color:#64748b;font-size:12px;margin:5px 0 0 0;">Preguntas ILIMITADAS al AI</p>' +
+    '</div>' +
+    '<p style="color:white;font-size:13px;margin-bottom:20px;text-align:left;padding-left:20px;">✅ Maestro Mario AI ilimitado<br>✅ Todos los niveles desbloqueados<br>✅ +700 preguntas de práctica<br>✅ Certificados incluidos</p>' +
+    '<button onclick="window.open(\'https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07\',\'_blank\');document.getElementById(\'aiPaywallModal\').remove();" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;padding:16px 30px;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;width:100%;margin-bottom:10px;box-shadow:0 4px 15px rgba(99,102,241,0.4);">💳 Suscribirme Ahora - $20/mes</button>' +
+    '<button onclick="document.getElementById(\'aiPaywallModal\').remove()" style="background:transparent;color:#64748b;border:1px solid #64748b;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;width:100%;">Seguir con límite gratis</button>' +
+    '</div>';
+  document.body.appendChild(modal);
+}
+
 window.sendMaestroMsg=function(){
 var inp=document.getElementById('mInput'),txt=inp.value.trim();
-if(!txt||_mBusy)return;_mBusy=true;document.getElementById('mSendBtn').disabled=true;
+if(!txt||_mBusy)return;
+
+// Verificar límite de preguntas (5/semana) si no ha comprado
+if(!isAppPurchased()){
+  var usage = getAIQuestionsUsed();
+  if(usage.count >= 5){
+    showAIPaywall();
+    return;
+  }
+}
+
+_mBusy=true;document.getElementById('mSendBtn').disabled=true;
 addM('user',txt);_mHist.push({role:'user',content:txt});if(_mHist.length>20)_mHist=_mHist.slice(-20);inp.value='';inp.style.height='auto';
 var av=document.getElementById('mAvatarWrap');av.classList.remove('idle');av.classList.add('talking');showT();
 var sys2=SYS;
 var ctrl=new AbortController();var tid=setTimeout(function(){ctrl.abort();},30000);
 fetch(CHAT,{method:'POST',signal:ctrl.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY,'apikey':SB_KEY},body:JSON.stringify({messages:_mHist,system:sys2,max_tokens:400})}).then(function(r){clearTimeout(tid);return r.json();}).then(function(d){
-hideT();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');rp+=PROMOS[Math.floor(Math.random()*PROMOS.length)];_mHist.push({role:'assistant',content:rp});addM('assistant',rp);}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
+hideT();if(d.content&&d.content.length>0){
+  // Guardar uso de pregunta AI
+  if(!isAppPurchased()) saveAIQuestion();
+  var rp=d.content.map(function(c){return c.text||'';}).join('\n');rp+=PROMOS[Math.floor(Math.random()*PROMOS.length)];_mHist.push({role:'assistant',content:rp});addM('assistant',rp);
+  // Mostrar contador de preguntas restantes si no ha comprado
+  if(!isAppPurchased()){
+    var usage = getAIQuestionsUsed();
+    var remaining = 5 - usage.count;
+    if(remaining > 0 && remaining <= 3){
+      addM('assistant','<em style="font-size:11px;color:#f97316;">⚠️ Te quedan '+remaining+' pregunta'+(remaining===1?'':'s')+' gratis esta semana.</em>');
+    }
+  }
+}else{addM('assistant','Hubo un problema, intenta de nuevo.');}
 }).catch(function(){hideT();addM('assistant','Error de conexion.');}).finally(function(){
 av.classList.remove('talking');av.classList.add('idle');_mBusy=false;document.getElementById('mSendBtn').disabled=false;inp.focus();
 });

@@ -107,11 +107,12 @@
     }
     .logo-title {
       font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 4px;
+      font-weight: 700;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      color: var(--text-dim);
+      color: rgba(255,255,255,0.7);
       font-family: 'Space Mono', monospace;
+      text-shadow: 0 0 15px rgba(227,25,55,0.3);
     }
 
     @keyframes fadeDown {
@@ -258,7 +259,19 @@
       }
     }
 
-    .circle-label--red { color: var(--red); }
+    .circle-label--red { 
+      background: linear-gradient(135deg, #E31937, #ff4d6a, #ffffff, #E31937);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: acvoltShimmer 4s ease-in-out infinite;
+      font-weight: 700;
+    }
+    @keyframes acvoltShimmer {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
 
     /* ===== ORANGE CIRCLE (V2 - Maestro Mario AI) ===== */
     .circle--orange {
@@ -292,7 +305,11 @@
       }
     }
 
-    .circle-label--orange { color: #ff6b2b; }
+    .circle-label--orange { 
+      color: #ff6b2b;
+      text-shadow: 0 0 20px rgba(255,107,43,0.4);
+      font-weight: 700;
+    }
 
     /* ===== AI BADGE on blue circle ===== */
     .ai-badge {
@@ -328,12 +345,21 @@
       animation: fadeUp 1s ease 0.5s both;
     }
     .footer-brand {
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 2px;
+      font-size: 12px;
+      background: linear-gradient(90deg, #E31937, #f39c12, #E31937);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: footerGlow 3s ease-in-out infinite;
+      letter-spacing: 3px;
       text-transform: uppercase;
       font-family: 'Space Mono', monospace;
-      opacity: 0.6;
+      font-weight: 700;
+    }
+    @keyframes footerGlow {
+      0%,100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .footer-version {
       font-size: 10px;
@@ -454,8 +480,8 @@
 
       <div class="circles-divider"></div>
 
-      <!-- BLUE: V2 Maestro Mario AI -->
-      <div class="circle-wrap" onclick="launchApp('v2/index.html')" role="button" tabindex="0" aria-label="Abrir Maestro Mario AI">
+      <!-- ORANGE: V2 Maestro Mario AI -->
+      <div class="circle-wrap" onclick="launchApp('https://acvolttech.github.io/maestroac-v2/')" role="button" tabindex="0" aria-label="Abrir Maestro Mario AI">
         <div class="circle circle--orange" id="circleOrange">
           <img class="circle-icon" src="mario-black.jpg" alt="Maestro Mario AI" onerror="this.src='mario.jpg'">
           <span class="ai-badge">AI</span>

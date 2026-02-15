@@ -784,6 +784,90 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 <!-- ======= BANNER DE MANTENIMIENTO ======= -->
 <!-- MAINTENANCE BANNER REMOVED -->
 <!-- ======= FIN BANNER MANTENIMIENTO ======= -->
+
+<!-- ======= LAUNCHER OVERLAY ======= -->
+<div id="launcherOverlay" style="position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0a0a14;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;">
+  <style>
+    #launcherOverlay .lo-bg{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(80px);opacity:0.3;animation:loPulse 4s ease-in-out infinite}
+    #launcherOverlay .lo-bg1{background:#E31937;top:-50px;left:-50px}
+    #launcherOverlay .lo-bg2{background:#ff6b2b;bottom:-50px;right:-50px;animation-delay:2s}
+    @keyframes loPulse{0%,100%{transform:scale(1);opacity:0.2}50%{transform:scale(1.2);opacity:0.35}}
+    #launcherOverlay .lo-wrap{position:relative;z-index:2;text-align:center;padding:20px;width:100%;max-width:400px}
+    #launcherOverlay .lo-brand{font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:20px;font-weight:600}
+    #launcherOverlay .lo-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px}
+    #launcherOverlay .lo-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:30px}
+    #launcherOverlay .lo-greeting{color:#f39c12;font-size:15px;margin-bottom:24px;display:none}
+    #launcherOverlay .lo-circles{display:flex;gap:30px;justify-content:center;align-items:center;margin-bottom:30px}
+    #launcherOverlay .lo-circle{cursor:pointer;text-align:center;transition:transform 0.3s}
+    #launcherOverlay .lo-circle:hover{transform:scale(1.08)}
+    #launcherOverlay .lo-circle:active{transform:scale(0.95)}
+    #launcherOverlay .lo-img-wrap{width:90px;height:90px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:3px solid;animation:loFloat 3s ease-in-out infinite}
+    #launcherOverlay .lo-red .lo-img-wrap{border-color:#E31937;box-shadow:0 0 20px rgba(227,25,55,0.3)}
+    #launcherOverlay .lo-orange .lo-img-wrap{border-color:#ff6b2b;box-shadow:0 0 20px rgba(255,107,43,0.3);animation-delay:1.5s}
+    #launcherOverlay .lo-img-wrap img{width:100%;height:100%;object-fit:cover}
+    #launcherOverlay .lo-ai{position:absolute;top:-2px;right:-2px;background:linear-gradient(135deg,#ff6b2b,#e84500);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px}
+    #launcherOverlay .lo-label{color:#fff;font-size:14px;font-weight:700;margin-top:6px}
+    #launcherOverlay .lo-sublabel{color:rgba(255,255,255,0.4);font-size:11px;margin-top:2px}
+    #launcherOverlay .lo-divider{width:1px;height:80px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.15),transparent)}
+    @keyframes loFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    #launcherOverlay .lo-footer{font-size:10px;color:rgba(255,255,255,0.2)}
+    #launcherOverlay .lo-footer b{color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:2px}
+  </style>
+  <div class="lo-bg lo-bg1"></div>
+  <div class="lo-bg lo-bg2"></div>
+  <div class="lo-wrap">
+    <div class="lo-brand">A.C. VOLT TECH SCHOOL</div>
+    <div class="lo-title">Tech School</div>
+    <div class="lo-sub">Elige tu herramienta de estudio</div>
+    <div class="lo-greeting" id="loGreeting"></div>
+    <div class="lo-circles">
+      <div class="lo-circle lo-red" onclick="closeLauncher()">
+        <div class="lo-img-wrap">
+          <img src="mario-white.jpg" alt="Mario" onerror="this.src='mario-black.jpg'">
+        </div>
+        <div class="lo-label">Maestro ACVOLT</div>
+        <div class="lo-sublabel">Certificación HVAC</div>
+      </div>
+      <div class="lo-divider"></div>
+      <div class="lo-circle lo-orange" onclick="window.location.href='https://acvolttech.github.io/maestroac-v2/'">
+        <div style="position:relative;display:inline-block">
+          <div class="lo-img-wrap">
+            <img src="mario-black.jpg" alt="Mario AI" onerror="this.src='mario-white.jpg'">
+          </div>
+          <span class="lo-ai">AI</span>
+        </div>
+        <div class="lo-label">Maestro Mario</div>
+        <div class="lo-sublabel">AI Bilingüe</div>
+      </div>
+    </div>
+    <div class="lo-footer">
+      <b>A.C. VOLT TECH SCHOOL™</b><br>
+      © 2026 A.C. VOLT TECH SCHOOL, INC. All Rights Reserved.
+    </div>
+  </div>
+</div>
+<script>
+function closeLauncher(){
+  var lo=document.getElementById('launcherOverlay');
+  lo.style.transition='opacity 0.4s';lo.style.opacity='0';
+  setTimeout(function(){lo.style.display='none';},400);
+  sessionStorage.setItem('launcher_seen','1');
+}
+// Show greeting if user known
+try{
+  var u=JSON.parse(localStorage.getItem('maestroac_user')||'{}');
+  if(u&&u.nombre){
+    var g=document.getElementById('loGreeting');
+    g.textContent='Bienvenido, '+u.nombre.split(' ')[0];
+    g.style.display='block';
+  }
+}catch(e){}
+// Skip launcher if already seen this session
+if(sessionStorage.getItem('launcher_seen')==='1'){
+  document.getElementById('launcherOverlay').style.display='none';
+}
+</script>
+<!-- ======= FIN LAUNCHER ======= -->
   <div class="container">
     <!-- Login Screen -->
     <div class="screen active" id="loginScreen">

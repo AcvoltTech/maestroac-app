@@ -782,39 +782,92 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 <body>
 
 <!-- ======= BANNER DE MANTENIMIENTO ======= -->
-<div class="maintenance-overlay" id="maintenanceOverlay">
-  <div class="maintenance-card">
-    <div class="maint-icon">🔧</div>
-    <div class="maint-status">
-      <div class="maint-dot"></div>
-      Mantenimiento Activo
-    </div>
-    <div class="maint-brand">Maestro ACVOLT</div>
-    <h2>App en <span>Mantenimiento</span></h2>
-    <p class="maint-msg">
-      Estamos trabajando para mejorar tu experiencia.<br>
-      La app estará <strong>deshabilitada la mayor parte del día</strong>.<br>
-      Te notificaremos cuando esté lista. ¡Gracias por tu paciencia!
-    </p>
-    <div class="maint-progress">
-      <div class="maint-progress-label">
-        <span>Progreso</span>
-        <span>Trabajando...</span>
+<!-- MAINTENANCE BANNER REMOVED -->
+<!-- ======= FIN BANNER MANTENIMIENTO ======= -->
+
+<!-- ======= LAUNCHER OVERLAY ======= -->
+<div id="launcherOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0a0a14;display:flex;align-items:center;justify-content:center;font-family:'Segoe UI',system-ui,sans-serif;overflow:hidden;">
+  <style>
+    #launcherOverlay .lo-bg{position:absolute;width:300px;height:300px;border-radius:50%;filter:blur(80px);opacity:0.3;animation:loPulse 4s ease-in-out infinite}
+    #launcherOverlay .lo-bg1{background:#E31937;top:-50px;left:-50px}
+    #launcherOverlay .lo-bg2{background:#ff6b2b;bottom:-50px;right:-50px;animation-delay:2s}
+    @keyframes loPulse{0%,100%{transform:scale(1);opacity:0.2}50%{transform:scale(1.2);opacity:0.35}}
+    #launcherOverlay .lo-wrap{position:relative;z-index:2;text-align:center;padding:20px;width:100%;max-width:400px}
+    #launcherOverlay .lo-brand{font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.5);text-transform:uppercase;margin-bottom:20px;font-weight:600}
+    #launcherOverlay .lo-title{font-size:28px;font-weight:800;color:#fff;margin-bottom:6px}
+    #launcherOverlay .lo-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:30px}
+    #launcherOverlay .lo-greeting{color:#f39c12;font-size:15px;margin-bottom:24px;display:none}
+    #launcherOverlay .lo-circles{display:flex;gap:30px;justify-content:center;align-items:center;margin-bottom:30px}
+    #launcherOverlay .lo-circle{cursor:pointer;text-align:center;transition:transform 0.3s}
+    #launcherOverlay .lo-circle:hover{transform:scale(1.08)}
+    #launcherOverlay .lo-circle:active{transform:scale(0.95)}
+    #launcherOverlay .lo-img-wrap{width:90px;height:90px;border-radius:50%;overflow:hidden;margin:0 auto 10px;border:3px solid;animation:loFloat 3s ease-in-out infinite}
+    #launcherOverlay .lo-red .lo-img-wrap{border-color:#E31937;box-shadow:0 0 20px rgba(227,25,55,0.3)}
+    #launcherOverlay .lo-orange .lo-img-wrap{border-color:#ff6b2b;box-shadow:0 0 20px rgba(255,107,43,0.3);animation-delay:1.5s}
+    #launcherOverlay .lo-img-wrap img{width:100%;height:100%;object-fit:cover}
+    #launcherOverlay .lo-ai{position:absolute;top:-2px;right:-2px;background:linear-gradient(135deg,#ff6b2b,#e84500);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:8px}
+    #launcherOverlay .lo-label{color:#fff;font-size:14px;font-weight:700;margin-top:6px}
+    #launcherOverlay .lo-sublabel{color:rgba(255,255,255,0.4);font-size:11px;margin-top:2px}
+    #launcherOverlay .lo-divider{width:1px;height:80px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,0.15),transparent)}
+    @keyframes loFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    #launcherOverlay .lo-footer{font-size:10px;color:rgba(255,255,255,0.2)}
+    #launcherOverlay .lo-footer b{color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:2px}
+  </style>
+  <div class="lo-bg lo-bg1"></div>
+  <div class="lo-bg lo-bg2"></div>
+  <div class="lo-wrap">
+    <div class="lo-brand">A.C. VOLT TECH SCHOOL</div>
+    <div class="lo-title">Tech School</div>
+    <div class="lo-sub">Elige tu herramienta de estudio</div>
+    <div class="lo-greeting" id="loGreeting"></div>
+    <div class="lo-circles">
+      <div class="lo-circle lo-red" onclick="closeLauncher()">
+        <div class="lo-img-wrap">
+          <img src="mario-white.jpg" alt="Mario" onerror="this.src='mario-black.jpg'">
+        </div>
+        <div class="lo-label">Maestro ACVOLT</div>
+        <div class="lo-sublabel">Certificación HVAC</div>
       </div>
-      <div class="maint-progress-bar">
-        <div class="maint-progress-fill"></div>
+      <div class="lo-divider"></div>
+      <div class="lo-circle lo-orange" onclick="window.location.href='https://acvolttech.github.io/maestroac-v2/'">
+        <div style="position:relative;display:inline-block">
+          <div class="lo-img-wrap">
+            <img src="mario-black.jpg" alt="Mario AI" onerror="this.src='mario-white.jpg'">
+          </div>
+          <span class="lo-ai">AI</span>
+        </div>
+        <div class="lo-label">Maestro Mario</div>
+        <div class="lo-sublabel">AI Bilingüe</div>
       </div>
     </div>
-    <div class="maint-gears">
-      <span class="maint-gear maint-gear-1">⚙️</span>
-      <span class="maint-gear maint-gear-2">⚙️</span>
-    </div>
-    <div class="maint-footer">
-      <strong>15 de Febrero, 2026</strong> · Equipo ACVOLT Tech School
+    <div class="lo-footer">
+      <b>A.C. VOLT TECH SCHOOL™</b><br>
+      © 2026 A.C. VOLT TECH SCHOOL, INC. All Rights Reserved.
     </div>
   </div>
 </div>
-<!-- ======= FIN BANNER MANTENIMIENTO ======= -->
+<script>
+function closeLauncher(){
+  var lo=document.getElementById('launcherOverlay');
+  lo.style.transition='opacity 0.4s';lo.style.opacity='0';
+  setTimeout(function(){lo.style.display='none';},400);
+  sessionStorage.setItem('launcher_seen','1');
+}
+// Show greeting if user known
+try{
+  var u=JSON.parse(localStorage.getItem('maestroac_user')||'{}');
+  if(u&&u.nombre){
+    var g=document.getElementById('loGreeting');
+    g.textContent='Bienvenido, '+u.nombre.split(' ')[0];
+    g.style.display='block';
+  }
+}catch(e){}
+// Skip launcher if already seen this session
+if(sessionStorage.getItem('launcher_seen')==='1'){
+  document.getElementById('launcherOverlay').style.display='none';
+}
+</script>
+<!-- ======= FIN LAUNCHER ======= -->
   <div class="container">
     <!-- Login Screen -->
     <div class="screen active" id="loginScreen">
@@ -13809,10 +13862,39 @@ else{addSc('bot','Hubo un problema, intenta de nuevo.');}
   var CHECK_INTERVAL_MS = 60000;
   var STORAGE_KEY = 'maestro_last_activity';
   var NOTIF_KEY = 'maestro_notif_sent';
+  var SUPABASE_ACTIVITY_URL = 'https://htklsowiyjwsjnacnvnr.supabase.co/rest/v1/rpc/update_user_activity';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
+  var lastSyncTime = 0;
+  var SYNC_INTERVAL = 300000; // 5 min throttle
+
+  function syncActivityToSupabase(){
+    var now = Date.now();
+    if(now - lastSyncTime < SYNC_INTERVAL) return;
+    lastSyncTime = now;
+    try {
+      var u = JSON.parse(localStorage.getItem('tecnico_user')||'{}');
+      if(!u.email) return;
+      fetch(SUPABASE_ACTIVITY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'apikey':SUPABASE_ANON_KEY, 'Authorization':'Bearer '+SUPABASE_ANON_KEY },
+        body: JSON.stringify({
+          p_nombre: u.nombre || 'técnico',
+          p_email: u.email,
+          p_telefono: u.telefono || null,
+          p_lang: 'es',
+          p_app: 'v1',
+          p_quiz_score: null,
+          p_quizzes: null,
+          p_premium: !!JSON.parse(localStorage.getItem('ai_premium_data')||'{}').active
+        })
+      }).catch(function(){});
+    } catch(e){}
+  }
 
   function updateActivity(){
     localStorage.setItem(STORAGE_KEY, Date.now().toString());
     localStorage.removeItem(NOTIF_KEY);
+    syncActivityToSupabase();
   }
 
   function getLastActivity(){

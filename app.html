@@ -13791,5 +13791,110 @@ else{addSc('bot','Hubo un problema, intenta de nuevo.');}
 })();
 </script>
 
+<!-- WELCOME BACK OVERLAY -->
+<div id="welcomeBackOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(10,22,40,0.97);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:#1a2332;border:1px solid rgba(0,212,255,0.2);border-radius:20px;max-width:400px;width:100%;padding:24px 20px;text-align:center">
+    <div style="font-size:50px;margin-bottom:8px">📚</div>
+    <div id="wbTitle" style="font-family:sans-serif;font-size:20px;font-weight:700;color:#fff;margin-bottom:8px">¡Bienvenido de vuelta!</div>
+    <div id="wbMessage" style="background:#0d1b2a;border-radius:12px;padding:14px;text-align:left;font-size:14px;line-height:1.7;color:#ccc;border-left:3px solid #ff6b2b;margin-bottom:16px"></div>
+    <div id="wbProgress" style="font-size:13px;color:#00d4ff;margin-bottom:16px"></div>
+    <button onclick="closeWelcomeBack()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#ff6b2b,#e84500);color:#fff;font-size:16px;font-weight:700;cursor:pointer" id="wbBtn">🚀 ¡Vamos a estudiar!</button>
+  </div>
+</div>
+
+<!-- NOTIFICATION & REMINDER SYSTEM -->
+<script>
+(function(){
+  var INACTIVITY_HOURS = 4;
+  var CHECK_INTERVAL_MS = 60000;
+  var STORAGE_KEY = 'maestro_last_activity';
+  var NOTIF_KEY = 'maestro_notif_sent';
+
+  function updateActivity(){
+    localStorage.setItem(STORAGE_KEY, Date.now().toString());
+    localStorage.removeItem(NOTIF_KEY);
+  }
+
+  function getLastActivity(){
+    var t = localStorage.getItem(STORAGE_KEY);
+    return t ? parseInt(t) : Date.now();
+  }
+
+  function getInactiveHours(){
+    return (Date.now() - getLastActivity()) / (1000 * 60 * 60);
+  }
+
+  ['click','keydown','scroll','touchstart'].forEach(function(ev){
+    document.addEventListener(ev, updateActivity, {passive:true});
+  });
+  updateActivity();
+
+  // Browser Notifications
+  function requestNotifPermission(){
+    if('Notification' in window && Notification.permission === 'default'){
+      setTimeout(function(){ Notification.requestPermission(); }, 30000);
+    }
+  }
+
+  function sendBrowserNotification(title, body){
+    if('Notification' in window && Notification.permission === 'granted'){
+      try {
+        var n = new Notification(title, { body: body, tag: 'maestro-reminder', renotify: true });
+        n.onclick = function(){ window.focus(); n.close(); };
+      } catch(e){}
+    }
+  }
+
+  // Inactivity checker
+  function checkInactivity(){
+    var hours = getInactiveHours();
+    var alreadySent = localStorage.getItem(NOTIF_KEY);
+    if(hours >= INACTIVITY_HOURS && !alreadySent){
+      localStorage.setItem(NOTIF_KEY, 'true');
+      var nombre = 'técnico';
+      try { var u = JSON.parse(localStorage.getItem('tecnico_user')||'{}'); nombre = u.nombre ? u.nombre.split(' ')[0] : 'técnico'; } catch(e){}
+      if(document.hidden){
+        sendBrowserNotification('¡Hey ' + nombre + '! 📚', 'Llevas ' + Math.floor(hours) + ' horas sin estudiar. ¡Maestro ACVOLT te espera!');
+      }
+    }
+  }
+  setInterval(checkInactivity, CHECK_INTERVAL_MS);
+
+  // Welcome Back Screen
+  function showWelcomeBack(){
+    var hours = getInactiveHours();
+    if(hours < INACTIVITY_HOURS) return;
+
+    var nombre = 'técnico';
+    try { var u = JSON.parse(localStorage.getItem('tecnico_user')||'{}'); nombre = u.nombre ? u.nombre.split(' ')[0] : 'técnico'; } catch(e){}
+
+    var hoursAway = Math.floor(hours);
+    var daysAway = Math.floor(hours / 24);
+    var timeText = daysAway >= 1 ? daysAway + ' día' + (daysAway>1?'s':'') : hoursAway + ' hora' + (hoursAway>1?'s':'');
+
+    var msgs = [
+      '¡' + nombre + ', te extrañaba! Llevas ' + timeText + ' sin estudiar. Recuerda: la consistencia es más importante que la perfección. Cada día que estudias es un día más cerca de tu certificación. ¡Vamos con todo!',
+      '¡' + nombre + '! Ya pasaron ' + timeText + '. Un técnico que no practica se oxida como un contacto sin mantenimiento. ¡Vamos a repasar!',
+      '¡Órale, ' + nombre + '! ' + timeText + ' sin estudiar es mucho. Los mejores técnicos practican todos los días. ¡Yo sé que tú puedes!',
+      '¡' + nombre + ', bienvenido de vuelta! ' + timeText + ' lejos es bastante. Pero lo bueno es que regresaste — eso dice mucho de ti. ¡A darle!'
+    ];
+    var msg = msgs[Math.floor(Math.random() * msgs.length)];
+
+    document.getElementById('wbTitle').textContent = '¡Bienvenido de vuelta, ' + nombre + '! 👋';
+    document.getElementById('wbMessage').innerHTML = msg;
+    document.getElementById('wbProgress').innerHTML = '💡 Tip: Estudia al menos 15 minutos al día. La consistencia gana al talento.';
+    document.getElementById('welcomeBackOverlay').style.display = 'flex';
+  }
+
+  window.closeWelcomeBack = function(){
+    document.getElementById('welcomeBackOverlay').style.display = 'none';
+    updateActivity();
+  };
+
+  requestNotifPermission();
+  setTimeout(showWelcomeBack, 2000);
+})();
+</script>
+
 </body>
 </html>

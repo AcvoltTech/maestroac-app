@@ -292,6 +292,103 @@
     .profile-nav-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, rgba(52,152,219,0.2), rgba(41,128,185,0.2)); border: 1px solid rgba(52,152,219,0.3); }
     .profile-nav-btn:hover { background: linear-gradient(135deg, rgba(52,152,219,0.3), rgba(41,128,185,0.3)); }
     /* Login Screen Styles */
+    /* ========== MAINTENANCE BANNER ========== */
+    .maintenance-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      z-index: 9999; display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .maintenance-card {
+      background: #ffffff; border-radius: 20px; padding: 40px 30px;
+      max-width: 420px; width: 100%; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative; overflow: hidden;
+      animation: maintSlideUp 0.6s ease;
+    }
+    @keyframes maintSlideUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .maintenance-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
+      background: linear-gradient(90deg, #E31937, #f39c12, #E31937);
+      background-size: 200% 100%;
+      animation: maintShimmer 2s ease-in-out infinite;
+    }
+    @keyframes maintShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .maint-icon {
+      width: 80px; height: 80px; margin: 0 auto 20px;
+      background: linear-gradient(135deg, #E31937, #f39c12);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      animation: maintPulse 2s ease-in-out infinite;
+      box-shadow: 0 8px 30px rgba(227, 25, 55, 0.3);
+    }
+    @keyframes maintPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(227,25,55,0.3); }
+      50% { transform: scale(1.08); box-shadow: 0 12px 40px rgba(227,25,55,0.5); }
+    }
+    .maint-status {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(227,25,55,0.1); border: 1px solid rgba(227,25,55,0.3);
+      border-radius: 50px; padding: 6px 16px; margin-bottom: 16px;
+      font-size: 11px; font-weight: 700; color: #E31937;
+      text-transform: uppercase; letter-spacing: 1.5px;
+    }
+    .maint-dot {
+      width: 8px; height: 8px; background: #E31937; border-radius: 50%;
+      animation: maintBlink 1.2s ease-in-out infinite;
+    }
+    @keyframes maintBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    .maintenance-card h2 {
+      font-size: 24px; color: #1e293b; margin-bottom: 12px; line-height: 1.3;
+    }
+    .maintenance-card h2 span { color: #E31937; }
+    .maintenance-card .maint-msg {
+      font-size: 15px; color: #64748b; line-height: 1.7; margin-bottom: 24px;
+    }
+    .maintenance-card .maint-msg strong { color: #1e293b; }
+    .maint-progress {
+      margin-bottom: 20px;
+    }
+    .maint-progress-label {
+      display: flex; justify-content: space-between;
+      font-size: 11px; color: #94a3b8; font-weight: 600; margin-bottom: 6px;
+    }
+    .maint-progress-bar {
+      height: 6px; background: #e2e8f0; border-radius: 50px; overflow: hidden;
+    }
+    .maint-progress-fill {
+      height: 100%; width: 30%;
+      background: linear-gradient(90deg, #E31937, #f39c12);
+      border-radius: 50px;
+      animation: maintProgress 3s ease-in-out infinite;
+    }
+    @keyframes maintProgress {
+      0% { width: 20%; } 50% { width: 60%; } 100% { width: 20%; }
+    }
+    .maint-gears {
+      display: flex; justify-content: center; gap: 2px; margin-bottom: 8px;
+    }
+    .maint-gear { font-size: 22px; display: inline-block; }
+    .maint-gear-1 { animation: spin 3s linear infinite; }
+    .maint-gear-2 { animation: spin 3s linear infinite reverse; margin-top: 6px; font-size: 18px; }
+    @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+    .maint-footer {
+      font-size: 11px; color: #94a3b8; padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+    .maint-footer strong { color: #64748b; }
+    .maint-brand {
+      font-size: 12px; color: #94a3b8; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 4px; font-weight: 600;
+    }
+    /* ========== END MAINTENANCE ========== */
     .login-error { color: #e74c3c; background: rgba(231,76,60,0.2); padding: 12px; border-radius: 8px; margin-bottom: 15px; text-align: center; display: none; }
     .login-error.show { display: block; }
     .form-group input[type="password"] { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; color: #1e293b; font-size: 16px; }
@@ -655,6 +752,41 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 </style>
 </head>
 <body>
+
+<!-- ======= BANNER DE MANTENIMIENTO ======= -->
+<div class="maintenance-overlay" id="maintenanceOverlay">
+  <div class="maintenance-card">
+    <div class="maint-icon">🔧</div>
+    <div class="maint-status">
+      <div class="maint-dot"></div>
+      Mantenimiento Activo
+    </div>
+    <div class="maint-brand">Maestro ACVOLT</div>
+    <h2>App en <span>Mantenimiento</span></h2>
+    <p class="maint-msg">
+      Estamos trabajando para mejorar tu experiencia.<br>
+      La app estará <strong>deshabilitada la mayor parte del día</strong>.<br>
+      Te notificaremos cuando esté lista. ¡Gracias por tu paciencia!
+    </p>
+    <div class="maint-progress">
+      <div class="maint-progress-label">
+        <span>Progreso</span>
+        <span>Trabajando...</span>
+      </div>
+      <div class="maint-progress-bar">
+        <div class="maint-progress-fill"></div>
+      </div>
+    </div>
+    <div class="maint-gears">
+      <span class="maint-gear maint-gear-1">⚙️</span>
+      <span class="maint-gear maint-gear-2">⚙️</span>
+    </div>
+    <div class="maint-footer">
+      <strong>15 de Febrero, 2026</strong> · Equipo ACVOLT Tech School
+    </div>
+  </div>
+</div>
+<!-- ======= FIN BANNER MANTENIMIENTO ======= -->
   <div class="container">
     <!-- Login Screen -->
     <div class="screen active" id="loginScreen">

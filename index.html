@@ -2081,6 +2081,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               <button onclick="ssShowTab('tickets')" id="ssTabTickets" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔴 Cobros Fallidos</button>
               <button onclick="ssShowTab('surveys')" id="ssTabSurveys" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📋 Surveys</button>
               <button onclick="ssShowTab('newsurvey')" id="ssTabNew" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">➕ Nuevo Survey</button>
+              <button onclick="ssShowTab('staff')" id="ssTabStaff" class="ssStaffOnly" style="background:#e67e22;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👥 Staff</button>
             </div>
           </div>
 
@@ -2257,6 +2258,48 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               </div>
 
               <button onclick="ssSubmitSurvey()" style="width:100%;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;">💾 Guardar Survey</button>
+            </div>
+          </div>
+
+          <!-- TAB 4: Staff Management (Master only) -->
+          <div id="ssStaffPanel" style="display:none;">
+            <div style="background:rgba(230,126,34,0.1);border:1px solid #e67e22;border-radius:12px;padding:20px;margin-bottom:15px;">
+              <h3 style="color:#e67e22;margin:0 0 15px;">➕ Crear Nuevo Usuario de Staff</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Username (para login)</label>
+                  <input type="text" id="staffFormUser" placeholder="ej: jessica01" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Contraseña</label>
+                  <input type="text" id="staffFormPass" placeholder="ej: Staff2025$" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Nombre completo</label>
+                  <input type="text" id="staffFormNombre" placeholder="ej: Jessica López" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Email</label>
+                  <input type="email" id="staffFormEmail" placeholder="ej: jessica@acvolt.com" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Teléfono</label>
+                  <input type="text" id="staffFormTel" placeholder="ej: 909-555-1234" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:11px;">Rol</label>
+                  <select id="staffFormRol" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;">
+                    <option value="student_success">🎫 Student Success</option>
+                    <option value="master">👑 Master (acceso total)</option>
+                  </select>
+                </div>
+              </div>
+              <button onclick="ssCreateStaff()" style="margin-top:12px;width:100%;background:linear-gradient(135deg,#e67e22,#d35400);color:white;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;">👥 Crear Usuario</button>
+            </div>
+            
+            <h3 style="color:#e2e8f0;margin:0 0 10px;">📋 Usuarios Registrados</h3>
+            <div id="ssStaffList" style="max-height:300px;overflow-y:auto;">
+              <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando staff...</div>
             </div>
           </div>
 
@@ -9985,6 +10028,8 @@ window.toggleFormula = function(id) {
     // Admin credentials
     const ADMIN_USER = 'admin33';
     const ADMIN_PASS = 'AdminAcvolt33$';
+    var currentAdminRole = ''; // 'master' or 'student_success'
+    var currentAdminName = '';
 
     // Membership credentials
     // ========== MEMBERSHIP CODE SYSTEM (Supabase) ==========
@@ -10338,20 +10383,52 @@ window.toggleFormula = function(id) {
       return sessionStorage.getItem('admin_authenticated') === 'true';
     }
 
-    // Handle admin login
-    function handleAdminLogin(event) {
+    // Handle admin login - supports Master (admin33) and Student Success staff
+    async function handleAdminLogin(event) {
       event.preventDefault();
-      const user = document.getElementById('adminLoginUser').value;
+      const user = document.getElementById('adminLoginUser').value.trim();
       const pass = document.getElementById('adminLoginPassword').value;
       const errorDiv = document.getElementById('adminLoginError');
 
+      // 1. Always check hardcoded master first (fallback if Supabase is down)
       if (user === ADMIN_USER && pass === ADMIN_PASS) {
+        currentAdminRole = 'master';
+        currentAdminName = 'Maestro Mario';
         sessionStorage.setItem('admin_authenticated', 'true');
+        sessionStorage.setItem('admin_role', 'master');
+        sessionStorage.setItem('admin_name', 'Maestro Mario');
         errorDiv.classList.remove('show');
         showScreen('adminDashboardScreen');
-      } else {
-        errorDiv.classList.add('show');
+        return false;
       }
+
+      // 2. Check Supabase admin_staff table
+      if (supabaseClient) {
+        try {
+          var { data: staff } = await supabaseClient
+            .from('admin_staff')
+            .select('*')
+            .eq('username', user)
+            .eq('password_hash', pass)
+            .eq('activo', true)
+            .single();
+          
+          if (staff) {
+            currentAdminRole = staff.rol;
+            currentAdminName = staff.nombre;
+            sessionStorage.setItem('admin_authenticated', 'true');
+            sessionStorage.setItem('admin_role', staff.rol);
+            sessionStorage.setItem('admin_name', staff.nombre);
+            // Update last login
+            await supabaseClient.from('admin_staff').update({ last_login: new Date().toISOString() }).eq('id', staff.id);
+            errorDiv.classList.remove('show');
+            showScreen('adminDashboardScreen');
+            return false;
+          }
+        } catch(e) { console.log('[Admin] Staff lookup error:', e); }
+      }
+
+      errorDiv.classList.add('show');
       return false;
     }
 
@@ -10584,6 +10661,16 @@ window.toggleFormula = function(id) {
 
     // Render admin dashboard
     function renderAdminDashboard() {
+      // Check role and set context
+      var role = sessionStorage.getItem('admin_role') || currentAdminRole || 'master';
+      currentAdminRole = role;
+      currentAdminName = sessionStorage.getItem('admin_name') || currentAdminName || '';
+      
+      // Hide Staff management tab for non-master
+      var staffElements = document.querySelectorAll('.ssStaffOnly');
+      staffElements.forEach(function(el) { el.style.display = role === 'master' ? 'inline-block' : 'none'; });
+      
+      // Everyone sees everything - full admin access
       loadAllTechnicians();
       updateAdminStats();
       renderTechnicianList();
@@ -10601,11 +10688,19 @@ window.toggleFormula = function(id) {
       document.getElementById('ssTicketsPanel').style.display = tab === 'tickets' ? 'block' : 'none';
       document.getElementById('ssSurveysPanel').style.display = tab === 'surveys' ? 'block' : 'none';
       document.getElementById('ssNewSurveyPanel').style.display = tab === 'newsurvey' ? 'block' : 'none';
+      document.getElementById('ssStaffPanel').style.display = tab === 'staff' ? 'block' : 'none';
       document.getElementById('ssTabTickets').style.opacity = tab === 'tickets' ? '1' : '0.5';
       document.getElementById('ssTabSurveys').style.opacity = tab === 'surveys' ? '1' : '0.5';
       document.getElementById('ssTabNew').style.opacity = tab === 'newsurvey' ? '1' : '0.5';
+      var staffBtn = document.getElementById('ssTabStaff');
+      if (staffBtn) staffBtn.style.opacity = tab === 'staff' ? '1' : '0.5';
       if (tab === 'surveys') loadSSSurveys();
       if (tab === 'tickets') loadSSTickets();
+      if (tab === 'staff') loadSSStaff();
+      // Hide staff tab if not master
+      var role = sessionStorage.getItem('admin_role') || currentAdminRole;
+      var staffElements = document.querySelectorAll('.ssStaffOnly');
+      staffElements.forEach(function(el) { el.style.display = role === 'master' ? 'inline-block' : 'none'; });
     }
 
     function ssToggleCancelFields() {
@@ -10907,6 +11002,82 @@ window.toggleFormula = function(id) {
           '</div>';
         }).join('');
       } catch(e) { container.innerHTML = '<div style="color:#e74c3c;padding:10px;">Error: ' + e.message + '</div>'; }
+    }
+    async function ssCreateStaff() {
+      if (!supabaseClient) { alert('Sin conexión a Supabase'); return; }
+      var username = document.getElementById('staffFormUser').value.trim();
+      var password = document.getElementById('staffFormPass').value.trim();
+      var nombre = document.getElementById('staffFormNombre').value.trim();
+      var email = document.getElementById('staffFormEmail').value.trim();
+      var telefono = document.getElementById('staffFormTel').value.trim();
+      var rol = document.getElementById('staffFormRol').value;
+      
+      if (!username || !password || !nombre) { alert('Username, contraseña y nombre son obligatorios'); return; }
+      if (password.length < 6) { alert('La contraseña debe tener al menos 6 caracteres'); return; }
+      
+      try {
+        var { error } = await supabaseClient.from('admin_staff').insert({
+          username: username,
+          password_hash: password,
+          nombre: nombre,
+          email: email || null,
+          telefono: telefono || null,
+          rol: rol,
+          created_by: sessionStorage.getItem('admin_name') || 'admin33'
+        });
+        if (error) { alert('Error: ' + error.message); return; }
+        alert('✅ Usuario "' + username + '" creado exitosamente');
+        document.getElementById('staffFormUser').value = '';
+        document.getElementById('staffFormPass').value = '';
+        document.getElementById('staffFormNombre').value = '';
+        document.getElementById('staffFormEmail').value = '';
+        document.getElementById('staffFormTel').value = '';
+        loadSSStaff();
+      } catch(e) { alert('Error creando usuario: ' + e.message); }
+    }
+
+    async function loadSSStaff() {
+      var container = document.getElementById('ssStaffList');
+      if (!container || !supabaseClient) return;
+      try {
+        var { data: staff } = await supabaseClient.from('admin_staff').select('*').order('created_at', { ascending: false });
+        if (!staff || staff.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">No hay usuarios registrados</div>';
+          return;
+        }
+        container.innerHTML = staff.map(function(s) {
+          var rolColor = s.rol === 'master' ? '#e67e22' : '#3498db';
+          var rolIcon = s.rol === 'master' ? '👑' : '🎫';
+          var statusColor = s.activo ? '#27ae60' : '#e74c3c';
+          var lastLogin = s.last_login ? new Date(s.last_login).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Nunca';
+          return '<div style="background:rgba(255,255,255,0.05);border-left:4px solid ' + rolColor + ';border-radius:8px;padding:10px;margin-bottom:6px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+              '<div>' +
+                '<strong style="color:#e2e8f0;font-size:14px;">' + rolIcon + ' ' + s.nombre + '</strong>' +
+                '<span style="color:#64748b;font-size:11px;margin-left:8px;">@' + s.username + '</span>' +
+              '</div>' +
+              '<div style="display:flex;gap:6px;align-items:center;">' +
+                '<span style="background:' + rolColor + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;">' + s.rol + '</span>' +
+                '<span style="background:' + statusColor + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;">' + (s.activo ? 'Activo' : 'Inactivo') + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div style="color:#94a3b8;font-size:11px;margin-top:4px;">' +
+              (s.email ? '📧 ' + s.email + ' | ' : '') +
+              (s.telefono ? '📱 ' + s.telefono + ' | ' : '') +
+              '🕐 Último login: ' + lastLogin +
+            '</div>' +
+            (s.username !== 'admin33' ? '<div style="margin-top:6px;"><button onclick="ssToggleStaff(\'' + s.id + '\',' + !s.activo + ')" style="background:' + (s.activo ? '#e74c3c' : '#27ae60') + ';color:white;border:none;padding:3px 10px;border-radius:5px;font-size:10px;cursor:pointer;">' + (s.activo ? '🚫 Desactivar' : '✅ Activar') + '</button></div>' : '') +
+          '</div>';
+        }).join('');
+      } catch(e) { container.innerHTML = '<div style="color:#e74c3c;padding:10px;">Error: ' + e.message + '</div>'; }
+    }
+
+    async function ssToggleStaff(id, activate) {
+      if (!supabaseClient) return;
+      try {
+        await supabaseClient.from('admin_staff').update({ activo: activate }).eq('id', id);
+        loadSSStaff();
+      } catch(e) { alert('Error: ' + e.message); }
     }
     // ========== END STUDENT SUCCESS FUNCTIONS ==========
 

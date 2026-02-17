@@ -2073,15 +2073,14 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
         </div>
 
-        <!-- ========== STUDENT SUCCESS SECTION ========== -->
+        <!-- ========== STUDENT SUCCESS - CRM & SURVEY SECTION ========== -->
         <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
           <div class="admin-section-header">
-            <span class="admin-section-title">🎫 Student Success - Cobros Fallidos</span>
+            <span class="admin-section-title">🎫 Student Success</span>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button onclick="loadStudentSuccessTickets('abierto')" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔴 Abiertos</button>
-              <button onclick="loadStudentSuccessTickets('en_proceso')" style="background:#f39c12;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🟡 En Proceso</button>
-              <button onclick="loadStudentSuccessTickets('resuelto')" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🟢 Resueltos</button>
-              <button onclick="loadStudentSuccessTickets()" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📋 Todos</button>
+              <button onclick="ssShowTab('tickets')" id="ssTabTickets" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔴 Cobros Fallidos</button>
+              <button onclick="ssShowTab('surveys')" id="ssTabSurveys" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📋 Surveys</button>
+              <button onclick="ssShowTab('newsurvey')" id="ssTabNew" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">➕ Nuevo Survey</button>
             </div>
           </div>
 
@@ -2089,35 +2088,186 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px;">
             <div style="background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:12px;padding:12px;text-align:center;">
               <div style="font-size:24px;font-weight:bold;color:white;" id="ssOpenCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Abiertos</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Cobros Fallidos</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#3498db,#2980b9);border-radius:12px;padding:12px;text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssSurveyCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Surveys Hechos</div>
             </div>
             <div style="background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssProcessCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">En Proceso</div>
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssCancelCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Cancelaciones</div>
             </div>
             <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssResolvedCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Resueltos</div>
-            </div>
-            <div style="background:linear-gradient(135deg,#9b59b6,#8e44ad);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssTotalAmount">$0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">En Riesgo</div>
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssCertCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Con Certificado</div>
             </div>
           </div>
 
-          <!-- Tickets List -->
-          <div id="ssTicketsList" style="max-height:400px;overflow-y:auto;">
-            <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando tickets...</div>
+          <!-- TAB 1: Cobros Fallidos -->
+          <div id="ssTicketsPanel">
+            <div style="display:flex;gap:6px;margin-bottom:10px;">
+              <button onclick="loadSSTickets('abierto')" style="background:rgba(231,76,60,0.2);border:1px solid #e74c3c;padding:5px 10px;border-radius:6px;color:#e74c3c;cursor:pointer;font-size:11px;">🔴 Abiertos</button>
+              <button onclick="loadSSTickets('en_proceso')" style="background:rgba(243,156,18,0.2);border:1px solid #f39c12;padding:5px 10px;border-radius:6px;color:#f39c12;cursor:pointer;font-size:11px;">🟡 En Proceso</button>
+              <button onclick="loadSSTickets('resuelto')" style="background:rgba(39,174,96,0.2);border:1px solid #27ae60;padding:5px 10px;border-radius:6px;color:#27ae60;cursor:pointer;font-size:11px;">🟢 Resueltos</button>
+              <button onclick="loadSSTickets()" style="background:rgba(52,152,219,0.2);border:1px solid #3498db;padding:5px 10px;border-radius:6px;color:#3498db;cursor:pointer;font-size:11px;">📋 Todos</button>
+            </div>
+            <div id="ssTicketsList" style="max-height:400px;overflow-y:auto;">
+              <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando tickets...</div>
+            </div>
           </div>
 
-          <!-- Ticket Detail Modal -->
-          <div id="ssTicketModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;">
-            <div style="background:#1a1a2e;border-radius:15px;padding:25px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;border:2px solid #00d4ff;margin:auto;margin-top:10vh;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-                <h3 style="color:#00d4ff;margin:0;">📋 Detalle del Ticket</h3>
-                <button onclick="document.getElementById('ssTicketModal').style.display='none'" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;">✕</button>
+          <!-- TAB 2: Surveys List -->
+          <div id="ssSurveysPanel" style="display:none;">
+            <div style="display:flex;gap:6px;margin-bottom:10px;">
+              <button onclick="loadSSSurveys()" style="background:rgba(52,152,219,0.2);border:1px solid #3498db;padding:5px 10px;border-radius:6px;color:#3498db;cursor:pointer;font-size:11px;">📋 Todos</button>
+              <button onclick="loadSSSurveys('cancelacion')" style="background:rgba(231,76,60,0.2);border:1px solid #e74c3c;padding:5px 10px;border-radius:6px;color:#e74c3c;cursor:pointer;font-size:11px;">🚪 Cancelaciones</button>
+              <button onclick="loadSSSurveys('seguimiento')" style="background:rgba(39,174,96,0.2);border:1px solid #27ae60;padding:5px 10px;border-radius:6px;color:#27ae60;cursor:pointer;font-size:11px;">📞 Seguimiento</button>
+            </div>
+            <div id="ssSurveysList" style="max-height:400px;overflow-y:auto;">
+              <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando surveys...</div>
+            </div>
+          </div>
+
+          <!-- TAB 3: New Survey Form -->
+          <div id="ssNewSurveyPanel" style="display:none;">
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:20px;">
+              <h3 style="color:#00d4ff;margin:0 0 15px;">📋 Nuevo Survey de Estudiante</h3>
+              
+              <div style="margin-bottom:12px;">
+                <label style="color:#94a3b8;font-size:12px;display:block;margin-bottom:4px;">👤 Email del Estudiante</label>
+                <input type="email" id="ssFormEmail" placeholder="email@ejemplo.com" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;font-size:14px;box-sizing:border-box;">
+                <button onclick="ssLookupStudent()" style="background:#3498db;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;margin-top:6px;">🔍 Buscar Estudiante</button>
+                <div id="ssStudentInfo" style="margin-top:8px;"></div>
               </div>
-              <div id="ssTicketDetail"></div>
+
+              <div style="margin-bottom:12px;">
+                <label style="color:#94a3b8;font-size:12px;display:block;margin-bottom:4px;">📝 Tipo de Survey</label>
+                <select id="ssFormTipo" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;font-size:14px;" onchange="ssToggleCancelFields()">
+                  <option value="seguimiento">📞 Seguimiento General</option>
+                  <option value="cancelacion">🚪 Desea Cancelar</option>
+                  <option value="pago_fallido">💳 Pago Fallido</option>
+                  <option value="nuevo_ingreso">🎉 Nuevo Ingreso</option>
+                </select>
+              </div>
+
+              <div style="background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+                <h4 style="color:#f39c12;margin:0 0 10px;">1️⃣ ¿Cómo ingresó a la escuela?</h4>
+                <select id="ssFormIngreso" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;">
+                  <option value="">-- Seleccionar --</option>
+                  <option value="sitio_web">🌐 Sitio Web</option>
+                  <option value="app">📱 App Maestro ACVOLT</option>
+                  <option value="redes_sociales">📲 Redes Sociales (TikTok, YouTube, FB)</option>
+                  <option value="referido">👥 Referido por otro estudiante</option>
+                  <option value="vendedor">🤝 Vendedor / Promotor</option>
+                  <option value="evento">🎤 Evento / Clase gratis</option>
+                  <option value="otro">📌 Otro</option>
+                </select>
+              </div>
+
+              <div style="background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+                <h4 style="color:#3498db;margin:0 0 10px;">2️⃣ ¿Quién le ayudó a inscribirse?</h4>
+                <select id="ssFormAyuda" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;">
+                  <option value="">-- Seleccionar --</option>
+                  <option value="solo">🙋 Se registró solo/a</option>
+                  <option value="vendedor">🤝 Vendedor / Promotor</option>
+                  <option value="soporte">📞 Soporte técnico</option>
+                  <option value="maestro_mario">👨‍🏫 Maestro Mario</option>
+                  <option value="otro_estudiante">👥 Otro estudiante</option>
+                </select>
+                <input type="text" id="ssFormAyudaNombre" placeholder="Nombre del vendedor/persona (opcional)" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:6px;box-sizing:border-box;">
+              </div>
+
+              <div style="background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+                <h4 style="color:#9b59b6;margin:0 0 10px;">3️⃣ Comentarios sobre la escuela</h4>
+                <label style="color:#94a3b8;font-size:11px;">Opinión general de la escuela:</label>
+                <div style="display:flex;gap:4px;margin:6px 0;">
+                  <button onclick="ssSetRating('general',1)" id="ssRate_general_1" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐1</button>
+                  <button onclick="ssSetRating('general',2)" id="ssRate_general_2" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐2</button>
+                  <button onclick="ssSetRating('general',3)" id="ssRate_general_3" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐3</button>
+                  <button onclick="ssSetRating('general',4)" id="ssRate_general_4" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐4</button>
+                  <button onclick="ssSetRating('general',5)" id="ssRate_general_5" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐5</button>
+                </div>
+                <label style="color:#94a3b8;font-size:11px;">Clases en línea (app):</label>
+                <div style="display:flex;gap:4px;margin:6px 0;">
+                  <button onclick="ssSetRating('online',1)" id="ssRate_online_1" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐1</button>
+                  <button onclick="ssSetRating('online',2)" id="ssRate_online_2" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐2</button>
+                  <button onclick="ssSetRating('online',3)" id="ssRate_online_3" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐3</button>
+                  <button onclick="ssSetRating('online',4)" id="ssRate_online_4" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐4</button>
+                  <button onclick="ssSetRating('online',5)" id="ssRate_online_5" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐5</button>
+                </div>
+                <label style="color:#94a3b8;font-size:11px;">Clases en vivo (Zoom):</label>
+                <div style="display:flex;gap:4px;margin:6px 0;">
+                  <button onclick="ssSetRating('vivo',1)" id="ssRate_vivo_1" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐1</button>
+                  <button onclick="ssSetRating('vivo',2)" id="ssRate_vivo_2" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐2</button>
+                  <button onclick="ssSetRating('vivo',3)" id="ssRate_vivo_3" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐3</button>
+                  <button onclick="ssSetRating('vivo',4)" id="ssRate_vivo_4" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐4</button>
+                  <button onclick="ssSetRating('vivo',5)" id="ssRate_vivo_5" style="padding:4px 8px;border-radius:4px;border:1px solid #555;background:transparent;color:white;cursor:pointer;">⭐5</button>
+                </div>
+                <textarea id="ssFormComentarios" rows="3" placeholder="Comentarios adicionales del estudiante..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:6px;box-sizing:border-box;resize:vertical;"></textarea>
+              </div>
+
+              <div style="background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+                <h4 style="color:#27ae60;margin:0 0 10px;">4️⃣ ¿Cómo le va en la escuela?</h4>
+                <label style="color:#94a3b8;font-size:11px;">¿Ya obtuvo algún certificado?</label>
+                <select id="ssFormCertificado" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:4px;">
+                  <option value="">-- Seleccionar --</option>
+                  <option value="si">✅ Sí, ya tiene certificado</option>
+                  <option value="en_proceso">🔄 En proceso / estudiando</option>
+                  <option value="no_todavia">⏳ No todavía, pero sigue activo</option>
+                  <option value="no_dificultad">❌ No, tiene dificultad</option>
+                  <option value="no_tiempo">⏰ No, no ha tenido tiempo</option>
+                </select>
+                <textarea id="ssFormProgreso" rows="2" placeholder="¿En qué nivel va? ¿Qué dificultades tiene?" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:6px;box-sizing:border-box;resize:vertical;"></textarea>
+              </div>
+
+              <!-- Cancelation fields (shown only if tipo=cancelacion) -->
+              <div id="ssCancelFields" style="display:none;">
+                <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+                  <h4 style="color:#e74c3c;margin:0 0 10px;">5️⃣ ¿Por qué se salió / desea cancelar?</h4>
+                  <select id="ssFormMotivoCancelacion" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;">
+                    <option value="">-- Seleccionar motivo --</option>
+                    <option value="precio">💰 Precio / No puede pagar</option>
+                    <option value="tiempo">⏰ No tiene tiempo</option>
+                    <option value="no_usa">📵 No usa la plataforma</option>
+                    <option value="no_entiende">🤔 No entiende el contenido</option>
+                    <option value="ya_aprendio">🎓 Ya aprendió lo que necesitaba</option>
+                    <option value="competencia">🏃 Se fue con otra escuela</option>
+                    <option value="problemas_tecnicos">🔧 Problemas técnicos</option>
+                    <option value="servicio">😞 Mal servicio</option>
+                    <option value="otro">📌 Otro motivo</option>
+                  </select>
+                  <textarea id="ssFormMotivoCancelacionDetalle" rows="2" placeholder="Detalles adicionales sobre la cancelación..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:6px;box-sizing:border-box;resize:vertical;"></textarea>
+                  <label style="color:#94a3b8;font-size:11px;margin-top:8px;display:block;">¿Se le ofreció solución para retenerlo?</label>
+                  <select id="ssFormRetencion" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:4px;">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="descuento">💰 Se ofreció descuento</option>
+                    <option value="pausa">⏸️ Se ofreció pausar membresía</option>
+                    <option value="soporte">📞 Se ofreció soporte extra</option>
+                    <option value="nada">❌ No se ofreció nada</option>
+                    <option value="acepto_quedarse">✅ Aceptó quedarse</option>
+                    <option value="cancelo_definitivo">🚪 Canceló definitivo</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="margin-bottom:12px;">
+                <label style="color:#94a3b8;font-size:12px;display:block;margin-bottom:4px;">📝 Notas internas del agente</label>
+                <textarea id="ssFormNotas" rows="2" placeholder="Notas adicionales..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;box-sizing:border-box;resize:vertical;"></textarea>
+              </div>
+
+              <button onclick="ssSubmitSurvey()" style="width:100%;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;">💾 Guardar Survey</button>
+            </div>
+          </div>
+
+          <!-- Ticket/Survey Detail Modal -->
+          <div id="ssDetailModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;">
+            <div style="background:#1a1a2e;border-radius:15px;padding:25px;max-width:550px;width:90%;max-height:80vh;overflow-y:auto;border:2px solid #00d4ff;margin:auto;margin-top:8vh;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h3 style="color:#00d4ff;margin:0;">📋 Detalle</h3>
+                <button onclick="document.getElementById('ssDetailModal').style.display='none'" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;">✕</button>
+              </div>
+              <div id="ssDetailContent"></div>
             </div>
           </div>
         </div>
@@ -10440,149 +10590,323 @@ window.toggleFormula = function(id) {
       renderLevelPerformanceChart();
       loadAdminExamRequests();
       loadAdminStudentActivity();
-      loadStudentSuccessTickets();
+      loadSSTickets();
+      loadSSStats();
     }
 
     // ========== STUDENT SUCCESS FUNCTIONS ==========
-    async function loadStudentSuccessTickets(filterEstado) {
+    var ssRatings = { general: 0, online: 0, vivo: 0 };
+
+    function ssShowTab(tab) {
+      document.getElementById('ssTicketsPanel').style.display = tab === 'tickets' ? 'block' : 'none';
+      document.getElementById('ssSurveysPanel').style.display = tab === 'surveys' ? 'block' : 'none';
+      document.getElementById('ssNewSurveyPanel').style.display = tab === 'newsurvey' ? 'block' : 'none';
+      document.getElementById('ssTabTickets').style.opacity = tab === 'tickets' ? '1' : '0.5';
+      document.getElementById('ssTabSurveys').style.opacity = tab === 'surveys' ? '1' : '0.5';
+      document.getElementById('ssTabNew').style.opacity = tab === 'newsurvey' ? '1' : '0.5';
+      if (tab === 'surveys') loadSSSurveys();
+      if (tab === 'tickets') loadSSTickets();
+    }
+
+    function ssToggleCancelFields() {
+      var tipo = document.getElementById('ssFormTipo').value;
+      document.getElementById('ssCancelFields').style.display = (tipo === 'cancelacion') ? 'block' : 'none';
+    }
+
+    function ssSetRating(category, value) {
+      ssRatings[category] = value;
+      for (var i = 1; i <= 5; i++) {
+        var btn = document.getElementById('ssRate_' + category + '_' + i);
+        if (btn) btn.style.background = i <= value ? '#f39c12' : 'transparent';
+      }
+    }
+
+    async function loadSSStats() {
+      if (!supabaseClient) return;
+      try {
+        var { data: tickets } = await supabaseClient.from('student_success_tickets').select('estado,descripcion').order('created_at', { ascending: false });
+        var { data: surveys } = await supabaseClient.from('student_success_surveys').select('tipo,certificado_obtenido');
+        tickets = tickets || [];
+        surveys = surveys || [];
+        var openTickets = tickets.filter(function(t) { return t.estado === 'abierto'; });
+        var cancelaciones = surveys.filter(function(s) { return s.tipo === 'cancelacion'; });
+        var conCert = surveys.filter(function(s) { return s.certificado_obtenido === 'si'; });
+        document.getElementById('ssOpenCount').textContent = openTickets.length;
+        document.getElementById('ssSurveyCount').textContent = surveys.length;
+        document.getElementById('ssCancelCount').textContent = cancelaciones.length;
+        document.getElementById('ssCertCount').textContent = conCert.length;
+      } catch(e) { console.log('[SS] Stats error:', e); }
+    }
+
+    async function loadSSTickets(filterEstado) {
       var container = document.getElementById('ssTicketsList');
       if (!container || !supabaseClient) return;
-      
       try {
-        // Load all tickets for stats
-        var { data: allTickets } = await supabaseClient
-          .from('student_success_tickets')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (!allTickets) allTickets = [];
-        
-        // Update stats
-        var open = allTickets.filter(function(t) { return t.estado === 'abierto'; });
-        var process = allTickets.filter(function(t) { return t.estado === 'en_proceso'; });
-        var resolved = allTickets.filter(function(t) { return t.estado === 'resuelto'; });
-        
-        document.getElementById('ssOpenCount').textContent = open.length;
-        document.getElementById('ssProcessCount').textContent = process.length;
-        document.getElementById('ssResolvedCount').textContent = resolved.length;
-        
-        // Calculate total at risk from descriptions
-        var totalRisk = 0;
-        open.concat(process).forEach(function(t) {
-          var match = (t.descripcion || '').match(/\$(\d+\.?\d*)/);
-          if (match) totalRisk += parseFloat(match[1]);
-        });
-        document.getElementById('ssTotalAmount').textContent = '$' + totalRisk.toFixed(0);
-        
-        // Filter tickets
-        var tickets = filterEstado ? allTickets.filter(function(t) { return t.estado === filterEstado; }) : allTickets;
-        
-        if (tickets.length === 0) {
-          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;">' +
-            '<div style="font-size:40px;margin-bottom:10px;">🎉</div>' +
-            '<p>' + (filterEstado ? 'No hay tickets con estado "' + filterEstado + '"' : 'No hay tickets de Student Success') + '</p></div>';
+        var query = supabaseClient.from('student_success_tickets').select('*').order('created_at', { ascending: false });
+        if (filterEstado) query = query.eq('estado', filterEstado);
+        var { data: tickets } = await query;
+        if (!tickets || tickets.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;">🎉</div><p>No hay tickets' + (filterEstado ? ' con estado "' + filterEstado + '"' : '') + '</p></div>';
           return;
         }
-        
         container.innerHTML = tickets.map(function(t) {
-          var estadoColor = t.estado === 'abierto' ? '#e74c3c' : t.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
-          var estadoIcon = t.estado === 'abierto' ? '🔴' : t.estado === 'en_proceso' ? '🟡' : '🟢';
-          var emailIcons = (t.email_enviado_estudiante ? '📧✅' : '📧❌') + ' ' + (t.email_enviado_admin ? '👨‍💼✅' : '👨‍💼❌');
-          var fecha = new Date(t.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-          var diasRestantes = t.fecha_limite ? Math.max(0, Math.ceil((new Date(t.fecha_limite) - new Date()) / 86400000)) : '?';
-          var diasColor = diasRestantes <= 1 ? '#e74c3c' : diasRestantes <= 3 ? '#f39c12' : '#27ae60';
-          
-          return '<div style="background:rgba(255,255,255,0.05);border:1px solid ' + estadoColor + '33;border-left:4px solid ' + estadoColor + ';border-radius:10px;padding:12px;margin-bottom:8px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-              '<div>' +
-                '<strong style="color:#e2e8f0;font-size:14px;">👤 ' + (t.student_name || 'Sin nombre') + '</strong>' +
-                '<span style="color:#94a3b8;font-size:12px;margin-left:8px;">' + (t.student_email || '') + '</span>' +
-              '</div>' +
-              '<span style="background:' + estadoColor + ';color:white;padding:3px 10px;border-radius:12px;font-size:11px;">' + estadoIcon + ' ' + (t.estado || '').replace('_', ' ') + '</span>' +
-            '</div>' +
+          var ec = t.estado === 'abierto' ? '#e74c3c' : t.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
+          var ei = t.estado === 'abierto' ? '🔴' : t.estado === 'en_proceso' ? '🟡' : '🟢';
+          var dias = t.fecha_limite ? Math.max(0, Math.ceil((new Date(t.fecha_limite) - new Date()) / 86400000)) : '-';
+          var dc = dias <= 1 ? '#e74c3c' : dias <= 3 ? '#f39c12' : '#27ae60';
+          var fecha = new Date(t.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric'});
+          return '<div style="background:rgba(255,255,255,0.05);border-left:4px solid ' + ec + ';border-radius:8px;padding:10px;margin-bottom:6px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-              '<div style="color:#94a3b8;font-size:12px;">' +
-                '📅 ' + fecha + ' | ' +
-                '<span style="color:' + diasColor + ';font-weight:bold;">⏳ ' + diasRestantes + ' días</span> | ' +
-                emailIcons +
-              '</div>' +
-              '<div style="display:flex;gap:6px;">' +
-                (t.estado === 'abierto' ? '<button onclick="updateTicketStatus(\'' + t.id + '\',\'en_proceso\')" style="background:#f39c12;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">En Proceso</button>' : '') +
-                (t.estado !== 'resuelto' ? '<button onclick="updateTicketStatus(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">✅ Resolver</button>' : '') +
-                '<button onclick="showTicketDetail(\'' + t.id + '\')" style="background:#3498db;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">👁 Ver</button>' +
+              '<div><strong style="color:#e2e8f0;font-size:13px;">👤 ' + (t.student_name || 'N/A') + '</strong> <span style="color:#64748b;font-size:11px;">' + (t.student_email || '') + '</span></div>' +
+              '<span style="background:' + ec + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;">' + ei + ' ' + t.estado + '</span>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">' +
+              '<span style="color:#64748b;font-size:11px;">📅 ' + fecha + ' | <span style="color:' + dc + ';">⏳ ' + dias + ' días</span> | ' + (t.email_enviado_estudiante ? '📧✅' : '📧❌') + '</span>' +
+              '<div style="display:flex;gap:4px;">' +
+                (t.estado === 'abierto' ? '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'en_proceso\')" style="background:#f39c12;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">En Proceso</button>' : '') +
+                (t.estado !== 'resuelto' ? '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">✅ Resolver</button>' : '') +
               '</div>' +
             '</div>' +
-            '<div style="color:#64748b;font-size:11px;margin-top:4px;">' + (t.descripcion || '') + '</div>' +
+            '<div style="display:flex;gap:6px;margin-top:6px;">' +
+              '<a href="mailto:' + (t.student_email || '') + '?subject=ACVOLT - Actualiza tu método de pago&body=Hola ' + encodeURIComponent(t.student_name || '') + '," style="background:#9b59b6;color:white;text-decoration:none;padding:3px 8px;border-radius:5px;font-size:10px;">📧 Email</a>' +
+              '<button onclick="ssLookupForTicket(\'' + (t.student_email || '') + '\')" style="background:#3498db;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">👁 Ver Info</button>' +
+            '</div>' +
+            '<div style="color:#475569;font-size:10px;margin-top:4px;">' + (t.descripcion || '') + '</div>' +
           '</div>';
         }).join('');
-        
-      } catch(e) {
-        console.error('[StudentSuccess] Error loading tickets:', e);
-        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">Error cargando tickets: ' + e.message + '</div>';
-      }
+      } catch(e) { container.innerHTML = '<div style="color:#e74c3c;padding:10px;">Error: ' + e.message + '</div>'; }
     }
-    
-    async function updateTicketStatus(ticketId, newStatus) {
+
+    async function ssUpdateTicket(id, status) {
       if (!supabaseClient) return;
       try {
-        var updateData = { estado: newStatus, updated_at: new Date().toISOString() };
-        if (newStatus === 'resuelto') {
-          updateData.resuelto_por = 'admin';
-          updateData.resuelto_at = new Date().toISOString();
-          updateData.dias_gracia_restantes = 0;
-        }
-        await supabaseClient.from('student_success_tickets').update(updateData).eq('id', ticketId);
-        loadStudentSuccessTickets();
-      } catch(e) {
-        console.error('[StudentSuccess] Error updating ticket:', e);
-        alert('Error actualizando ticket: ' + e.message);
-      }
+        var d = { estado: status, updated_at: new Date().toISOString() };
+        if (status === 'resuelto') { d.resuelto_por = 'admin'; d.resuelto_at = new Date().toISOString(); }
+        await supabaseClient.from('student_success_tickets').update(d).eq('id', id);
+        loadSSTickets();
+        loadSSStats();
+      } catch(e) { alert('Error: ' + e.message); }
     }
-    
-    async function showTicketDetail(ticketId) {
-      if (!supabaseClient) return;
+
+    async function ssLookupForTicket(email) {
+      if (!email || !supabaseClient) return;
       try {
-        var { data: ticket } = await supabaseClient.from('student_success_tickets').select('*').eq('id', ticketId).single();
-        if (!ticket) return;
+        var { data: user } = await supabaseClient.from('technicians').select('*').eq('email', email).single();
+        var membership = null;
+        try {
+          var { data: mem } = await supabaseClient.from('memberships').select('*').eq('user_email', email).order('created_at', { ascending: false }).limit(1).single();
+          membership = mem;
+        } catch(e) {}
         
-        var estadoColor = ticket.estado === 'abierto' ? '#e74c3c' : ticket.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
-        var diasRestantes = ticket.fecha_limite ? Math.max(0, Math.ceil((new Date(ticket.fecha_limite) - new Date()) / 86400000)) : '?';
-        var fechaCreacion = new Date(ticket.created_at).toLocaleDateString('es-MX', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-        var fechaLimite = ticket.fecha_limite ? new Date(ticket.fecha_limite).toLocaleDateString('es-MX', {weekday:'long',year:'numeric',month:'long',day:'numeric'}) : 'N/A';
+        var nombre = user ? (user.nombre || 'N/A') : 'No encontrado';
+        var tel = user ? (user.telefono || '') : '';
+        var ciudad = user ? (user.ciudad || '') : '';
+        var techNum = user ? (user.technician_number || 'N/A') : 'N/A';
+        var memStatus = membership ? (membership.activa ? '✅ Activa — ' + (membership.plan_name || membership.tier || '') : '❌ Inactiva') : '⚠️ Sin membresía';
         
-        document.getElementById('ssTicketDetail').innerHTML = 
-          '<div style="space-y:12px;">' +
-            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
-              '<h4 style="color:#f39c12;margin:0 0 10px;">👤 Información del Estudiante</h4>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Nombre:</strong> ' + (ticket.student_name || 'N/A') + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Email:</strong> ' + (ticket.student_email || 'N/A') + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Stripe Customer:</strong> ' + (ticket.stripe_customer_id || 'N/A') + '</p>' +
+        var content = '<div style="background:rgba(0,212,255,0.05);border:1px solid #00d4ff;border-radius:12px;padding:15px;">' +
+          '<h3 style="color:#00d4ff;margin:0 0 10px;">👤 ' + nombre + '</h3>' +
+          '<p style="color:#e2e8f0;margin:4px 0;font-size:13px;">📧 ' + email + '</p>' +
+          (tel ? '<p style="color:#e2e8f0;margin:4px 0;font-size:13px;">📱 ' + tel + '</p>' : '<p style="color:#e74c3c;margin:4px 0;font-size:12px;">📱 Sin teléfono registrado</p>') +
+          (ciudad ? '<p style="color:#94a3b8;margin:4px 0;font-size:12px;">🏙️ ' + ciudad + '</p>' : '') +
+          '<p style="color:#94a3b8;margin:4px 0;font-size:12px;">🔢 Tech #' + techNum + '</p>' +
+          '<p style="color:#94a3b8;margin:4px 0;font-size:12px;">💳 ' + memStatus + '</p>' +
+          (user && user.registration_date ? '<p style="color:#475569;margin:4px 0;font-size:11px;">📅 Registrado: ' + new Date(user.registration_date).toLocaleDateString("es-MX", {year:"numeric",month:"long",day:"numeric"}) + '</p>' : '') +
+          '<div style="display:flex;gap:8px;margin-top:12px;">' +
+            (tel ? '<a href="tel:' + tel + '" style="flex:1;background:#27ae60;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📞 Llamar</a>' : '') +
+            (tel ? '<a href="sms:' + tel + '" style="flex:1;background:#3498db;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">💬 SMS</a>' : '') +
+            '<a href="mailto:' + email + '?subject=ACVOLT - Actualiza tu pago&body=Hola ' + encodeURIComponent(nombre) + '," style="flex:1;background:#9b59b6;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📧 Email</a>' +
+          '</div>' +
+        '</div>';
+        
+        document.getElementById('ssDetailContent').innerHTML = content;
+        document.getElementById('ssDetailModal').style.display = 'block';
+      } catch(e) { alert('Error buscando estudiante: ' + e.message); }
+    }
+
+    async function ssLookupStudent() {
+      var email = document.getElementById('ssFormEmail').value.trim();
+      var info = document.getElementById('ssStudentInfo');
+      if (!email || !supabaseClient) { info.innerHTML = ''; return; }
+      try {
+        var { data: user } = await supabaseClient.from('technicians').select('*').eq('email', email).single();
+        var membership = null;
+        try {
+          var { data: mem } = await supabaseClient.from('memberships').select('*').eq('user_email', email).order('created_at', { ascending: false }).limit(1).single();
+          membership = mem;
+        } catch(e) {}
+        var { data: prevSurveys } = await supabaseClient.from('student_success_surveys').select('id').eq('student_email', email);
+        var surveyCount = prevSurveys ? prevSurveys.length : 0;
+        
+        if (user) {
+          var memStatus = membership ? (membership.activa ? '✅ Activa' : '❌ Inactiva') : '⚠️ Sin membresía';
+          var memPlan = membership ? (membership.plan_name || membership.tier || 'N/A') : 'N/A';
+          var memColor = membership && membership.activa ? '#27ae60' : '#e74c3c';
+          
+          info.innerHTML = '<div style="background:rgba(0,212,255,0.05);border:2px solid #00d4ff;border-radius:12px;padding:15px;margin-top:10px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
+              '<div>' +
+                '<h3 style="color:#00d4ff;margin:0 0 4px;">👤 ' + (user.nombre || 'Sin nombre') + '</h3>' +
+                '<p style="color:#94a3b8;margin:0;font-size:12px;">📧 ' + email + '</p>' +
+              '</div>' +
+              '<span style="background:' + memColor + ';color:white;padding:4px 10px;border-radius:8px;font-size:11px;">' + memStatus + '</span>' +
             '</div>' +
-            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
-              '<h4 style="color:#e74c3c;margin:0 0 10px;">⚠️ Detalles del Ticket</h4>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Estado:</strong> <span style="color:' + estadoColor + ';font-weight:bold;">' + ticket.estado + '</span></p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Tipo:</strong> ' + (ticket.tipo || 'N/A') + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Descripción:</strong> ' + (ticket.descripcion || 'N/A') + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Días restantes:</strong> <span style="color:' + (diasRestantes <= 1 ? '#e74c3c' : '#f39c12') + ';font-weight:bold;">' + diasRestantes + ' días</span></p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Fecha límite:</strong> ' + fechaLimite + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Creado:</strong> ' + fechaCreacion + '</p>' +
+            
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">📱 Teléfono</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (user.telefono || 'No registrado') + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">🔢 Tech Number</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (user.technician_number || user.techNumber || 'N/A') + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">🏙️ Ciudad</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (user.ciudad || 'N/A') + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">🛠️ Experiencia</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (user.experiencia || 'N/A') + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">💳 Plan</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + memPlan + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">📋 Surveys previos</div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + surveyCount + '</div>' +
+              '</div>' +
             '</div>' +
-            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
-              '<h4 style="color:#3498db;margin:0 0 10px;">📧 Notificaciones</h4>' +
-              '<p style="color:#e2e8f0;margin:4px 0;">Email estudiante: ' + (ticket.email_enviado_estudiante ? '✅ Enviado' : '❌ No enviado') + '</p>' +
-              '<p style="color:#e2e8f0;margin:4px 0;">Email admin: ' + (ticket.email_enviado_admin ? '✅ Enviado' : '❌ No enviado') + '</p>' +
+            
+            '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">🏅 EPA</div>' +
+                '<div style="color:#e2e8f0;font-size:12px;">' + (user.epa || 'No') + '</div>' +
+              '</div>' +
+              '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:8px;">' +
+                '<div style="color:#64748b;font-size:10px;">🏅 OSHA</div>' +
+                '<div style="color:#e2e8f0;font-size:12px;">' + (user.osha || 'No') + '</div>' +
+              '</div>' +
             '</div>' +
-            '<div style="display:flex;gap:8px;margin-top:15px;">' +
-              (ticket.estado === 'abierto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'en_proceso\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#f39c12;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">🟡 Marcar En Proceso</button>' : '') +
-              (ticket.estado !== 'resuelto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'resuelto\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#27ae60;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">✅ Marcar Resuelto</button>' : '') +
-              (ticket.estado === 'resuelto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'abierto\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#e74c3c;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">🔄 Reabrir</button>' : '') +
+            
+            (user.registration_date ? '<p style="color:#475569;font-size:11px;margin:8px 0 0;">📅 Registrado: ' + new Date(user.registration_date).toLocaleDateString("es-MX", {year:"numeric",month:"long",day:"numeric"}) + '</p>' : '') +
+            
+            '<div style="display:flex;gap:8px;margin-top:12px;">' +
+              (user.telefono ? '<a href="tel:' + user.telefono + '" style="flex:1;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📞 Llamar</a>' : '') +
+              (user.telefono ? '<a href="sms:' + user.telefono + '" style="flex:1;background:linear-gradient(135deg,#3498db,#2980b9);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">💬 SMS</a>' : '') +
+              '<a href="mailto:' + email + '?subject=ACVOLT Tech School - Seguimiento&body=Hola ' + (user.nombre || '') + ',%0A%0A" style="flex:1;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📧 Email</a>' +
             '</div>' +
           '</div>';
+        } else {
+          info.innerHTML = '<div style="background:rgba(231,76,60,0.1);border:1px solid #e74c3c;border-radius:8px;padding:10px;margin-top:6px;">' +
+            '<p style="color:#e74c3c;margin:0 0 6px;font-size:13px;">❌ Estudiante no encontrado en la base de datos</p>' +
+            '<p style="color:#94a3b8;margin:0;font-size:11px;">Puedes llenar el survey manualmente con el email ingresado</p>' +
+          '</div>';
+        }
+      } catch(e) { info.innerHTML = '<span style="color:#e74c3c;font-size:11px;">Error buscando: ' + e.message + '</span>'; }
+    }
+
+    async function ssSubmitSurvey() {
+      if (!supabaseClient) { alert('Error: Sin conexión a Supabase'); return; }
+      var email = document.getElementById('ssFormEmail').value.trim();
+      if (!email) { alert('Por favor ingresa el email del estudiante'); return; }
+      try {
+        var survey = {
+          student_email: email,
+          tipo: document.getElementById('ssFormTipo').value,
+          como_ingreso: document.getElementById('ssFormIngreso').value,
+          quien_ayudo: document.getElementById('ssFormAyuda').value,
+          quien_ayudo_nombre: document.getElementById('ssFormAyudaNombre').value.trim(),
+          rating_general: ssRatings.general,
+          rating_clases_online: ssRatings.online,
+          rating_clases_vivo: ssRatings.vivo,
+          comentarios: document.getElementById('ssFormComentarios').value.trim(),
+          certificado_obtenido: document.getElementById('ssFormCertificado').value,
+          progreso_notas: document.getElementById('ssFormProgreso').value.trim(),
+          motivo_cancelacion: document.getElementById('ssFormMotivoCancelacion') ? document.getElementById('ssFormMotivoCancelacion').value : '',
+          motivo_cancelacion_detalle: document.getElementById('ssFormMotivoCancelacionDetalle') ? document.getElementById('ssFormMotivoCancelacionDetalle').value.trim() : '',
+          retencion_ofrecida: document.getElementById('ssFormRetencion') ? document.getElementById('ssFormRetencion').value : '',
+          notas_agente: document.getElementById('ssFormNotas').value.trim(),
+          created_at: new Date().toISOString()
+        };
+        await supabaseClient.from('student_success_surveys').insert(survey);
+        alert('✅ Survey guardado exitosamente');
+        // Reset form
+        document.getElementById('ssFormEmail').value = '';
+        document.getElementById('ssStudentInfo').innerHTML = '';
+        document.getElementById('ssFormTipo').value = 'seguimiento';
+        document.getElementById('ssFormIngreso').value = '';
+        document.getElementById('ssFormAyuda').value = '';
+        document.getElementById('ssFormAyudaNombre').value = '';
+        document.getElementById('ssFormComentarios').value = '';
+        document.getElementById('ssFormCertificado').value = '';
+        document.getElementById('ssFormProgreso').value = '';
+        document.getElementById('ssFormNotas').value = '';
+        ssRatings = { general: 0, online: 0, vivo: 0 };
+        ['general','online','vivo'].forEach(function(c) { for(var i=1;i<=5;i++) { var b=document.getElementById('ssRate_'+c+'_'+i); if(b) b.style.background='transparent'; } });
+        ssToggleCancelFields();
+        loadSSStats();
+        ssShowTab('surveys');
+      } catch(e) { alert('Error guardando survey: ' + e.message); }
+    }
+
+    async function loadSSSurveys(filterTipo) {
+      var container = document.getElementById('ssSurveysList');
+      if (!container || !supabaseClient) return;
+      try {
+        var query = supabaseClient.from('student_success_surveys').select('*').order('created_at', { ascending: false });
+        if (filterTipo) query = query.eq('tipo', filterTipo);
+        var { data: surveys } = await query;
+        if (!surveys || surveys.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;">📋</div><p>No hay surveys' + (filterTipo ? ' de tipo "' + filterTipo + '"' : '') + '</p></div>';
+          return;
+        }
+        // Lookup all student emails to get their info
+        var emails = [...new Set(surveys.map(function(s) { return s.student_email; }))];
+        var techMap = {};
+        for (var ei = 0; ei < emails.length; ei++) {
+          try {
+            var { data: tch } = await supabaseClient.from('technicians').select('nombre,telefono,ciudad,technician_number').eq('email', emails[ei]).single();
+            if (tch) techMap[emails[ei]] = tch;
+          } catch(e) {}
+        }
         
-        document.getElementById('ssTicketModal').style.display = 'flex';
-      } catch(e) {
-        console.error('[StudentSuccess] Error loading ticket detail:', e);
-      }
+        container.innerHTML = surveys.map(function(s) {
+          var tc = s.tipo === 'cancelacion' ? '#e74c3c' : s.tipo === 'pago_fallido' ? '#f39c12' : s.tipo === 'nuevo_ingreso' ? '#27ae60' : '#3498db';
+          var ti = s.tipo === 'cancelacion' ? '🚪' : s.tipo === 'pago_fallido' ? '💳' : s.tipo === 'nuevo_ingreso' ? '🎉' : '📞';
+          var fecha = new Date(s.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+          var stars = function(n) { return n ? '⭐'.repeat(Math.min(n,5)) + '(' + n + '/5)' : '-'; };
+          var tech = techMap[s.student_email] || {};
+          var nombre = tech.nombre || 'N/A';
+          var tel = tech.telefono || '';
+          
+          return '<div style="background:rgba(255,255,255,0.05);border-left:4px solid ' + tc + ';border-radius:8px;padding:12px;margin-bottom:8px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+              '<div>' +
+                '<strong style="color:#e2e8f0;font-size:14px;">👤 ' + nombre + '</strong>' +
+                '<span style="color:#64748b;font-size:11px;margin-left:6px;">#' + (tech.technician_number || 'N/A') + '</span>' +
+                '<p style="color:#94a3b8;font-size:11px;margin:2px 0 0;">📧 ' + s.student_email + (tel ? ' | 📱 ' + tel : '') + (tech.ciudad ? ' | 🏙️ ' + tech.ciudad : '') + '</p>' +
+              '</div>' +
+              '<span style="background:' + tc + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;white-space:nowrap;">' + ti + ' ' + s.tipo + '</span>' +
+            '</div>' +
+            '<div style="color:#94a3b8;font-size:11px;margin-top:8px;">' +
+              '📅 ' + fecha + ' | Ingreso: ' + (s.como_ingreso || '-') + ' | Ayudó: ' + (s.quien_ayudo || '-') + ' | Cert: ' + (s.certificado_obtenido || '-') +
+            '</div>' +
+            '<div style="color:#64748b;font-size:11px;margin-top:3px;">' +
+              'General: ' + stars(s.rating_general) + ' | Online: ' + stars(s.rating_clases_online) + ' | Vivo: ' + stars(s.rating_clases_vivo) +
+            '</div>' +
+            (s.comentarios ? '<div style="color:#cbd5e1;font-size:11px;margin-top:4px;font-style:italic;background:rgba(255,255,255,0.03);padding:6px;border-radius:6px;">"' + s.comentarios.substring(0,150) + '"</div>' : '') +
+            (s.motivo_cancelacion ? '<div style="color:#e74c3c;font-size:11px;margin-top:4px;">🚪 Motivo: ' + s.motivo_cancelacion + (s.motivo_cancelacion_detalle ? ' — ' + s.motivo_cancelacion_detalle.substring(0,80) : '') + '</div>' : '') +
+            (s.retencion_ofrecida ? '<div style="color:#f39c12;font-size:11px;margin-top:2px;">🤝 Retención: ' + s.retencion_ofrecida + '</div>' : '') +
+            '<div style="display:flex;gap:6px;margin-top:8px;">' +
+              (tel ? '<a href="tel:' + tel + '" style="background:#27ae60;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">📞 Llamar</a>' : '') +
+              (tel ? '<a href="sms:' + tel + '" style="background:#3498db;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">💬 SMS</a>' : '') +
+              '<a href="mailto:' + s.student_email + '?subject=ACVOLT - Seguimiento&body=Hola ' + encodeURIComponent(nombre) + '," style="background:#9b59b6;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">📧 Email</a>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } catch(e) { container.innerHTML = '<div style="color:#e74c3c;padding:10px;">Error: ' + e.message + '</div>'; }
     }
     // ========== END STUDENT SUCCESS FUNCTIONS ==========
 

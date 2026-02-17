@@ -1756,6 +1756,114 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             <!-- ============ END BATCH EMAIL SECTION ============ -->
         </div>
 
+        <!-- ============ SECCION: SUBIR LIBROS / PDFs ============ -->
+        <div class="admin-section admin-grid-full" style="border: 2px solid #3498db; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h3 style="color: #3498db; font-size: 1.3em; margin-bottom: 15px;">📚 Libros de Trabajo / Material</h3>
+            <div style="background: rgba(52,152,219,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                <h4 style="color: #3498db; margin-bottom: 10px;">📤 Subir Nuevo Material</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                    <input type="text" id="bookTitle" placeholder="Título del libro/material" style="flex: 2; min-width: 200px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                    <select id="bookCategory" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="General">📁 General</option>
+                        <option value="HVAC">❄️ HVAC</option>
+                        <option value="Refrigeracion">🧊 Refrigeración</option>
+                        <option value="Electrico">⚡ Eléctrico</option>
+                        <option value="Calefaccion">🔥 Calefacción</option>
+                        <option value="Negocio">💼 Negocio</option>
+                        <option value="EPA">🌍 EPA</option>
+                        <option value="NATE">📋 NATE</option>
+                    </select>
+                </div>
+                <textarea id="bookDescription" placeholder="Descripción (opcional)" rows="2" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff; margin-bottom: 10px; resize: vertical;"></textarea>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <select id="bookAssignTo" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="todos">👥 Todos los estudiantes</option>
+                    </select>
+                    <label style="padding: 10px 20px; background: #3498db; color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; display: inline-block;">
+                        📎 Seleccionar Archivo
+                        <input type="file" id="bookFileInput" accept=".pdf,.doc,.docx,.xlsx,.pptx,.jpg,.png" style="display: none;" onchange="previewBookFile(this)">
+                    </label>
+                    <span id="bookFileName" style="color: #94a3b8; font-size: 0.85em;">Ningún archivo seleccionado</span>
+                    <button onclick="uploadBook()" style="padding: 10px 20px; background: #2ecc71; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">📤 SUBIR MATERIAL</button>
+                </div>
+                <div id="bookUploadProgress" style="display: none; margin-top: 10px;">
+                    <div style="background: #333; border-radius: 8px; overflow: hidden; height: 8px;">
+                        <div id="bookProgressBar" style="width: 0%; height: 100%; background: #3498db; transition: width 0.3s;"></div>
+                    </div>
+                    <span id="bookUploadStatus" style="color: #3498db; font-size: 0.85em;">Subiendo...</span>
+                </div>
+            </div>
+            <div style="background: rgba(52,152,219,0.05); border-radius: 12px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #3498db;">📖 Material Disponible</h4>
+                    <button onclick="loadAdminBooks()" style="padding: 6px 15px; background: #3498db; color: #fff; border: none; border-radius: 6px; cursor: pointer;">🔄 Actualizar</button>
+                </div>
+                <div id="adminBooksList" style="color: #ccc;">Cargando libros...</div>
+            </div>
+        </div>
+
+        <!-- ============ SECCION: ASIGNAR EXAMENES ============ -->
+        <div class="admin-section admin-grid-full" style="border: 2px solid #9b59b6; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h3 style="color: #9b59b6; font-size: 1.3em; margin-bottom: 15px;">📝 Asignar Exámenes</h3>
+            <div style="background: rgba(155,89,182,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                <h4 style="color: #9b59b6; margin-bottom: 10px;">➕ Nuevo Examen</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                    <select id="examStudentEmail" style="flex: 1; min-width: 200px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="">Seleccionar estudiante...</option>
+                    </select>
+                    <input type="text" id="examTitle" placeholder="Título del examen" style="flex: 1; min-width: 200px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                    <textarea id="examDescription" placeholder="Instrucciones / descripción del examen" rows="2" style="flex: 2; min-width: 250px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff; resize: vertical;"></textarea>
+                    <input type="date" id="examDeadline" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                </div>
+                <button onclick="assignExam()" style="padding: 10px 20px; background: #9b59b6; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">📝 ASIGNAR EXAMEN</button>
+            </div>
+            <div style="background: rgba(155,89,182,0.05); border-radius: 12px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #9b59b6;">📋 Exámenes Asignados</h4>
+                    <button onclick="loadAdminExams()" style="padding: 6px 15px; background: #9b59b6; color: #fff; border: none; border-radius: 6px; cursor: pointer;">🔄 Actualizar</button>
+                </div>
+                <div id="adminExamsList" style="color: #ccc;">Cargando exámenes...</div>
+            </div>
+        </div>
+
+        <!-- ============ SECCION: RECORDS DE PAGOS / TAXES ============ -->
+        <div class="admin-section admin-grid-full" style="border: 2px solid #2ecc71; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h3 style="color: #2ecc71; font-size: 1.3em; margin-bottom: 15px;">💳 Records de Pagos / Taxes</h3>
+            <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
+                <h4 style="color: #2ecc71; margin-bottom: 10px;">➕ Registrar Pago Manual</h4>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 10px;">
+                    <select id="paymentStudentEmail" style="flex: 1; min-width: 200px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="">Seleccionar estudiante...</option>
+                    </select>
+                    <input type="number" id="paymentAmount" placeholder="Monto $" step="0.01" style="width: 120px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                    <input type="text" id="paymentConcept" placeholder="Concepto (ej: Tuición Marzo)" style="flex: 1; min-width: 200px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                </div>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <select id="paymentMethod" style="padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                        <option value="efectivo">💵 Efectivo</option>
+                        <option value="stripe">💳 Stripe</option>
+                        <option value="zelle">📱 Zelle</option>
+                        <option value="check">🏦 Check</option>
+                        <option value="otro">📝 Otro</option>
+                    </select>
+                    <input type="text" id="paymentNote" placeholder="Nota (opcional)" style="flex: 1; min-width: 150px; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #1a1a2e; color: #fff;">
+                    <button onclick="registerPayment()" style="padding: 10px 20px; background: #2ecc71; color: #000; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">💰 REGISTRAR PAGO</button>
+                </div>
+            </div>
+            <div style="background: rgba(46,204,113,0.05); border-radius: 12px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h4 style="color: #2ecc71;">📊 Historial de Pagos</h4>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="paymentSearchEmail" placeholder="Buscar por email..." style="padding: 6px 12px; border-radius: 6px; border: 1px solid #444; background: #1a1a2e; color: #fff; font-size: 0.85em;">
+                        <button onclick="loadAdminPayments()" style="padding: 6px 15px; background: #2ecc71; color: #000; border: none; border-radius: 6px; cursor: pointer;">🔄</button>
+                    </div>
+                </div>
+                <div id="adminPaymentsList" style="color: #ccc;">Cargando pagos...</div>
+            </div>
+        </div>
+
         </div><!-- close admin-grid-2col -->
         </div><!-- close admin-main-content -->
 
@@ -12405,26 +12513,26 @@ window.toggleFormula = function(id) {
     async function loadStudentExams() {
       const container = document.getElementById('studentExamsList');
       if (!container) return;
-      
       const email = localStorage.getItem('tecnico_email') || '';
+      if(!email){ container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes exámenes asignados</p>'; return; }
       try {
-        const { data, error } = await supabase.from('exam_requests')
-          .select('*').eq('student_email', email).order('requested_at', {ascending: false});
-        
+        const { data, error } = await supabaseClient.from('assigned_exams')
+          .select('*').eq('student_email', email).order('created_at', {ascending: false});
         if (error) throw error;
         if (!data || data.length === 0) {
           container.innerHTML = '<p style="text-align: center; color: #aaa;">No tienes exámenes asignados</p>';
           return;
         }
-        
         let html = '';
         data.forEach(exam => {
-          const statusColor = exam.status === 'aprobado' ? '#2ecc71' : exam.status === 'pendiente' ? '#f39c12' : '#3498db';
-          html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee;">';
-          html += '<div><strong>' + (exam.exam_name || 'Examen') + '</strong>';
-          if (exam.exam_price) html += ' <span style="color: #888; font-size: 0.8em;">$' + exam.exam_price + '</span>';
-          html += '<br><span style="font-size: 0.8em; color: #888;">Solicitado: ' + new Date(exam.requested_at).toLocaleDateString() + '</span></div>';
-          html += '<span style="color: ' + statusColor + '; font-weight: bold;">' + (exam.status || 'pendiente') + '</span>';
+          const estadoColors = {pendiente:'#f39c12', completado:'#2ecc71', vencido:'#e74c3c'};
+          const color = estadoColors[exam.estado] || '#94a3b8';
+          html += '<div style="padding: 12px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center;">';
+          html += '<div><strong>' + exam.titulo + '</strong>';
+          if(exam.descripcion) html += '<br><span style="font-size:0.8em;color:#888;">' + exam.descripcion + '</span>';
+          if(exam.calificacion !== null && exam.estado === 'completado') html += '<br><span style="font-size:0.9em;color:#2ecc71;font-weight:bold;">Calificación: ' + exam.calificacion + '/100</span>';
+          html += '</div>';
+          html += '<span style="padding:3px 10px;background:' + color + ';color:#fff;border-radius:12px;font-size:0.75em;font-weight:bold;">' + exam.estado.toUpperCase() + '</span>';
           html += '</div>';
         });
         container.innerHTML = html;
@@ -12436,24 +12544,29 @@ window.toggleFormula = function(id) {
     async function loadStudentWorkbooks() {
       const container = document.getElementById('studentWorkbooks');
       if (!container) return;
-      
+      const email = localStorage.getItem('tecnico_email') || '';
       try {
-        const { data, error } = await supabase.from('workbooks')
-          .select('*').order('created_at', {ascending: false});
-        
+        let query = supabaseClient.from('student_books').select('*').eq('activo', true).order('created_at', {ascending: false});
+        const { data, error } = await query;
         if (error) throw error;
         if (!data || data.length === 0) {
           container.innerHTML = '<p style="text-align: center; color: #aaa; grid-column: 1/-1;">No hay libros disponibles aún</p>';
           return;
         }
-        
+        // Filter: show if asignado_a is 'todos' or matches student email
+        const filtered = data.filter(b => b.asignado_a === 'todos' || b.asignado_a === email);
+        if(filtered.length === 0){
+          container.innerHTML = '<p style="text-align: center; color: #aaa; grid-column: 1/-1;">No hay libros disponibles aún</p>';
+          return;
+        }
         let html = '';
-        data.forEach(book => {
+        filtered.forEach(book => {
           html += '<div style="background: #f8f9fa; border-radius: 12px; padding: 15px; text-align: center; border: 1px solid #eee;">';
           html += '<div style="font-size: 2em; margin-bottom: 8px;">📖</div>';
-          html += '<div style="font-weight: bold; color: #1a1a2e; font-size: 0.9em;">' + (book.title || 'Libro') + '</div>';
-          html += '<div style="color: #888; font-size: 0.75em; margin: 4px 0;">' + (book.description || '') + '</div>';
-          if (book.url) html += '<a href="' + book.url + '" target="_blank" style="display: inline-block; margin-top: 8px; padding: 5px 12px; background: #6c3ce0; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.8em;">Abrir</a>';
+          html += '<div style="font-weight: bold; color: #1a1a2e; font-size: 0.9em;">' + book.titulo + '</div>';
+          html += '<div style="color: #888; font-size: 0.75em; margin: 4px 0;">' + (book.categoria || '') + '</div>';
+          if(book.descripcion) html += '<div style="color: #aaa; font-size: 0.7em; margin: 4px 0;">' + book.descripcion + '</div>';
+          html += '<a href="' + book.file_url + '" target="_blank" style="display: inline-block; margin-top: 8px; padding: 5px 12px; background: #3498db; color: #fff; border-radius: 6px; text-decoration: none; font-size: 0.8em;">📥 Descargar</a>';
           html += '</div>';
         });
         container.innerHTML = html;
@@ -12465,26 +12578,24 @@ window.toggleFormula = function(id) {
     async function loadStudentPayments() {
       const container = document.getElementById('studentPaymentRecords');
       if (!container) return;
-      
       const email = localStorage.getItem('tecnico_email') || '';
+      if(!email){ container.innerHTML = '<p style="text-align: center; color: #aaa;">No hay records de pagos</p>'; return; }
       try {
-        const { data, error } = await supabase.from('payment_records')
-          .select('*').eq('student_email', email).order('payment_date', {ascending: false});
-        
+        const { data, error } = await supabaseClient.from('payment_records')
+          .select('*').eq('student_email', email).order('fecha_pago', {ascending: false});
         if (error) throw error;
         if (!data || data.length === 0) {
           container.innerHTML = '<p style="text-align: center; color: #aaa;">No hay records de pagos</p>';
           return;
         }
-        
         let html = '<div style="overflow-x: auto;"><table style="width: 100%; border-collapse: collapse; font-size: 0.85em;">';
-        html += '<tr style="background: #f8f9fa;"><th style="padding: 8px; text-align: left;">Fecha</th><th style="padding: 8px; text-align: left;">Concepto</th><th style="padding: 8px; text-align: right;">Monto</th><th style="padding: 8px; text-align: center;">Estado</th></tr>';
+        html += '<tr style="background: #f8f9fa;"><th style="padding: 8px; text-align: left;">Fecha</th><th style="padding: 8px; text-align: left;">Concepto</th><th style="padding: 8px; text-align: right;">Monto</th><th style="padding: 8px; text-align: center;">Método</th></tr>';
         data.forEach(p => {
           html += '<tr style="border-bottom: 1px solid #eee;">';
-          html += '<td style="padding: 8px;">' + new Date(p.payment_date).toLocaleDateString() + '</td>';
-          html += '<td style="padding: 8px;">' + (p.description || p.concept || 'Pago') + '</td>';
-          html += '<td style="padding: 8px; text-align: right; font-weight: bold;">$' + (p.amount || 0) + '</td>';
-          html += '<td style="padding: 8px; text-align: center; color: ' + (p.status === 'paid' ? '#2ecc71' : '#f39c12') + ';">' + (p.status === 'paid' ? '✅ Pagado' : '⏳ Pendiente') + '</td>';
+          html += '<td style="padding: 8px;">' + new Date(p.fecha_pago).toLocaleDateString('es-MX') + '</td>';
+          html += '<td style="padding: 8px;">' + p.concepto + '</td>';
+          html += '<td style="padding: 8px; text-align: right; font-weight: bold; color: #2ecc71;">$' + parseFloat(p.monto).toFixed(2) + '</td>';
+          html += '<td style="padding: 8px; text-align: center;">' + (p.metodo_pago || '') + '</td>';
           html += '</tr>';
         });
         html += '</table></div>';
@@ -13802,6 +13913,378 @@ window.toggleFormula = function(id) {
         </div>
       </div>
     </div>
+
+<script>
+// ============================================
+// ADMIN: LIBROS, EXAMENES, PAGOS
+// ============================================
+
+// --- Populate student dropdowns ---
+async function populateStudentDropdowns(){
+  try {
+    var res = await supabaseClient.from('students').select('email, nombre');
+    if(res.data && res.data.length > 0){
+      var opts = '<option value="">Seleccionar estudiante...</option>';
+      var optsAll = '<option value="todos">👥 Todos los estudiantes</option>';
+      res.data.forEach(function(s){
+        var label = (s.nombre || '') + ' (' + s.email + ')';
+        opts += '<option value="' + s.email + '">' + label + '</option>';
+        optsAll += '<option value="' + s.email + '">' + label + '</option>';
+      });
+      var examSel = document.getElementById('examStudentEmail');
+      var paySel = document.getElementById('paymentStudentEmail');
+      var bookSel = document.getElementById('bookAssignTo');
+      if(examSel) examSel.innerHTML = opts;
+      if(paySel) paySel.innerHTML = opts;
+      if(bookSel) bookSel.innerHTML = optsAll;
+    }
+  } catch(e){ console.log('populateStudentDropdowns error:', e); }
+}
+
+// --- LIBROS / PDFs ---
+function previewBookFile(input){
+  var span = document.getElementById('bookFileName');
+  if(input.files && input.files[0]){
+    var f = input.files[0];
+    var sizeMB = (f.size / 1024 / 1024).toFixed(2);
+    span.textContent = f.name + ' (' + sizeMB + ' MB)';
+    span.style.color = '#3498db';
+  } else {
+    span.textContent = 'Ningún archivo seleccionado';
+    span.style.color = '#94a3b8';
+  }
+}
+
+async function uploadBook(){
+  var title = document.getElementById('bookTitle').value.trim();
+  var fileInput = document.getElementById('bookFileInput');
+  if(!title){ alert('Escribe un título para el material'); return; }
+  if(!fileInput.files || !fileInput.files[0]){ alert('Selecciona un archivo'); return; }
+  var file = fileInput.files[0];
+  if(file.size > 50 * 1024 * 1024){ alert('El archivo es muy grande (máx 50MB)'); return; }
+
+  var prog = document.getElementById('bookUploadProgress');
+  var bar = document.getElementById('bookProgressBar');
+  var status = document.getElementById('bookUploadStatus');
+  prog.style.display = 'block';
+  bar.style.width = '20%';
+  status.textContent = 'Subiendo archivo...';
+
+  try {
+    var ext = file.name.split('.').pop();
+    var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    var path = 'books/' + fileName;
+
+    bar.style.width = '50%';
+    var uploadRes = await supabaseClient.storage.from('school-files').upload(path, file);
+    if(uploadRes.error) throw uploadRes.error;
+
+    bar.style.width = '75%';
+    status.textContent = 'Guardando registro...';
+    var publicUrl = supabaseClient.storage.from('school-files').getPublicUrl(path).data.publicUrl;
+
+    var desc = document.getElementById('bookDescription').value.trim();
+    var cat = document.getElementById('bookCategory').value;
+    var assignTo = document.getElementById('bookAssignTo').value;
+
+    var insertRes = await supabaseClient.from('student_books').insert({
+      titulo: title,
+      descripcion: desc || null,
+      file_url: publicUrl,
+      file_name: file.name,
+      file_size: file.size,
+      categoria: cat,
+      asignado_a: assignTo,
+      subido_por: 'admin'
+    });
+    if(insertRes.error) throw insertRes.error;
+
+    bar.style.width = '100%';
+    status.textContent = '✅ Material subido exitosamente!';
+    status.style.color = '#2ecc71';
+    document.getElementById('bookTitle').value = '';
+    document.getElementById('bookDescription').value = '';
+    fileInput.value = '';
+    document.getElementById('bookFileName').textContent = 'Ningún archivo seleccionado';
+    document.getElementById('bookFileName').style.color = '#94a3b8';
+    setTimeout(function(){ prog.style.display = 'none'; status.style.color = '#3498db'; }, 3000);
+    loadAdminBooks();
+  } catch(e){
+    bar.style.width = '0%';
+    status.textContent = '❌ Error: ' + (e.message || e);
+    status.style.color = '#e74c3c';
+    console.error('uploadBook error:', e);
+  }
+}
+
+async function loadAdminBooks(){
+  var container = document.getElementById('adminBooksList');
+  if(!container) return;
+  container.innerHTML = '<span style="color:#64748b;">Cargando...</span>';
+  try {
+    var res = await supabaseClient.from('student_books').select('*').eq('activo', true).order('created_at', {ascending: false});
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = '<span style="color:#64748b;">No hay material disponible aún</span>';
+      return;
+    }
+    var html = '<div style="display:grid;gap:10px;">';
+    res.data.forEach(function(b){
+      var sizeMB = b.file_size ? (b.file_size / 1024 / 1024).toFixed(1) + ' MB' : '';
+      var fecha = new Date(b.created_at).toLocaleDateString('es-MX');
+      html += '<div style="background:rgba(52,152,219,0.08);border:1px solid rgba(52,152,219,0.2);border-radius:10px;padding:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">';
+      html += '<div><strong style="color:#3498db;">' + b.titulo + '</strong>';
+      html += '<div style="font-size:0.8em;color:#64748b;">' + b.categoria + ' • ' + sizeMB + ' • ' + fecha + ' • Para: ' + b.asignado_a + '</div>';
+      if(b.descripcion) html += '<div style="font-size:0.8em;color:#94a3b8;margin-top:4px;">' + b.descripcion + '</div>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:6px;">';
+      html += '<a href="' + b.file_url + '" target="_blank" style="padding:6px 12px;background:#3498db;color:#fff;border-radius:6px;text-decoration:none;font-size:0.85em;">📥 Ver</a>';
+      html += '<button onclick="deleteBook(\'' + b.id + '\')" style="padding:6px 12px;background:#e74c3c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.85em;">🗑️</button>';
+      html += '</div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = '<span style="color:#e74c3c;">Error cargando libros</span>'; }
+}
+
+async function deleteBook(id){
+  if(!confirm('¿Eliminar este material?')) return;
+  await supabaseClient.from('student_books').update({activo: false}).eq('id', id);
+  loadAdminBooks();
+}
+
+// --- EXAMENES ASIGNADOS ---
+async function assignExam(){
+  var email = document.getElementById('examStudentEmail').value;
+  var title = document.getElementById('examTitle').value.trim();
+  if(!email){ alert('Selecciona un estudiante'); return; }
+  if(!title){ alert('Escribe un título para el examen'); return; }
+
+  var desc = document.getElementById('examDescription').value.trim();
+  var deadline = document.getElementById('examDeadline').value;
+  var selEl = document.getElementById('examStudentEmail');
+  var studentName = selEl.options[selEl.selectedIndex].text.split('(')[0].trim();
+
+  try {
+    var res = await supabaseClient.from('assigned_exams').insert({
+      student_email: email,
+      student_name: studentName,
+      titulo: title,
+      descripcion: desc || null,
+      fecha_limite: deadline ? new Date(deadline).toISOString() : null
+    });
+    if(res.error) throw res.error;
+    alert('✅ Examen asignado a ' + studentName);
+    document.getElementById('examTitle').value = '';
+    document.getElementById('examDescription').value = '';
+    document.getElementById('examDeadline').value = '';
+    loadAdminExams();
+  } catch(e){ alert('Error: ' + (e.message || e)); }
+}
+
+async function loadAdminExams(){
+  var container = document.getElementById('adminExamsList');
+  if(!container) return;
+  container.innerHTML = '<span style="color:#64748b;">Cargando...</span>';
+  try {
+    var res = await supabaseClient.from('assigned_exams').select('*').order('created_at', {ascending: false}).limit(50);
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = '<span style="color:#64748b;">No hay exámenes asignados</span>';
+      return;
+    }
+    var html = '<div style="display:grid;gap:10px;">';
+    res.data.forEach(function(e){
+      var fecha = new Date(e.created_at).toLocaleDateString('es-MX');
+      var deadline = e.fecha_limite ? new Date(e.fecha_limite).toLocaleDateString('es-MX') : 'Sin fecha límite';
+      var estadoColors = {pendiente:'#f39c12', completado:'#2ecc71', vencido:'#e74c3c'};
+      var estadoColor = estadoColors[e.estado] || '#94a3b8';
+      html += '<div style="background:rgba(155,89,182,0.08);border:1px solid rgba(155,89,182,0.2);border-radius:10px;padding:12px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">';
+      html += '<div><strong style="color:#9b59b6;">' + e.titulo + '</strong>';
+      html += '<div style="font-size:0.8em;color:#64748b;">👤 ' + (e.student_name || e.student_email) + ' • 📅 ' + fecha + ' • Límite: ' + deadline + '</div>';
+      if(e.descripcion) html += '<div style="font-size:0.8em;color:#94a3b8;margin-top:4px;">' + e.descripcion + '</div>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:6px;align-items:center;">';
+      html += '<span style="padding:4px 10px;background:' + estadoColor + ';color:#fff;border-radius:12px;font-size:0.75em;font-weight:bold;">' + e.estado.toUpperCase() + '</span>';
+      if(e.estado === 'pendiente'){
+        html += '<button onclick="markExamComplete(\'' + e.id + '\')" style="padding:4px 10px;background:#2ecc71;color:#000;border:none;border-radius:6px;font-size:0.8em;cursor:pointer;">✅ Completar</button>';
+      }
+      html += '<button onclick="deleteExam(\'' + e.id + '\')" style="padding:4px 10px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-size:0.8em;cursor:pointer;">🗑️</button>';
+      html += '</div></div></div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = '<span style="color:#e74c3c;">Error cargando exámenes</span>'; }
+}
+
+async function markExamComplete(id){
+  var cal = prompt('Calificación (0-100):');
+  if(cal === null) return;
+  await supabaseClient.from('assigned_exams').update({estado: 'completado', calificacion: parseInt(cal) || 0, updated_at: new Date().toISOString()}).eq('id', id);
+  loadAdminExams();
+}
+
+async function deleteExam(id){
+  if(!confirm('¿Eliminar este examen?')) return;
+  await supabaseClient.from('assigned_exams').delete().eq('id', id);
+  loadAdminExams();
+}
+
+// --- RECORDS DE PAGOS ---
+async function registerPayment(){
+  var email = document.getElementById('paymentStudentEmail').value;
+  var amount = parseFloat(document.getElementById('paymentAmount').value);
+  var concept = document.getElementById('paymentConcept').value.trim();
+  if(!email){ alert('Selecciona un estudiante'); return; }
+  if(!amount || amount <= 0){ alert('Ingresa un monto válido'); return; }
+  if(!concept){ alert('Escribe un concepto de pago'); return; }
+
+  var method = document.getElementById('paymentMethod').value;
+  var note = document.getElementById('paymentNote').value.trim();
+  var selEl = document.getElementById('paymentStudentEmail');
+  var studentName = selEl.options[selEl.selectedIndex].text.split('(')[0].trim();
+
+  try {
+    var res = await supabaseClient.from('payment_records').insert({
+      student_email: email,
+      student_name: studentName,
+      monto: amount,
+      concepto: concept,
+      metodo_pago: method,
+      nota: note || null
+    });
+    if(res.error) throw res.error;
+    alert('✅ Pago de $' + amount.toFixed(2) + ' registrado para ' + studentName);
+    document.getElementById('paymentAmount').value = '';
+    document.getElementById('paymentConcept').value = '';
+    document.getElementById('paymentNote').value = '';
+    loadAdminPayments();
+  } catch(e){ alert('Error: ' + (e.message || e)); }
+}
+
+async function loadAdminPayments(){
+  var container = document.getElementById('adminPaymentsList');
+  if(!container) return;
+  container.innerHTML = '<span style="color:#64748b;">Cargando...</span>';
+  try {
+    var searchEmail = (document.getElementById('paymentSearchEmail') || {}).value || '';
+    var query = supabaseClient.from('payment_records').select('*').order('fecha_pago', {ascending: false}).limit(50);
+    if(searchEmail.trim()) query = query.ilike('student_email', '%' + searchEmail.trim() + '%');
+    var res = await query;
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = '<span style="color:#64748b;">No hay records de pagos</span>';
+      return;
+    }
+    var total = 0;
+    var html = '';
+    res.data.forEach(function(p){ total += parseFloat(p.monto) || 0; });
+    html += '<div style="background:rgba(46,204,113,0.15);border-radius:10px;padding:10px;margin-bottom:10px;text-align:center;">';
+    html += '<span style="color:#2ecc71;font-size:1.3em;font-weight:bold;">Total: $' + total.toFixed(2) + '</span>';
+    html += '<span style="color:#64748b;font-size:0.85em;margin-left:10px;">(' + res.data.length + ' pagos)</span></div>';
+    html += '<div style="display:grid;gap:8px;">';
+    res.data.forEach(function(p){
+      var fecha = new Date(p.fecha_pago).toLocaleDateString('es-MX');
+      var methodIcons = {efectivo:'💵',stripe:'💳',zelle:'📱',check:'🏦',otro:'📝'};
+      var icon = methodIcons[p.metodo_pago] || '💰';
+      html += '<div style="background:rgba(46,204,113,0.06);border:1px solid rgba(46,204,113,0.2);border-radius:10px;padding:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">';
+      html += '<div><strong style="color:#2ecc71;">$' + parseFloat(p.monto).toFixed(2) + '</strong> ' + icon;
+      html += '<div style="font-size:0.8em;color:#64748b;">👤 ' + (p.student_name || p.student_email) + ' • ' + p.concepto + ' • ' + fecha + '</div>';
+      if(p.nota) html += '<div style="font-size:0.75em;color:#94a3b8;">📝 ' + p.nota + '</div>';
+      html += '</div>';
+      html += '<button onclick="deletePayment(\'' + p.id + '\')" style="padding:4px 10px;background:#e74c3c;color:#fff;border:none;border-radius:6px;font-size:0.8em;cursor:pointer;">🗑️</button>';
+      html += '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = '<span style="color:#e74c3c;">Error cargando pagos</span>'; }
+}
+
+async function deletePayment(id){
+  if(!confirm('¿Eliminar este registro de pago?')) return;
+  await supabaseClient.from('payment_records').delete().eq('id', id);
+  loadAdminPayments();
+}
+
+// --- Load student data in student profile ---
+async function loadStudentBooks(email){
+  var container = document.getElementById('studentWorkbooks');
+  if(!container) return;
+  try {
+    var res = await supabaseClient.from('student_books').select('*').eq('activo', true).or('asignado_a.eq.todos,asignado_a.eq.' + email).order('created_at', {ascending: false});
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = 'No hay libros disponibles aún';
+      return;
+    }
+    var html = '';
+    res.data.forEach(function(b){
+      html += '<div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><strong>' + b.titulo + '</strong><br><span style="font-size:0.8em;color:#64748b;">' + b.categoria + '</span></div>';
+      html += '<a href="' + b.file_url + '" target="_blank" style="padding:8px 16px;background:#3498db;color:#fff;border-radius:8px;text-decoration:none;font-weight:bold;">📥 Descargar</a>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = 'Error cargando libros'; }
+}
+
+async function loadStudentExams(email){
+  var container = document.getElementById('studentExamsList');
+  if(!container) return;
+  try {
+    var res = await supabaseClient.from('assigned_exams').select('*').eq('student_email', email).order('created_at', {ascending: false});
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = 'No tienes exámenes asignados';
+      return;
+    }
+    var html = '';
+    res.data.forEach(function(e){
+      var estadoColors = {pendiente:'#f39c12', completado:'#2ecc71', vencido:'#e74c3c'};
+      var color = estadoColors[e.estado] || '#94a3b8';
+      html += '<div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:8px;">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+      html += '<strong>' + e.titulo + '</strong>';
+      html += '<span style="padding:3px 10px;background:' + color + ';color:#fff;border-radius:12px;font-size:0.75em;">' + e.estado.toUpperCase() + '</span></div>';
+      if(e.descripcion) html += '<p style="font-size:0.85em;color:#64748b;margin:6px 0 0 0;">' + e.descripcion + '</p>';
+      if(e.calificacion !== null && e.estado === 'completado') html += '<p style="font-size:0.9em;color:#2ecc71;margin:4px 0 0 0;font-weight:bold;">Calificación: ' + e.calificacion + '/100</p>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = 'Error cargando exámenes'; }
+}
+
+async function loadStudentPayments(email){
+  var container = document.getElementById('studentPaymentRecords');
+  if(!container) return;
+  try {
+    var res = await supabaseClient.from('payment_records').select('*').eq('student_email', email).order('fecha_pago', {ascending: false});
+    if(!res.data || res.data.length === 0){
+      container.innerHTML = 'No hay records de pagos';
+      return;
+    }
+    var html = '';
+    res.data.forEach(function(p){
+      var fecha = new Date(p.fecha_pago).toLocaleDateString('es-MX');
+      html += '<div style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><strong style="color:#2ecc71;">$' + parseFloat(p.monto).toFixed(2) + '</strong> - ' + p.concepto;
+      html += '<div style="font-size:0.8em;color:#64748b;">' + fecha + ' • ' + p.metodo_pago + '</div></div>';
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  } catch(e){ container.innerHTML = 'Error cargando pagos'; }
+}
+
+// Hook into admin dashboard load
+var _origLoadAdmin = window.loadAdminDashboard;
+window.loadAdminDashboard = function(){
+  if(typeof _origLoadAdmin === 'function') _origLoadAdmin();
+  populateStudentDropdowns();
+  loadAdminBooks();
+  loadAdminExams();
+  loadAdminPayments();
+};
+// Auto-load if admin dashboard is already visible
+if(document.getElementById('adminDashboardScreen') && document.getElementById('adminDashboardScreen').classList.contains('active')){
+  populateStudentDropdowns(); loadAdminBooks(); loadAdminExams(); loadAdminPayments();
+}
+</script>
 
 
 <!-- TUTOR IA MAESTRO MARIO WIDGET v3 -->

@@ -1245,43 +1245,90 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
     <!-- Admin Login Screen -->
     <!-- Membership Login Screen -->
-    <div class="screen" id="membershipLoginScreen">
-      <div class="header">
-        <div class="logo">🎥</div>
-        <h1>Clases en Vivo</h1>
-        <h2 style="color:#9b59b6;">Solo para Miembros Exclusivos</h2>
-        <p class="subtitle">Acceso exclusivo para estudiantes registrados de ACVOLT Tech School</p>
-      </div>
-      <div class="card">
-        <div class="login-error" id="membershipLoginError">Código inválido o no autorizado para tu cuenta</div>
-        <p style="color:#64748b;font-size:13px;text-align:center;margin-bottom:15px;">Ingresa el código que te dio Maestro Mario para acceder a las clases en vivo.</p>
-        <form id="membershipLoginForm" onsubmit="return handleMembershipLogin(event)">
-          <div class="form-group">
-            <label>🎫 Código de Membresía</label>
-            <input type="text" id="membershipCode" placeholder="Ingresa tu código" maxlength="10" style="text-align:center;letter-spacing:3px;text-transform:uppercase;font-family:monospace;font-size:18px;" required>
-          </div>
-          <button type="submit" class="btn btn-primary" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">🔓 Acceder a Clases en Vivo</button>
-        </form>
-        <p style="color:#7f8c8d;font-size:11px;text-align:center;margin-top:10px;">¿No tienes código? Contacta a Maestro Mario en clase o por WhatsApp.</p>
-        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:10px;">← Volver al Inicio</button>
-      </div>
-    </div>
-
-    <!-- Membership Zone Screen -->
+    <!-- Membership Zone Screen - Clases en Vivo -->
     <div class="screen" id="membershipZoneScreen">
       <div class="header">
         <div class="logo">🎥</div>
         <h1>Clases en Vivo</h1>
-        <h2 style="color:#9b59b6;">Miembro Exclusivo ⭐</h2>
+        <h2 style="color:#9b59b6;" id="memberTierTitle">Verificando membresía...</h2>
         <p class="subtitle" id="memberWelcomeName">Bienvenido</p>
       </div>
-      <div class="card">
-        <p style="text-align:center; margin-bottom:20px; color:#f39c12;">Accede a contenido exclusivo para miembros de ACVOLT Tech School</p>
-        <button class="btn btn-secondary" onclick="window.open('https://t.me/+Cm9rjthVu8pjMjJh', '_blank')" style="margin-top:10px; background: linear-gradient(135deg, #0088cc, #005f99);">✈️ Telegram - Canal Exclusivo</button>
-        <div style="margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="membershipLogout()" style="background: rgba(231,76,60,0.3);">🚪 Salir de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:10px;">← Volver al Inicio</button>
+
+      <!-- Loading state -->
+      <div id="membershipLoading" class="card" style="text-align:center; padding:40px;">
+        <div style="font-size:40px; margin-bottom:15px;">⏳</div>
+        <p style="color:#64748b;">Verificando tu membresía...</p>
+      </div>
+
+      <!-- Active membership content -->
+      <div id="membershipActiveContent" style="display:none;">
+        <!-- Webinars en Vivo -->
+        <div class="card" style="background:linear-gradient(135deg,#6c3ce0,#4a1fb8); color:white;">
+          <h3 style="margin-bottom:10px;">🎥 Webinars en Vivo</h3>
+          <p style="font-size:13px; opacity:0.8; margin-bottom:15px;">Accede a tu clase en vivo por Zoom</p>
+          <div id="webinarLinksContainer">
+            <p style="opacity:0.6; font-size:13px;">Cargando links de webinars...</p>
+          </div>
         </div>
+
+        <!-- Clases Pregrabadas -->
+        <div class="card">
+          <h3 style="margin-bottom:10px; color:#1a1a2e;">📚 Clases Pregrabadas</h3>
+          <p style="font-size:13px; color:#64748b; margin-bottom:15px;">Contenido disponible según tu nivel de membresía</p>
+          <div id="pregrabadoContent">
+            <p style="color:#64748b; font-size:13px;">Cargando contenido...</p>
+          </div>
+        </div>
+
+        <!-- Telegram -->
+        <div class="card" style="text-align:center;">
+          <button class="btn btn-secondary" onclick="window.open('https://t.me/+Cm9rjthVu8pjMjJh', '_blank')" style="background: linear-gradient(135deg, #0088cc, #005f99); color:white;">✈️ Telegram - Canal Exclusivo</button>
+        </div>
+      </div>
+
+      <!-- No membership - show payment options -->
+      <div id="membershipPaywall" style="display:none;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:50px; margin-bottom:15px;">🔒</div>
+          <h3 style="margin-bottom:10px;">No tienes membresía activa</h3>
+          <p style="color:#64748b; font-size:14px; margin-bottom:20px;">Suscríbete para acceder a clases en vivo y contenido pregrabado exclusivo</p>
+          
+          <div style="display:grid; grid-template-columns:1fr; gap:12px; text-align:left;">
+            <div onclick="window.open('https://buy.stripe.com/9B6cN52rB6tagjd1nV3sI04','_blank')" style="background:linear-gradient(135deg, rgba(205,127,50,0.15), rgba(139,90,43,0.15)); border:2px solid rgba(205,127,50,0.5); border-radius:12px; padding:15px; cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:bold; font-size:16px;">🥉 Principiante</div>
+                  <div style="font-size:12px; color:#64748b; margin-top:4px;">Webinars Nivel 1 + Clases Pregrabadas Nivel 1</div>
+                </div>
+                <div style="font-weight:bold; font-size:18px; color:#cd7f32;">$119<span style="font-size:12px;">/mes</span></div>
+              </div>
+            </div>
+            <div onclick="window.open('https://buy.stripe.com/7sYcN5d6feZG3wr2rZ3sI0e','_blank')" style="background:linear-gradient(135deg, rgba(192,192,192,0.15), rgba(150,150,150,0.15)); border:2px solid rgba(192,192,192,0.5); border-radius:12px; padding:15px; cursor:pointer;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:bold; font-size:16px;">🥈 Intermedio</div>
+                  <div style="font-size:12px; color:#64748b; margin-top:4px;">Todo de Principiante + Webinars y Clases Nivel 2</div>
+                </div>
+                <div style="font-weight:bold; font-size:18px; color:#999;">$299<span style="font-size:12px;">/mes</span></div>
+              </div>
+            </div>
+            <div onclick="window.open('https://buy.stripe.com/6oU28r3vF5p6aYTaYv3sI0d','_blank')" style="background:linear-gradient(135deg, rgba(255,215,0,0.15), rgba(218,165,32,0.15)); border:2px solid rgba(255,215,0,0.5); border-radius:12px; padding:15px; cursor:pointer; position:relative;">
+              <div style="position:absolute; top:-8px; right:10px; background:#e74c3c; color:white; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:bold;">⭐ POPULAR</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                  <div style="font-weight:bold; font-size:16px;">🥇 Avanzado - Mentoría</div>
+                  <div style="font-size:12px; color:#64748b; margin-top:4px;">ACCESO TOTAL: Todos los niveles + Mentoría + La Trinidad del Oficio</div>
+                </div>
+                <div style="font-weight:bold; font-size:18px; color:#daa520;">$699<span style="font-size:12px;">/mes</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Back button -->
+      <div style="margin-top:15px;">
+        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')">← Volver al Menú</button>
       </div>
     </div>
 
@@ -1876,7 +1923,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         
         <!-- Zona de Membresía - Botón de acceso -->
         <div style="margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="showScreen('membershipLoginScreen')" style="margin-top:10px; background: linear-gradient(135deg, #9b59b6, #8e44ad);">🎥 Clases en Vivo - Solo Miembros</button>
+          <button class="btn btn-secondary" onclick="openMembershipZone()" style="margin-top:10px; background: linear-gradient(135deg, #9b59b6, #8e44ad);">🎥 Clases en Vivo - Membresías</button>
         </div>
         
         <div style="text-align:center; margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
@@ -2474,11 +2521,11 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
       <!-- 1. ACCESO A CLASES EN VIVO -->
       <div style="margin-top: 20px; background: linear-gradient(135deg, #6c3ce0 0%, #4a1fb8 100%); border-radius: 16px; padding: 20px; text-align: center;">
         <h3 style="color: #fff; margin-bottom: 8px;">🎥 Clases en Vivo</h3>
-        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 15px;">Accede a las clases en vivo por Zoom</p>
-        <button onclick="joinLiveClass()" style="padding: 14px 40px; background: #f39c12; color: #000; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
-          📹 ENTRAR A CLASE ZOOM
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9em; margin-bottom: 15px;">Accede a webinars y clases pregrabadas</p>
+        <button onclick="openMembershipZone()" style="padding: 14px 40px; background: #f39c12; color: #000; border: none; border-radius: 12px; font-size: 1.1em; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+          📹 VER CLASES EN VIVO
         </button>
-        <div id="zoomClassStatus" style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin-top: 10px;">Próxima clase: Por confirmar</div>
+        <div id="zoomClassStatus" style="color: rgba(255,255,255,0.6); font-size: 0.8em; margin-top: 10px;"></div>
       </div>
 
       <!-- 2. MI PROGRESO -->
@@ -6507,6 +6554,15 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         logActivity('login', 'Inicio de sesión');
         addNotification('register', '🔓 Sesión iniciada — ¡Bienvenido ' + (currentUser.nombre ? currentUser.nombre.split(' ')[0] : 'Técnico') + '!', '🔓');
 
+        // Check membership and auto-connect (Escenario B)
+        try {
+          const membership = await checkMembership(email);
+          if (membership && membership.activa) {
+            currentMembership = membership;
+            membershipAuthenticated = true;
+          }
+        } catch(e) { console.log('Membership check skipped:', e); }
+
         // Sync tecnico_user so handleComenzar finds it
         if (currentUser && currentUser.nombre) {
           localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
@@ -6932,7 +6988,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         if (activeScreen && (activeScreen.id === 'quizScreen' || activeScreen.id === 'quizOnlyScreen') && screenId !== 'quizScreen' && screenId !== 'quizOnlyScreen') {}
       }
       // Force check-in before accessing any content
-      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipLoginScreen', 'membershipZoneScreen'];
+      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipZoneScreen'];
       if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
         if (!requireCheckIn(screenId)) return;
       }
@@ -9560,76 +9616,194 @@ window.toggleFormula = function(id) {
 
     // Membership state
     let membershipAuthenticated = false;
+    let currentMembership = null; // {tier, activa, email, stripe_subscription_id}
 
-    // Handle membership login with individual code
-    async function handleMembershipLogin(event) {
-      event.preventDefault();
-      const code = document.getElementById('membershipCode').value.trim().toUpperCase();
-      const errorDiv = document.getElementById('membershipLoginError');
+    // ============ NEW MEMBERSHIP SYSTEM (Supabase-based) ============
 
-      if (!currentUser || !currentUser.email) {
-        errorDiv.textContent = '❌ Debes iniciar sesión en tu cuenta primero.';
-        errorDiv.classList.add('show');
-        return false;
-      }
-
-      // Check Supabase first
-      let codeData = null;
-      if (supabaseClient && isOnline) {
-        try {
-          const { data, error } = await supabaseClient.from('access_codes').select('*').eq('code', code).eq('type', 'membership').single();
-          if (!error && data) codeData = data;
-        } catch(e) {}
-      }
-      
-      // Fallback to localStorage
-      if (!codeData) {
-        const codes = JSON.parse(localStorage.getItem('maestroac_membership_codes') || '{}');
-        codeData = codes[code];
-      }
-
-      if (!codeData) {
-        errorDiv.textContent = '❌ Código no encontrado. Verifica e intenta de nuevo.';
-        errorDiv.classList.add('show');
-        return false;
-      }
-
-      if (codeData.revoked) {
-        errorDiv.textContent = '❌ Este código ha sido revocado.';
-        errorDiv.classList.add('show');
-        return false;
-      }
-
-      if (codeData.email !== currentUser.email) {
-        errorDiv.textContent = '❌ Este código no es para tu cuenta. Contacta a Maestro Mario.';
-        errorDiv.classList.add('show');
-        return false;
-      }
-
-      // Success!
-      membershipAuthenticated = true;
-      sessionStorage.setItem('membership_authenticated', 'true');
-      sessionStorage.setItem('membership_code', code);
-      localStorage.setItem('maestroac_membership_' + currentUser.email, 'true');
-      errorDiv.classList.remove('show');
-      
-      const welcomeName = document.getElementById('memberWelcomeName');
-      if (welcomeName) welcomeName.textContent = 'Bienvenido, ' + (currentUser.nombre || currentUser.email);
-      
-      logActivity('membership_access', 'Acceso a Clases en Vivo');
+    async function openMembershipZone() {
       showScreen('membershipZoneScreen');
-      return false;
+      document.getElementById('membershipLoading').style.display = 'block';
+      document.getElementById('membershipActiveContent').style.display = 'none';
+      document.getElementById('membershipPaywall').style.display = 'none';
+
+      const email = (currentUser && currentUser.email) ? currentUser.email : localStorage.getItem('tecnico_email');
+      if (!email) {
+        document.getElementById('membershipLoading').style.display = 'none';
+        document.getElementById('membershipPaywall').style.display = 'block';
+        return;
+      }
+
+      const membership = await checkMembership(email);
+      document.getElementById('membershipLoading').style.display = 'none';
+
+      if (membership && membership.activa) {
+        currentMembership = membership;
+        membershipAuthenticated = true;
+        const tierNames = { bronze: '🥉 Principiante', silver: '🥈 Intermedio', gold: '🥇 Avanzado - Mentoría' };
+        document.getElementById('memberTierTitle').textContent = (tierNames[membership.tipo] || 'Miembro') + ' ⭐';
+        document.getElementById('memberWelcomeName').textContent = 'Bienvenido, ' + (currentUser.nombre || email);
+        document.getElementById('membershipActiveContent').style.display = 'block';
+        await loadWebinarLinks(membership.tipo);
+        loadPregrabadoContent(membership.tipo);
+      } else {
+        document.getElementById('memberTierTitle').textContent = 'Suscríbete';
+        document.getElementById('membershipPaywall').style.display = 'block';
+      }
     }
 
-    function membershipLogout() {
-      membershipAuthenticated = false;
-      sessionStorage.removeItem('membership_authenticated');
-      sessionStorage.removeItem('membership_code');
-      showScreen('welcomeScreen');
+    async function checkMembership(email) {
+      if (!supabaseClient || !isOnline) {
+        // Fallback: check localStorage cache
+        const cached = localStorage.getItem('maestroac_membership_cache_' + email);
+        if (cached) {
+          try { return JSON.parse(cached); } catch(e) {}
+        }
+        return null;
+      }
+      try {
+        const { data, error } = await supabaseClient
+          .from('memberships')
+          .select('*')
+          .eq('email', email)
+          .eq('activa', true)
+          .in('tipo', ['bronze', 'silver', 'gold'])
+          .order('fecha_inicio', { ascending: false })
+          .limit(1);
+        
+        if (error || !data || data.length === 0) {
+          localStorage.removeItem('maestroac_membership_cache_' + email);
+          return null;
+        }
+        
+        const membership = data[0];
+        // Auto-connect user_id if missing (Escenario B)
+        if (!membership.user_id && currentUser) {
+          const { data: authData } = await supabaseClient.auth.getUser();
+          if (authData && authData.user) {
+            await supabaseClient
+              .from('memberships')
+              .update({ user_id: authData.user.id })
+              .eq('id', membership.id);
+            membership.user_id = authData.user.id;
+          }
+        }
+        
+        // Cache for offline
+        localStorage.setItem('maestroac_membership_cache_' + email, JSON.stringify(membership));
+        return membership;
+      } catch(e) {
+        console.error('Error checking membership:', e);
+        return null;
+      }
+    }
+
+    async function loadWebinarLinks(tier) {
+      const container = document.getElementById('webinarLinksContainer');
+      if (!container) return;
+      
+      const tierAccess = { bronze: [1], silver: [1, 2], gold: [1, 2, 3] };
+      const levels = tierAccess[tier] || [];
+      const levelNames = { 1: 'Nivel 1 - Principiante', 2: 'Nivel 2 - Intermedio', 3: 'Nivel 3 - Avanzado / Mentoría' };
+      const levelColors = { 1: '#cd7f32', 2: '#c0c0c0', 3: '#ffd700' };
+
+      // Try loading from Supabase table webinar_links
+      let webinarLinks = [];
+      if (supabaseClient && isOnline) {
+        try {
+          const { data } = await supabaseClient
+            .from('webinar_links')
+            .select('*')
+            .eq('activo', true)
+            .in('nivel', levels)
+            .order('nivel', { ascending: true });
+          if (data) webinarLinks = data;
+        } catch(e) {}
+      }
+
+      let html = '';
+      if (webinarLinks.length > 0) {
+        webinarLinks.forEach(link => {
+          html += '<div style="background:rgba(255,255,255,0.1); border-radius:10px; padding:12px; margin-bottom:10px;">';
+          html += '<div style="font-size:12px; opacity:0.7; margin-bottom:5px;">' + (levelNames[link.nivel] || 'Nivel ' + link.nivel) + '</div>';
+          html += '<div style="font-weight:bold; margin-bottom:8px;">' + (link.titulo || 'Clase en Vivo') + '</div>';
+          if (link.descripcion) html += '<div style="font-size:12px; opacity:0.8; margin-bottom:8px;">' + link.descripcion + '</div>';
+          if (link.fecha_hora) {
+            const fecha = new Date(link.fecha_hora);
+            html += '<div style="font-size:11px; opacity:0.7; margin-bottom:8px;">📅 ' + fecha.toLocaleDateString('es-MX', {weekday:'long', month:'long', day:'numeric'}) + ' - ' + fecha.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}) + '</div>';
+          }
+          html += '<button onclick="window.open(\'' + link.zoom_link + '\',\'_blank\')" style="padding:10px 20px; background:#f39c12; color:#000; border:none; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;">📹 ENTRAR A ZOOM</button>';
+          html += '</div>';
+        });
+      } else {
+        // Show available levels even without specific links
+        levels.forEach(lvl => {
+          html += '<div style="background:rgba(255,255,255,0.1); border-radius:10px; padding:12px; margin-bottom:10px;">';
+          html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
+          html += '<div>';
+          html += '<div style="font-weight:bold;">' + (levelNames[lvl] || 'Nivel ' + lvl) + '</div>';
+          html += '<div style="font-size:12px; opacity:0.7; margin-top:4px;">Próxima clase por confirmar</div>';
+          html += '</div>';
+          html += '<div style="width:10px; height:10px; background:' + levelColors[lvl] + '; border-radius:50%;"></div>';
+          html += '</div>';
+          html += '</div>';
+        });
+        html += '<p style="font-size:11px; opacity:0.6; text-align:center; margin-top:10px;">Los links de Zoom se actualizan antes de cada clase</p>';
+      }
+      container.innerHTML = html;
+    }
+
+    function loadPregrabadoContent(tier) {
+      const container = document.getElementById('pregrabadoContent');
+      if (!container) return;
+
+      const tierAccess = { bronze: [1], silver: [1, 2], gold: [1, 2, 3] };
+      const levels = tierAccess[tier] || [];
+      const levelNames = { 1: 'Nivel 1 - Principiante', 2: 'Nivel 2 - Intermedio', 3: 'Nivel 3 - Avanzado' };
+      const levelIcons = { 1: '🥉', 2: '🥈', 3: '🥇' };
+      const levelColors = { 1: '#cd7f32', 2: '#999', 3: '#daa520' };
+
+      let html = '';
+      levels.forEach(lvl => {
+        html += '<div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:10px; cursor:pointer;" onclick="loadPregrabadoVideos(' + lvl + ')">';
+        html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
+        html += '<div style="display:flex; align-items:center; gap:10px;">';
+        html += '<span style="font-size:24px;">' + levelIcons[lvl] + '</span>';
+        html += '<div>';
+        html += '<div style="font-weight:bold;">' + (levelNames[lvl]) + '</div>';
+        html += '<div style="font-size:12px; color:#64748b;">Toca para ver videos disponibles</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<span style="color:' + levelColors[lvl] + '; font-size:20px;">→</span>';
+        html += '</div>';
+        html += '</div>';
+      });
+
+      // Show locked levels
+      for (let i = 1; i <= 3; i++) {
+        if (!levels.includes(i)) {
+          html += '<div style="border:1px solid #e2e8f0; border-radius:10px; padding:12px; margin-bottom:10px; opacity:0.4;">';
+          html += '<div style="display:flex; justify-content:space-between; align-items:center;">';
+          html += '<div style="display:flex; align-items:center; gap:10px;">';
+          html += '<span style="font-size:24px;">🔒</span>';
+          html += '<div>';
+          html += '<div style="font-weight:bold;">' + (levelNames[i]) + '</div>';
+          html += '<div style="font-size:12px; color:#64748b;">Requiere membresía superior</div>';
+          html += '</div>';
+          html += '</div>';
+          html += '</div>';
+          html += '</div>';
+        }
+      }
+      container.innerHTML = html;
+    }
+
+    async function loadPregrabadoVideos(nivel) {
+      // Placeholder: load videos from Supabase table or show coming soon
+      alert('📚 Videos Pregrabados Nivel ' + nivel + '\n\nContenido próximamente disponible.\nMaestro Mario estará subiendo los videos de cada nivel.');
     }
 
     function isMembershipAuthenticated() {
-      return sessionStorage.getItem('membership_authenticated') === 'true';
+      return membershipAuthenticated;
     }
 
     async function generateMembershipCode() {
@@ -12082,11 +12256,15 @@ window.toggleFormula = function(id) {
     }
 
     function joinLiveClass() {
-      const zoomLink = localStorage.getItem('maestroac_zoom_link') || '';
-      if (zoomLink) {
-        window.open(zoomLink, '_blank');
+      if (currentMembership && currentMembership.activa) {
+        openMembershipZone();
       } else {
-        alert('El enlace de Zoom aún no está configurado. El instructor compartirá el enlace próximamente.');
+        const zoomLink = localStorage.getItem('maestroac_zoom_link') || '';
+        if (zoomLink) {
+          window.open(zoomLink, '_blank');
+        } else {
+          openMembershipZone();
+        }
       }
     }
 

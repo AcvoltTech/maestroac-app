@@ -3042,7 +3042,12 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
       }, 500);
       
       // Initialize study limit system
-      initStudyLimitSystem();
+      // initStudyLimitSystem(); // DISABLED - break timer was activating without activity
+      // Clean up any existing break data
+      localStorage.removeItem('maestroac_break_until');
+      localStorage.removeItem('maestroac_study_start');
+      localStorage.removeItem('maestroac_warned_50');
+      localStorage.removeItem('maestroac_warned_55');
       
       // Initialize anti-screenshot protection
       // initAntiScreenshot(); // DESACTIVADO
@@ -3083,6 +3088,9 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     }
 
     function startStudySession() {
+      // DISABLED - break timer was activating without user activity
+      return true;
+      /*
       if (isOnBreak) {
         showBreakScreen();
         return false;
@@ -3094,6 +3102,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         startStudyTimer();
       }
       return true;
+      */
     }
 
     function startStudyTimer() {

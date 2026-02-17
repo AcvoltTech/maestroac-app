@@ -6725,19 +6725,60 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
 
       // ============================================
       // DETECT PASSWORD RECOVERY TOKEN IN URL
+      // Supports both methods:
+      // 1. Hash fragment: #access_token=xxx&type=recovery (implicit flow)
+      // 2. Query params: ?token_hash=xxx&type=recovery (PKCE flow)
       // ============================================
+      var isRecovery = false;
+      var tokenHash = null;
+      
+      // Method 1: Check hash fragment
       var hashParams = new URLSearchParams(window.location.hash.substring(1));
-      var urlType = hashParams.get('type');
-      if (urlType === 'recovery') {
-        console.log('[MaestroAC] Recovery token detected in URL hash');
-        // Wait for Supabase to process the token
+      if (hashParams.get('type') === 'recovery') {
+        isRecovery = true;
+        console.log('[MaestroAC] Recovery detected via hash fragment');
+      }
+      
+      // Method 2: Check query parameters (PKCE flow - more reliable on Chrome/iPhone)
+      var queryParams = new URLSearchParams(window.location.search);
+      if (queryParams.get('type') === 'recovery') {
+        isRecovery = true;
+        tokenHash = queryParams.get('token_hash');
+        console.log('[MaestroAC] Recovery detected via query params, token_hash:', tokenHash ? 'present' : 'missing');
+      }
+      
+      if (isRecovery) {
+        console.log('[MaestroAC] Showing password reset form');
+        
+        // If we have a token_hash (PKCE flow), verify it first
+        if (tokenHash && supabaseClient) {
+          try {
+            var { data, error } = await supabaseClient.auth.verifyOtp({
+              token_hash: tokenHash,
+              type: 'recovery'
+            });
+            if (error) {
+              console.error('[MaestroAC] Token verification error:', error.message);
+            } else {
+              console.log('[MaestroAC] Token verified successfully');
+            }
+          } catch(e) {
+            console.error('[MaestroAC] Token verification exception:', e);
+          }
+        }
+        
+        // Show reset password form
         setTimeout(function() {
           showScreen('loginScreen');
           var loginCard = document.querySelector('#loginScreen .card');
           if (loginCard) loginCard.style.display = 'none';
           var resetBox = document.getElementById('resetPasswordBox');
           if (resetBox) resetBox.style.display = 'block';
-        }, 500);
+          // Clean URL
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }, 800);
       }
 
       // Check for Supabase Auth callback (email confirmation redirect)

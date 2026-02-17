@@ -1102,6 +1102,27 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
       </div>
 
+      <!-- RESET PASSWORD FORM (hidden by default, shown when recovery token detected) -->
+      <div id="resetPasswordBox" style="display:none; margin-top:15px;">
+        <div class="card" style="border:2px solid #27ae60; background:rgba(39,174,96,0.05);">
+          <div style="text-align:center; margin-bottom:20px;">
+            <div style="font-size:50px; margin-bottom:10px;">🔐</div>
+            <h2 style="color:#27ae60; font-size:22px; margin-bottom:5px;">NUEVA CONTRASEÑA</h2>
+            <p style="color:#64748b; font-size:14px;">Ingresa tu nueva contraseña para restablecer tu acceso</p>
+          </div>
+          <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <input type="password" id="resetNewPassword" placeholder="Mínimo 6 caracteres" style="width:100%; padding:15px; border:2px solid #e2e8f0; border-radius:10px; background:#f8fafc; color:#1e293b; font-size:16px;">
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña</label>
+            <input type="password" id="resetConfirmPassword" placeholder="Repite tu nueva contraseña" style="width:100%; padding:15px; border:2px solid #e2e8f0; border-radius:10px; background:#f8fafc; color:#1e293b; font-size:16px;">
+          </div>
+          <button onclick="submitNewPassword()" class="btn btn-primary" style="width:100%; background:linear-gradient(135deg, #27ae60, #2ecc71); font-size:18px; padding:16px;">✅ CAMBIAR CONTRASEÑA</button>
+          <div id="resetPasswordMsg" style="display:none; margin-top:15px; text-align:center; font-size:14px; padding:12px; border-radius:8px;"></div>
+        </div>
+      </div>
+
       <!-- Separador -->
       <div style="text-align:center; margin:20px 0; position:relative;">
         <div style="border-top:2px solid rgba(255,255,255,0.15); position:absolute; top:50%; left:20%; right:20%;"></div>
@@ -3323,6 +3344,18 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     if (supabaseClient) {
         supabaseClient.auth.onAuthStateChange((event, session) => {
             console.log('[MaestroAC] Auth event:', event);
+            if (event === 'PASSWORD_RECOVERY') {
+                console.log('[MaestroAC] Password recovery detected!');
+                // Show reset password form, hide login form
+                showScreen('loginScreen');
+                var loginCard = document.querySelector('#loginScreen .card');
+                if (loginCard) loginCard.style.display = 'none';
+                var resetBox = document.getElementById('resetPasswordBox');
+                if (resetBox) resetBox.style.display = 'block';
+                // Hide register section and separator
+                var registerBtn = document.querySelector('#loginScreen .btn-secondary[onclick*="registerScreen"]');
+                if (registerBtn) registerBtn.parentElement.style.display = 'none';
+            }
             if (event === 'SIGNED_IN' && session) {
                 const userEmail = session.user.email;
                 localStorage.setItem('tecnico_authenticated', 'true');
@@ -6680,6 +6713,23 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
 
       // Clean up stale attendance sessions
       checkStaleAttendance();
+
+      // ============================================
+      // DETECT PASSWORD RECOVERY TOKEN IN URL
+      // ============================================
+      var hashParams = new URLSearchParams(window.location.hash.substring(1));
+      var urlType = hashParams.get('type');
+      if (urlType === 'recovery') {
+        console.log('[MaestroAC] Recovery token detected in URL hash');
+        // Wait for Supabase to process the token
+        setTimeout(function() {
+          showScreen('loginScreen');
+          var loginCard = document.querySelector('#loginScreen .card');
+          if (loginCard) loginCard.style.display = 'none';
+          var resetBox = document.getElementById('resetPasswordBox');
+          if (resetBox) resetBox.style.display = 'block';
+        }, 500);
+      }
 
       // Check for Supabase Auth callback (email confirmation redirect)
       if (supabaseClient) {
@@ -11207,6 +11257,79 @@ window.toggleFormula = function(id) {
         msgDiv.style.display = 'block';
         msgDiv.style.color = '#e74c3c';
         msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+      }
+    }
+
+    // ============================================
+    // SUBMIT NEW PASSWORD (Recovery Flow)
+    // ============================================
+    async function submitNewPassword() {
+      var newPass = document.getElementById('resetNewPassword').value;
+      var confirmPass = document.getElementById('resetConfirmPassword').value;
+      var msgDiv = document.getElementById('resetPasswordMsg');
+      
+      msgDiv.style.display = 'block';
+      
+      if (!newPass || newPass.length < 6) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.style.background = 'rgba(231,76,60,0.1)';
+        msgDiv.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres';
+        return;
+      }
+      
+      if (newPass !== confirmPass) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.style.background = 'rgba(231,76,60,0.1)';
+        msgDiv.textContent = '⚠️ Las contraseñas no coinciden';
+        return;
+      }
+      
+      if (!supabaseClient) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.style.background = 'rgba(231,76,60,0.1)';
+        msgDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        return;
+      }
+      
+      msgDiv.style.color = '#3498db';
+      msgDiv.style.background = 'rgba(52,152,219,0.1)';
+      msgDiv.textContent = '⏳ Cambiando contraseña...';
+      
+      try {
+        var { data, error } = await supabaseClient.auth.updateUser({ password: newPass });
+        
+        if (error) {
+          msgDiv.style.color = '#e74c3c';
+          msgDiv.style.background = 'rgba(231,76,60,0.1)';
+          msgDiv.textContent = '❌ Error: ' + error.message;
+          return;
+        }
+        
+        msgDiv.style.color = '#27ae60';
+        msgDiv.style.background = 'rgba(39,174,96,0.1)';
+        msgDiv.innerHTML = '✅ ¡Contraseña cambiada exitosamente!<br><span style="font-size:13px;">Redirigiendo al login en 3 segundos...</span>';
+        
+        // Sign out and redirect to login after 3 seconds
+        setTimeout(async function() {
+          await supabaseClient.auth.signOut();
+          // Reset the UI
+          var resetBox = document.getElementById('resetPasswordBox');
+          if (resetBox) resetBox.style.display = 'none';
+          var loginCard = document.querySelector('#loginScreen .card');
+          if (loginCard) loginCard.style.display = 'block';
+          // Clear the hash from URL
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+          showScreen('loginScreen');
+          // Show success message on login screen
+          alert('✅ Tu contraseña fue cambiada. Ahora inicia sesión con tu nueva contraseña.');
+        }, 3000);
+        
+      } catch(e) {
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.style.background = 'rgba(231,76,60,0.1)';
+        msgDiv.textContent = '❌ Error de conexión. Intenta de nuevo.';
       }
     }
 

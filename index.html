@@ -1898,180 +1898,6 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div><!-- close admin-grid-2col -->
         </div><!-- close admin-main-content -->
 
-      </div>
-    </div>
-    <div class="screen" id="adminTechnicianProfileScreen">
-      <div class="admin-container">
-        <div class="admin-header">
-          <button class="back-btn" onclick="showScreen('adminDashboardScreen')">← Volver al Panel</button>
-        </div>
-
-        <!-- Profile Card -->
-        <div class="admin-profile-card" id="adminProfileCard">
-          <div class="admin-profile-header">
-            <div class="admin-profile-avatar" id="adminProfileAvatar" style="width:80px;height:80px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;border:3px solid #f39c12;">
-              <img id="adminViewPhoto" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
-              <span id="adminViewPhotoEmoji">👤</span>
-            </div>
-            <div class="admin-profile-info">
-              <h2 id="adminViewName">Nombre del Técnico</h2>
-              <p id="adminViewTechNumber">TECH-0000-N33-XXXX</p>
-            </div>
-          </div>
-          <div class="admin-profile-details">
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">Email</div>
-              <div class="admin-detail-value" id="adminViewEmail">-</div>
-            </div>
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">Teléfono</div>
-              <div class="admin-detail-value" id="adminViewPhone">-</div>
-            </div>
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">EPA 608</div>
-              <div class="admin-detail-value" id="adminViewEPA">-</div>
-            </div>
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">NATE</div>
-              <div class="admin-detail-value" id="adminViewNATE">-</div>
-            </div>
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">ESCO</div>
-              <div class="admin-detail-value" id="adminViewESCO">-</div>
-            </div>
-            <div class="admin-detail-item">
-              <div class="admin-detail-label">Fecha de Registro</div>
-              <div class="admin-detail-value" id="adminViewRegDate">-</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">📈 Progreso del Técnico</span>
-          </div>
-          <div class="admin-chart">
-            <div class="admin-chart-title">Rendimiento por Nivel</div>
-            <div class="admin-bar-chart" id="technicianLevelProgress"></div>
-          </div>
-        </div>
-
-        <!-- Activity Timeline -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">🕐 Historial de Actividad</span>
-          </div>
-          <div class="progress-timeline">
-            <div class="timeline-header">
-              <div class="timeline-tabs">
-                <button class="timeline-tab active" onclick="setTimelineView('minutes', this)">Minutos</button>
-                <button class="timeline-tab" onclick="setTimelineView('hours', this)">Horas</button>
-                <button class="timeline-tab" onclick="setTimelineView('days', this)">Días</button>
-                <button class="timeline-tab" onclick="setTimelineView('months', this)">Meses</button>
-              </div>
-            </div>
-            <div class="timeline-content" id="activityTimeline">
-              <div class="timeline-empty">
-                <p>📭 No hay actividad registrada</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Certificates Section -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">🏅 Certificados Obtenidos</span>
-          </div>
-          <div id="adminTechnicianCertificates">
-            <div class="no-data-message">
-              <p>No hay certificados aún</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lock Management Section -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">🔓 Verificación y Acceso</span>
-          </div>
-          <div id="adminAppAccess" style="padding:10px;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-              <button class="btn btn-primary" id="adminVerifyBtn" onclick="toggleVerification()" style="margin:0;font-size:13px;background:linear-gradient(135deg,#f39c12,#e67e22);">
-                ✅ Verificar Cuenta
-              </button>
-              <button class="btn btn-primary" id="adminActivateAppBtn" onclick="toggleAppAccess()" style="margin:0;font-size:13px;background:linear-gradient(135deg,#2ecc71,#27ae60);">
-                🔓 Activar App Completa
-              </button>
-            </div>
-            <p id="adminVerifyStatus" style="color:#64748b;font-size:12px;text-align:center;margin-bottom:4px;"></p>
-            <p id="adminAppAccessStatus" style="color:#64748b;font-size:12px;text-align:center;"></p>
-            
-            <!-- Code Generation Section -->
-            <div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:12px;padding-top:12px;">
-              <p style="color:#f39c12;font-size:13px;font-weight:bold;margin-bottom:8px;">🔑 Código de Acceso Individual</p>
-              <div id="adminCodeSection">
-                <button class="btn btn-primary" onclick="generateAccessCode()" style="width:100%;font-size:13px;background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:8px;">
-                  🎫 Generar Código Único
-                </button>
-              </div>
-              <div id="adminCodeDisplay" style="display:none;">
-                <div style="background:rgba(155,89,182,0.2);border:2px solid #9b59b6;border-radius:12px;padding:12px;text-align:center;margin-bottom:8px;">
-                  <p style="color:#64748b;font-size:11px;margin-bottom:4px;">Código para este técnico:</p>
-                  <div id="adminCodeValue" style="color:#f39c12;font-size:24px;font-weight:bold;letter-spacing:3px;font-family:monospace;"></div>
-                  <p style="color:#7f8c8d;font-size:10px;margin-top:4px;">Válido solo para: <span id="adminCodeFor"></span></p>
-                </div>
-                <button class="btn btn-secondary" onclick="copyAccessCode()" style="width:100%;font-size:12px;margin-bottom:4px;">
-                  📋 Copiar Código
-                </button>
-                <button class="btn btn-secondary" onclick="revokeAccessCode()" style="width:100%;font-size:12px;background:rgba(231,76,60,0.2);color:#e74c3c;">
-                  ❌ Revocar Código
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Membership Code Section -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">🎥 Clases en Vivo - Membresía</span>
-          </div>
-          <div style="padding:10px;">
-            <button class="btn btn-primary" onclick="generateMembershipCode()" style="width:100%;font-size:13px;background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:8px;">
-              🎫 Generar Código de Membresía
-            </button>
-            <div id="adminMemberCodeDisplay" style="display:none;">
-              <div style="background:rgba(155,89,182,0.2);border:2px solid #9b59b6;border-radius:12px;padding:12px;text-align:center;margin-bottom:8px;">
-                <p style="color:#64748b;font-size:11px;margin-bottom:4px;">Código de Clases en Vivo:</p>
-                <div id="adminMemberCodeValue" style="color:#9b59b6;font-size:24px;font-weight:bold;letter-spacing:3px;font-family:monospace;"></div>
-                <p style="color:#7f8c8d;font-size:10px;margin-top:4px;">Para: <span id="adminMemberCodeFor"></span></p>
-              </div>
-              <button class="btn btn-secondary" onclick="copyMembershipCode()" style="width:100%;font-size:12px;margin-bottom:4px;">
-                📋 Copiar Código de Membresía
-              </button>
-              <button class="btn btn-secondary" onclick="revokeMembershipCode()" style="width:100%;font-size:12px;background:rgba(231,76,60,0.2);color:#e74c3c;">
-                ❌ Revocar Membresía
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Lock Management Section -->
-        <div class="admin-section">
-          <div class="admin-section-header">
-            <span class="admin-section-title">🔐 Control de Acceso por Nivel</span>
-          </div>
-          <div id="adminLockManagement">
-            <div class="admin-lock-disabled-notice" id="lockSystemNotice">
-              ✅ Sistema de acceso ACTIVADO. Nivel 1 gratis. Niveles 2-5 requieren compra ($20/mo) o acceso de estudiante ACVOLT.
-            </div>
-            <div id="adminLockControls" style="display: none;">
-              <!-- Lock controls will be rendered by JavaScript -->
-            </div>
-          </div>
-        </div>
 
         <!-- ========== STUDENT SUCCESS - CRM & SURVEY SECTION ========== -->
         <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
@@ -2311,6 +2137,181 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
                 <button onclick="document.getElementById('ssDetailModal').style.display='none'" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;">✕</button>
               </div>
               <div id="ssDetailContent"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="screen" id="adminTechnicianProfileScreen">
+      <div class="admin-container">
+        <div class="admin-header">
+          <button class="back-btn" onclick="showScreen('adminDashboardScreen')">← Volver al Panel</button>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="admin-profile-card" id="adminProfileCard">
+          <div class="admin-profile-header">
+            <div class="admin-profile-avatar" id="adminProfileAvatar" style="width:80px;height:80px;border-radius:50%;background:#1e293b;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;border:3px solid #f39c12;">
+              <img id="adminViewPhoto" src="" style="display:none;width:100%;height:100%;object-fit:cover;">
+              <span id="adminViewPhotoEmoji">👤</span>
+            </div>
+            <div class="admin-profile-info">
+              <h2 id="adminViewName">Nombre del Técnico</h2>
+              <p id="adminViewTechNumber">TECH-0000-N33-XXXX</p>
+            </div>
+          </div>
+          <div class="admin-profile-details">
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">Email</div>
+              <div class="admin-detail-value" id="adminViewEmail">-</div>
+            </div>
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">Teléfono</div>
+              <div class="admin-detail-value" id="adminViewPhone">-</div>
+            </div>
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">EPA 608</div>
+              <div class="admin-detail-value" id="adminViewEPA">-</div>
+            </div>
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">NATE</div>
+              <div class="admin-detail-value" id="adminViewNATE">-</div>
+            </div>
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">ESCO</div>
+              <div class="admin-detail-value" id="adminViewESCO">-</div>
+            </div>
+            <div class="admin-detail-item">
+              <div class="admin-detail-label">Fecha de Registro</div>
+              <div class="admin-detail-value" id="adminViewRegDate">-</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📈 Progreso del Técnico</span>
+          </div>
+          <div class="admin-chart">
+            <div class="admin-chart-title">Rendimiento por Nivel</div>
+            <div class="admin-bar-chart" id="technicianLevelProgress"></div>
+          </div>
+        </div>
+
+        <!-- Activity Timeline -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🕐 Historial de Actividad</span>
+          </div>
+          <div class="progress-timeline">
+            <div class="timeline-header">
+              <div class="timeline-tabs">
+                <button class="timeline-tab active" onclick="setTimelineView('minutes', this)">Minutos</button>
+                <button class="timeline-tab" onclick="setTimelineView('hours', this)">Horas</button>
+                <button class="timeline-tab" onclick="setTimelineView('days', this)">Días</button>
+                <button class="timeline-tab" onclick="setTimelineView('months', this)">Meses</button>
+              </div>
+            </div>
+            <div class="timeline-content" id="activityTimeline">
+              <div class="timeline-empty">
+                <p>📭 No hay actividad registrada</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Certificates Section -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🏅 Certificados Obtenidos</span>
+          </div>
+          <div id="adminTechnicianCertificates">
+            <div class="no-data-message">
+              <p>No hay certificados aún</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lock Management Section -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🔓 Verificación y Acceso</span>
+          </div>
+          <div id="adminAppAccess" style="padding:10px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+              <button class="btn btn-primary" id="adminVerifyBtn" onclick="toggleVerification()" style="margin:0;font-size:13px;background:linear-gradient(135deg,#f39c12,#e67e22);">
+                ✅ Verificar Cuenta
+              </button>
+              <button class="btn btn-primary" id="adminActivateAppBtn" onclick="toggleAppAccess()" style="margin:0;font-size:13px;background:linear-gradient(135deg,#2ecc71,#27ae60);">
+                🔓 Activar App Completa
+              </button>
+            </div>
+            <p id="adminVerifyStatus" style="color:#64748b;font-size:12px;text-align:center;margin-bottom:4px;"></p>
+            <p id="adminAppAccessStatus" style="color:#64748b;font-size:12px;text-align:center;"></p>
+            
+            <!-- Code Generation Section -->
+            <div style="border-top:1px solid rgba(255,255,255,0.1);margin-top:12px;padding-top:12px;">
+              <p style="color:#f39c12;font-size:13px;font-weight:bold;margin-bottom:8px;">🔑 Código de Acceso Individual</p>
+              <div id="adminCodeSection">
+                <button class="btn btn-primary" onclick="generateAccessCode()" style="width:100%;font-size:13px;background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:8px;">
+                  🎫 Generar Código Único
+                </button>
+              </div>
+              <div id="adminCodeDisplay" style="display:none;">
+                <div style="background:rgba(155,89,182,0.2);border:2px solid #9b59b6;border-radius:12px;padding:12px;text-align:center;margin-bottom:8px;">
+                  <p style="color:#64748b;font-size:11px;margin-bottom:4px;">Código para este técnico:</p>
+                  <div id="adminCodeValue" style="color:#f39c12;font-size:24px;font-weight:bold;letter-spacing:3px;font-family:monospace;"></div>
+                  <p style="color:#7f8c8d;font-size:10px;margin-top:4px;">Válido solo para: <span id="adminCodeFor"></span></p>
+                </div>
+                <button class="btn btn-secondary" onclick="copyAccessCode()" style="width:100%;font-size:12px;margin-bottom:4px;">
+                  📋 Copiar Código
+                </button>
+                <button class="btn btn-secondary" onclick="revokeAccessCode()" style="width:100%;font-size:12px;background:rgba(231,76,60,0.2);color:#e74c3c;">
+                  ❌ Revocar Código
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership Code Section -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🎥 Clases en Vivo - Membresía</span>
+          </div>
+          <div style="padding:10px;">
+            <button class="btn btn-primary" onclick="generateMembershipCode()" style="width:100%;font-size:13px;background:linear-gradient(135deg,#9b59b6,#8e44ad);margin-bottom:8px;">
+              🎫 Generar Código de Membresía
+            </button>
+            <div id="adminMemberCodeDisplay" style="display:none;">
+              <div style="background:rgba(155,89,182,0.2);border:2px solid #9b59b6;border-radius:12px;padding:12px;text-align:center;margin-bottom:8px;">
+                <p style="color:#64748b;font-size:11px;margin-bottom:4px;">Código de Clases en Vivo:</p>
+                <div id="adminMemberCodeValue" style="color:#9b59b6;font-size:24px;font-weight:bold;letter-spacing:3px;font-family:monospace;"></div>
+                <p style="color:#7f8c8d;font-size:10px;margin-top:4px;">Para: <span id="adminMemberCodeFor"></span></p>
+              </div>
+              <button class="btn btn-secondary" onclick="copyMembershipCode()" style="width:100%;font-size:12px;margin-bottom:4px;">
+                📋 Copiar Código de Membresía
+              </button>
+              <button class="btn btn-secondary" onclick="revokeMembershipCode()" style="width:100%;font-size:12px;background:rgba(231,76,60,0.2);color:#e74c3c;">
+                ❌ Revocar Membresía
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lock Management Section -->
+        <div class="admin-section">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🔐 Control de Acceso por Nivel</span>
+          </div>
+          <div id="adminLockManagement">
+            <div class="admin-lock-disabled-notice" id="lockSystemNotice">
+              ✅ Sistema de acceso ACTIVADO. Nivel 1 gratis. Niveles 2-5 requieren compra ($20/mo) o acceso de estudiante ACVOLT.
+            </div>
+            <div id="adminLockControls" style="display: none;">
+              <!-- Lock controls will be rendered by JavaScript -->
             </div>
           </div>
         </div>

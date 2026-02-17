@@ -10406,9 +10406,28 @@ window.toggleFormula = function(id) {
         var userMap = {};
         for (var i = 0; i < studentIds.length; i++) {
           try {
+            // Try profiles table first
             var profRes = await supabaseClient.from('profiles').select('full_name, email').eq('id', studentIds[i]).single();
-            if (profRes.data) { userMap[studentIds[i]] = profRes.data.full_name || profRes.data.email || studentIds[i].substring(0,8); }
-            else { userMap[studentIds[i]] = studentIds[i].substring(0,8) + '...'; }
+            if (profRes.data && profRes.data.full_name) {
+              userMap[studentIds[i]] = profRes.data.full_name;
+            } else {
+              // Fallback: try technicians table using email from profiles or users
+              var email = profRes.data ? profRes.data.email : null;
+              if (!email) {
+                var userRes = await supabaseClient.from('users').select('email').eq('id', studentIds[i]).single();
+                email = userRes.data ? userRes.data.email : null;
+              }
+              if (email) {
+                var techRes = await supabaseClient.from('technicians').select('nombre').eq('email', email).single();
+                if (techRes.data && techRes.data.nombre) {
+                  userMap[studentIds[i]] = techRes.data.nombre;
+                } else {
+                  userMap[studentIds[i]] = email.split('@')[0];
+                }
+              } else {
+                userMap[studentIds[i]] = studentIds[i].substring(0,8) + '...';
+              }
+            }
           } catch(e) { userMap[studentIds[i]] = studentIds[i].substring(0,8) + '...'; }
         }
         var tbody = document.getElementById('adminAttendanceBody');

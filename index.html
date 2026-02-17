@@ -1756,6 +1756,37 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             <!-- ============ END BATCH EMAIL SECTION ============ -->
         </div>
 
+        <!-- ============ SECCION: DIAGNOSTICO DE ESTUDIANTES ============ -->
+        <div class="admin-section admin-grid-full" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+            <h3 style="color: #e74c3c; font-size: 1.3em; margin-bottom: 15px;">🔍 Diagnóstico de Estudiantes</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                <button onclick="runStudentDiagnostic()" style="padding: 10px 20px; background: #e74c3c; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🔍 ANALIZAR ESTUDIANTES</button>
+                <button onclick="showDiagFilter('all')" class="diag-filter-btn" id="diagFilterAll" style="padding: 8px 16px; background: #3498db; color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">📊 Todos</button>
+                <button onclick="showDiagFilter('inactive')" class="diag-filter-btn" id="diagFilterInactive" style="padding: 8px 16px; background: transparent; color: #e74c3c; border: 1px solid #e74c3c; border-radius: 8px; cursor: pointer;">🔴 Sin Actividad</button>
+                <button onclick="showDiagFilter('duplicates')" class="diag-filter-btn" id="diagFilterDuplicates" style="padding: 8px 16px; background: transparent; color: #f39c12; border: 1px solid #f39c12; border-radius: 8px; cursor: pointer;">🟡 Duplicados</button>
+                <button onclick="showDiagFilter('active')" class="diag-filter-btn" id="diagFilterActive" style="padding: 8px 16px; background: transparent; color: #2ecc71; border: 1px solid #2ecc71; border-radius: 8px; cursor: pointer;">🟢 Activos</button>
+            </div>
+            <div id="diagStats" style="display: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                <div style="background: rgba(52,152,219,0.15); border-radius: 10px; padding: 12px; text-align: center;">
+                    <div id="diagTotalCount" style="font-size: 1.8em; font-weight: bold; color: #3498db;">-</div>
+                    <div style="font-size: 0.8em; color: #94a3b8;">Total Registrados</div>
+                </div>
+                <div style="background: rgba(46,204,113,0.15); border-radius: 10px; padding: 12px; text-align: center;">
+                    <div id="diagActiveCount" style="font-size: 1.8em; font-weight: bold; color: #2ecc71;">-</div>
+                    <div style="font-size: 0.8em; color: #94a3b8;">Activos</div>
+                </div>
+                <div style="background: rgba(231,76,60,0.15); border-radius: 10px; padding: 12px; text-align: center;">
+                    <div id="diagInactiveCount" style="font-size: 1.8em; font-weight: bold; color: #e74c3c;">-</div>
+                    <div style="font-size: 0.8em; color: #94a3b8;">Sin Actividad</div>
+                </div>
+                <div style="background: rgba(243,156,18,0.15); border-radius: 10px; padding: 12px; text-align: center;">
+                    <div id="diagDuplicateCount" style="font-size: 1.8em; font-weight: bold; color: #f39c12;">-</div>
+                    <div style="font-size: 0.8em; color: #94a3b8;">Posibles Duplicados</div>
+                </div>
+            </div>
+            <div id="diagResults" style="color: #ccc;">Presiona "Analizar Estudiantes" para ver el diagnóstico</div>
+        </div>
+
         <!-- ============ SECCION: SUBIR LIBROS / PDFs ============ -->
         <div class="admin-section admin-grid-full" style="border: 2px solid #3498db; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
             <h3 style="color: #3498db; font-size: 1.3em; margin-bottom: 15px;">📚 Libros de Trabajo / Material</h3>
@@ -13913,6 +13944,208 @@ window.toggleFormula = function(id) {
         </div>
       </div>
     </div>
+
+<script>
+// ============================================
+// ADMIN: DIAGNOSTICO DE ESTUDIANTES
+// ============================================
+var _diagData = { all: [], active: [], inactive: [], duplicates: [] };
+
+async function runStudentDiagnostic(){
+  var container = document.getElementById('diagResults');
+  container.innerHTML = '<div style="text-align:center;padding:30px;"><div style="font-size:2em;margin-bottom:10px;">⏳</div>Analizando estudiantes...</div>';
+
+  try {
+    // 1. Get all registered users
+    var usersRes = await supabaseClient.from('users').select('*').order('created_at', {ascending: false});
+    var users = usersRes.data || [];
+
+    // 2. Get all progress records (who has activity)
+    var progressRes = await supabaseClient.from('user_progress').select('user_id');
+    var progressUserIds = new Set((progressRes.data || []).map(function(p){ return p.user_id; }));
+
+    // 3. Get all quiz attempts
+    var quizRes = await supabaseClient.from('quiz_attempts').select('user_id');
+    var quizUserIds = new Set((quizRes.data || []).map(function(q){ return q.user_id; }));
+
+    // 4. Get all certificates
+    var certRes = await supabaseClient.from('certificates').select('user_id');
+    var certUserIds = new Set((certRes.data || []).map(function(c){ return c.user_id; }));
+
+    // 5. Get activity log
+    var actRes = await supabaseClient.from('activity_log').select('user_id');
+    var actUserIds = new Set((actRes.data || []).map(function(a){ return a.user_id; }));
+
+    // Combine all activity
+    var activeIds = new Set();
+    [progressUserIds, quizUserIds, certUserIds, actUserIds].forEach(function(s){
+      s.forEach(function(id){ activeIds.add(id); });
+    });
+
+    // Classify users
+    var activeUsers = [];
+    var inactiveUsers = [];
+    users.forEach(function(u){
+      u._hasActivity = activeIds.has(u.id);
+      u._hasProgress = progressUserIds.has(u.id);
+      u._hasQuiz = quizUserIds.has(u.id);
+      u._hasCert = certUserIds.has(u.id);
+      if(u._hasActivity){
+        activeUsers.push(u);
+      } else {
+        inactiveUsers.push(u);
+      }
+    });
+
+    // Find duplicates by nombre (case-insensitive) or telefono
+    var nameGroups = {};
+    var phoneGroups = {};
+    users.forEach(function(u){
+      var nameKey = (u.nombre || '').trim().toLowerCase();
+      if(nameKey){
+        if(!nameGroups[nameKey]) nameGroups[nameKey] = [];
+        nameGroups[nameKey].push(u);
+      }
+      var phone = (u.telefono || '').replace(/\D/g, '');
+      if(phone && phone.length >= 7){
+        if(!phoneGroups[phone]) phoneGroups[phone] = [];
+        phoneGroups[phone].push(u);
+      }
+    });
+
+    var duplicateGroups = [];
+    var seenIds = new Set();
+    // Name duplicates
+    Object.keys(nameGroups).forEach(function(key){
+      if(nameGroups[key].length > 1){
+        var group = nameGroups[key].filter(function(u){ return !seenIds.has(u.id); });
+        if(group.length > 1){
+          duplicateGroups.push({reason: 'Mismo nombre', users: nameGroups[key]});
+          nameGroups[key].forEach(function(u){ seenIds.add(u.id); });
+        }
+      }
+    });
+    // Phone duplicates
+    Object.keys(phoneGroups).forEach(function(key){
+      if(phoneGroups[key].length > 1){
+        var hasNew = phoneGroups[key].some(function(u){ return !seenIds.has(u.id); });
+        if(hasNew){
+          duplicateGroups.push({reason: 'Mismo teléfono', users: phoneGroups[key]});
+          phoneGroups[key].forEach(function(u){ seenIds.add(u.id); });
+        }
+      }
+    });
+
+    _diagData = {
+      all: users,
+      active: activeUsers,
+      inactive: inactiveUsers,
+      duplicates: duplicateGroups
+    };
+
+    // Update stats
+    document.getElementById('diagTotalCount').textContent = users.length;
+    document.getElementById('diagActiveCount').textContent = activeUsers.length;
+    document.getElementById('diagInactiveCount').textContent = inactiveUsers.length;
+    document.getElementById('diagDuplicateCount').textContent = duplicateGroups.length;
+    document.getElementById('diagStats').style.display = 'grid';
+
+    showDiagFilter('all');
+  } catch(e){
+    container.innerHTML = '<span style="color:#e74c3c;">Error: ' + (e.message || e) + '</span>';
+    console.error('Diagnostic error:', e);
+  }
+}
+
+function showDiagFilter(filter){
+  // Update button styles
+  ['all','inactive','duplicates','active'].forEach(function(f){
+    var btn = document.getElementById('diagFilter' + f.charAt(0).toUpperCase() + f.slice(1));
+    if(btn){
+      if(f === filter){
+        var colors = {all:'#3498db', inactive:'#e74c3c', duplicates:'#f39c12', active:'#2ecc71'};
+        btn.style.background = colors[f];
+        btn.style.color = '#fff';
+        btn.style.border = 'none';
+      } else {
+        var colors2 = {all:'#3498db', inactive:'#e74c3c', duplicates:'#f39c12', active:'#2ecc71'};
+        btn.style.background = 'transparent';
+        btn.style.color = colors2[f];
+        btn.style.border = '1px solid ' + colors2[f];
+      }
+    }
+  });
+
+  var container = document.getElementById('diagResults');
+
+  if(filter === 'duplicates'){
+    renderDuplicates(container);
+    return;
+  }
+
+  var list = filter === 'all' ? _diagData.all : filter === 'active' ? _diagData.active : _diagData.inactive;
+  if(!list || list.length === 0){
+    container.innerHTML = '<span style="color:#64748b;">No hay datos</span>';
+    return;
+  }
+
+  var html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+  html += '<tr style="background:rgba(255,255,255,0.05);"><th style="padding:8px;text-align:left;color:#94a3b8;">Nombre</th><th style="padding:8px;text-align:left;color:#94a3b8;">Email</th><th style="padding:8px;text-align:left;color:#94a3b8;">Teléfono</th><th style="padding:8px;text-align:center;color:#94a3b8;">Registro</th><th style="padding:8px;text-align:center;color:#94a3b8;">Último Acceso</th><th style="padding:8px;text-align:center;color:#94a3b8;">Estado</th></tr>';
+
+  list.forEach(function(u){
+    var regDate = u.created_at ? new Date(u.created_at).toLocaleDateString('es-MX') : 'N/A';
+    var lastAccess = u.ultimo_acceso ? new Date(u.ultimo_acceso).toLocaleDateString('es-MX') : 'Nunca';
+    var statusColor = u._hasActivity ? '#2ecc71' : '#e74c3c';
+    var statusText = u._hasActivity ? '🟢 Activo' : '🔴 Sin actividad';
+    var details = [];
+    if(u._hasProgress) details.push('📊 Progreso');
+    if(u._hasQuiz) details.push('📝 Quizzes');
+    if(u._hasCert) details.push('🎓 Certificados');
+
+    html += '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">';
+    html += '<td style="padding:8px;color:#fff;">' + (u.nombre || '<sin nombre>') + '</td>';
+    html += '<td style="padding:8px;color:#94a3b8;font-size:0.9em;">' + (u.email || '-') + '</td>';
+    html += '<td style="padding:8px;color:#94a3b8;">' + (u.telefono || '-') + '</td>';
+    html += '<td style="padding:8px;text-align:center;color:#64748b;">' + regDate + '</td>';
+    html += '<td style="padding:8px;text-align:center;color:#64748b;">' + lastAccess + '</td>';
+    html += '<td style="padding:8px;text-align:center;"><span style="color:' + statusColor + ';font-size:0.85em;">' + statusText + '</span>';
+    if(details.length > 0) html += '<div style="font-size:0.7em;color:#64748b;">' + details.join(' ') + '</div>';
+    html += '</td></tr>';
+  });
+  html += '</table></div>';
+  container.innerHTML = html;
+}
+
+function renderDuplicates(container){
+  var groups = _diagData.duplicates;
+  if(!groups || groups.length === 0){
+    container.innerHTML = '<span style="color:#2ecc71;">✅ No se encontraron registros duplicados</span>';
+    return;
+  }
+  var html = '';
+  groups.forEach(function(g, idx){
+    html += '<div style="background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);border-radius:12px;padding:15px;margin-bottom:12px;">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">';
+    html += '<span style="color:#f39c12;font-weight:bold;">⚠️ Grupo duplicado #' + (idx+1) + ' — ' + g.reason + '</span>';
+    html += '<span style="color:#64748b;font-size:0.85em;">' + g.users.length + ' registros</span></div>';
+    html += '<table style="width:100%;border-collapse:collapse;font-size:0.85em;">';
+    html += '<tr style="background:rgba(255,255,255,0.03);"><th style="padding:6px;text-align:left;color:#f39c12;">Nombre</th><th style="padding:6px;text-align:left;color:#f39c12;">Email</th><th style="padding:6px;text-align:left;color:#f39c12;">Teléfono</th><th style="padding:6px;text-align:center;color:#f39c12;">Registro</th><th style="padding:6px;text-align:center;color:#f39c12;">Actividad</th></tr>';
+    g.users.forEach(function(u){
+      var regDate = u.created_at ? new Date(u.created_at).toLocaleDateString('es-MX') : 'N/A';
+      var hasAct = u._hasActivity;
+      html += '<tr style="border-bottom:1px solid rgba(255,255,255,0.05);">';
+      html += '<td style="padding:6px;color:#fff;">' + (u.nombre || '-') + '</td>';
+      html += '<td style="padding:6px;color:#94a3b8;">' + (u.email || '-') + '</td>';
+      html += '<td style="padding:6px;color:#94a3b8;">' + (u.telefono || '-') + '</td>';
+      html += '<td style="padding:6px;text-align:center;color:#64748b;">' + regDate + '</td>';
+      html += '<td style="padding:6px;text-align:center;">' + (hasAct ? '<span style="color:#2ecc71;">🟢 Sí</span>' : '<span style="color:#e74c3c;">🔴 No</span>') + '</td>';
+      html += '</tr>';
+    });
+    html += '</table></div>';
+  });
+  container.innerHTML = html;
+}
+</script>
 
 <script>
 // ============================================

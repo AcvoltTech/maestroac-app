@@ -6743,6 +6743,8 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
             currentMembership = membership;
             membershipAuthenticated = true;
           }
+          // Check for failed/expired payments
+          await checkFailedPayment(email);
         } catch(e) { console.log('Membership check skipped:', e); }
 
         // Sync tecnico_user so handleComenzar finds it
@@ -7804,9 +7806,9 @@ window.toggleFormula = function(id) {
     function startFreshQuiz(levelId) {
       currentLevel = levelId;
       let quizPool = [...questions[levelId]];
-      // Limit principiante to 350 questions for free users
+      // Limit principiante to 50 questions for free users (probadita)
       if (levelId === 'principiante' && !hasAppAccess()) {
-        quizPool = quizPool.slice(0, 350);
+        quizPool = quizPool.slice(0, 50);
       }
       currentQuestions = shuffleArray(quizPool);
       currentQuestionIndex = 0;
@@ -9153,9 +9155,9 @@ window.toggleFormula = function(id) {
     function getQuestionsGroupedByCategory(levelId) {
       let levelQuestions = questions[levelId] || [];
       
-      // Limit principiante to 350 questions in study mode if no app access
+      // Limit principiante to 50 questions in study mode if no app access (probadita)
       if (levelId === 'principiante' && !hasAppAccess()) {
-        levelQuestions = levelQuestions.slice(0, 350);
+        levelQuestions = levelQuestions.slice(0, 50);
       }
       
       const grouped = {};
@@ -9882,6 +9884,56 @@ window.toggleFormula = function(id) {
         console.error('Error checking membership:', e);
         return null;
       }
+    }
+
+    // Check for failed/expired Stripe payments
+    async function checkFailedPayment(email) {
+      if (!supabaseClient || !isOnline || !email) return;
+      try {
+        // Look for inactive memberships (payment failed or canceled)
+        const { data } = await supabaseClient
+          .from('memberships')
+          .select('*')
+          .eq('email', email)
+          .eq('activa', false)
+          .order('updated_at', { ascending: false })
+          .limit(1);
+        
+        if (data && data.length > 0) {
+          const m = data[0];
+          // Only show notification if membership was recently deactivated (last 30 days)
+          const updatedDate = new Date(m.updated_at || m.fecha_inicio);
+          const daysSince = Math.floor((Date.now() - updatedDate) / (1000 * 60 * 60 * 24));
+          if (daysSince <= 30) {
+            showPaymentFailedNotification(m);
+          }
+        }
+      } catch(e) { console.log('Failed payment check error:', e); }
+    }
+
+    function showPaymentFailedNotification(membership) {
+      var tierNames = { bronze: 'Principiante $119/mes', silver: 'Intermedio $299/mes', gold: 'Avanzado $699/mes' };
+      var tierName = tierNames[membership.tipo] || 'Membresía';
+      
+      var notif = document.createElement('div');
+      notif.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:99999;max-width:420px;width:90%;animation:slideDown 0.5s ease;';
+      notif.innerHTML = '<div style="background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:16px;padding:20px;box-shadow:0 8px 30px rgba(231,76,60,0.5);">' +
+        '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+        '<span style="font-size:28px;">⚠️</span>' +
+        '<div><strong style="color:#fff;font-size:16px;">Pago No Procesado</strong>' +
+        '<div style="color:rgba(255,255,255,0.8);font-size:12px;">Tu membresía ' + tierName + ' está suspendida</div></div>' +
+        '</div>' +
+        '<p style="color:rgba(255,255,255,0.9);font-size:13px;margin-bottom:15px;">Tu último pago no se pudo procesar. Actualiza tu método de pago para reactivar tu acceso a clases en vivo y contenido exclusivo.</p>' +
+        '<div style="display:flex;gap:8px;">' +
+        '<button onclick="window.open(\'https://billing.stripe.com/p/login/aFa3cvaY73gY9UP2rZ3sI00\',\'_blank\');this.closest(\'div\').parentElement.parentElement.remove();" style="flex:1;padding:12px;background:#fff;color:#e74c3c;border:none;border-radius:10px;font-weight:bold;cursor:pointer;">💳 Actualizar Pago</button>' +
+        '<button onclick="this.closest(\'div\').parentElement.parentElement.parentElement.remove();" style="padding:12px 16px;background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:10px;cursor:pointer;">✕</button>' +
+        '</div></div>';
+      
+      document.body.appendChild(notif);
+      addNotification('payment', '⚠️ Pago pendiente — Tu membresía ' + tierName + ' necesita actualización de pago', '⚠️');
+      
+      // Auto-dismiss after 15 seconds
+      setTimeout(function() { if(notif.parentNode) notif.remove(); }, 15000);
     }
 
     async function loadWebinarLinks(tier) {
@@ -14918,7 +14970,7 @@ if(cb)cb();
 var scOpen=false,scHist=[],scBusy=false;
 var SC_URL='https://htklsowiyjwsjnacnvnr.supabase.co/functions/v1/tutor-ia-chat';
 var SC_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
-var SC_SYS='Eres el asistente de soporte de la app MaestroAC de ACVOLT Tech School. Respondes en espa\u00f1ol, amable y directo. M\u00e1ximo 100 palabras. NUNCA digas "quiz", di "examen de pr\u00e1ctica". Conoces toda la app:\n\nPANTALLAS: Login, Registro, Bienvenida (men\u00fa principal), Niveles (progreso con categor\u00edas), Ex\u00e1menes de Pr\u00e1ctica, Secciones de Estudio, Video Lecciones, Mi Asistencia (Check-In/Out), Certificados, Perfil, Zona de Membres\u00eda.\n\nCHECK-IN: El estudiante debe ir a \"Mi Asistencia\" desde el men\u00fa principal. Selecciona tipo de clase (presencial, en l\u00ednea, laboratorio, campo). Presiona Check-In. El timer corre hasta 4 horas m\u00e1ximo. Para salir presiona Check-Out. Si cierra la app, la sesi\u00f3n se guarda y se puede cerrar la pr\u00f3xima vez.\n\nNIVELES: Hay categor\u00edas como Refrigeraci\u00f3n, Electricidad, Vac\u00edo, OSHA, etc. Cada categor\u00eda tiene un examen. Al pasar el examen se desbloquea el siguiente nivel. Se necesita 70% para aprobar.\n\nEXAMENES: 350 preguntas divididas por categor\u00eda. Cada pregunta tiene 4 opciones. Al responder se muestra explicaci\u00f3n.\n\nVIDEO LECCIONES: Videos educativos organizados por tema.\n\nCERTIFICADOS: Se generan al completar niveles. Se pueden ver en \"Mis Certificados\".\n\nPERFIL: Muestra nombre, email, horas de estudio, progreso.\n\nPROBLEMAS COMUNES:\n- \"No puedo hacer login\" = Verifica email y contrase\u00f1a. Si olvidaste contrase\u00f1a, usa \"Forgot Password\".\n- \"No me deja tomar examen\" = Debes hacer Check-In primero en \"Mi Asistencia\".\n- \"La app me sac\u00f3\" = Puede ser por inactividad. Vuelve a entrar y haz Check-In.\n- \"No veo mis certificados\" = Ve a \"Mis Certificados\" desde el men\u00fa de Niveles.\n- \"El timer no funciona\" = Aseg\u00farate de haber hecho Check-In correctamente.\n\nSi no sabes la respuesta, di: \"Para este tema contacta directamente a ACVOLT Tech School.\"';
+var SC_SYS='Eres el asistente de soporte de la app MaestroAC de ACVOLT Tech School. Respondes en espa\u00f1ol, amable y directo. M\u00e1ximo 100 palabras. NUNCA digas "quiz", di "examen de pr\u00e1ctica". Conoces toda la app:\n\nPANTALLAS: Login, Registro, Bienvenida (men\u00fa principal), Niveles (progreso con categor\u00edas), Ex\u00e1menes de Pr\u00e1ctica, Secciones de Estudio, Video Lecciones, Mi Asistencia (Check-In/Out), Certificados, Perfil, Zona de Membres\u00eda.\n\nCHECK-IN: El estudiante debe ir a \"Mi Asistencia\" desde el men\u00fa principal. Selecciona tipo de clase (presencial, en l\u00ednea, laboratorio, campo). Presiona Check-In. El timer corre hasta 4 horas m\u00e1ximo. Para salir presiona Check-Out. Si cierra la app, la sesi\u00f3n se guarda y se puede cerrar la pr\u00f3xima vez.\n\nNIVELES: Hay categor\u00edas como Refrigeraci\u00f3n, Electricidad, Vac\u00edo, OSHA, etc. Cada categor\u00eda tiene un examen. Al pasar el examen se desbloquea el siguiente nivel. Se necesita 70% para aprobar.\n\nEXAMENES: 50 preguntas gratis de prueba. Usuarios de pago tienen acceso a 3,500+ preguntas divididas por categor\u00eda. Cada pregunta tiene 4 opciones. Al responder se muestra explicaci\u00f3n.\n\nVIDEO LECCIONES: Videos educativos organizados por tema.\n\nCERTIFICADOS: Se generan al completar niveles. Se pueden ver en \"Mis Certificados\".\n\nPERFIL: Muestra nombre, email, horas de estudio, progreso.\n\nPROBLEMAS COMUNES:\n- \"No puedo hacer login\" = Verifica email y contrase\u00f1a. Si olvidaste contrase\u00f1a, usa \"Forgot Password\".\n- \"No me deja tomar examen\" = Debes hacer Check-In primero en \"Mi Asistencia\".\n- \"La app me sac\u00f3\" = Puede ser por inactividad. Vuelve a entrar y haz Check-In.\n- \"No veo mis certificados\" = Ve a \"Mis Certificados\" desde el men\u00fa de Niveles.\n- \"El timer no funciona\" = Aseg\u00farate de haber hecho Check-In correctamente.\n\nSi no sabes la respuesta, di: \"Para este tema contacta directamente a ACVOLT Tech School.\"';
 
 window.toggleSoporte=function(){
 scOpen=!scOpen;

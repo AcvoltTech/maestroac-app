@@ -997,6 +997,38 @@ function stopLauncherMusic(){
   if(window._launcherAudioCtx){try{window._launcherAudioCtx.close();window._launcherAudioCtx=null;}catch(e){}}
 }
 
+function showV2Paywall(){
+  // Check if user has v2 access (paid $49/mes)
+  var hasV2 = false;
+  if(window.currentUser && window.currentUser.email){
+    hasV2 = localStorage.getItem('maestroac_v2_access_' + window.currentUser.email) === 'true';
+  }
+  // Also check if currentMembership has v2 tier
+  if(window.currentMembership && window.currentMembership.activa && window.currentMembership.tipo === 'v2'){
+    hasV2 = true;
+  }
+  if(hasV2){
+    window.location.href='https://acvolttech.github.io/maestroac-v2/';
+    return;
+  }
+  var modal = document.createElement('div');
+  modal.id = 'v2PaywallModal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+  modal.innerHTML = '<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;padding:30px;max-width:400px;text-align:center;border:2px solid #f97316;">' +
+    '<div style="font-size:50px;margin-bottom:15px;">🤖</div>' +
+    '<h2 style="color:#f97316;margin-bottom:10px;font-size:22px;">Maestro Mario AI Bilingüe</h2>' +
+    '<p style="color:#94a3b8;margin-bottom:20px;font-size:14px;">Tu tutor personal de HVAC con Inteligencia Artificial. Responde preguntas técnicas en <strong style="color:white;">español e inglés</strong>.</p>' +
+    '<div style="background:#0d1117;border-radius:12px;padding:15px;margin-bottom:20px;">' +
+    '<p style="color:#f97316;font-size:32px;font-weight:bold;margin:0;">$49<span style="font-size:14px;color:#64748b;">/mes</span></p>' +
+    '<p style="color:#64748b;font-size:12px;margin:5px 0 0 0;">Acceso completo a Maestro Mario AI V2</p>' +
+    '</div>' +
+    '<p style="color:white;font-size:13px;margin-bottom:20px;text-align:left;padding-left:20px;">✅ Tutor AI bilingüe ilimitado<br>✅ Diagnósticos interactivos<br>✅ Explicaciones paso a paso<br>✅ Práctica conversacional en inglés<br>✅ Soporte técnico 24/7</p>' +
+    '<button onclick="window.open(\'https://buy.stripe.com/v2_49\',\'_blank\');document.getElementById(\'v2PaywallModal\').remove();" style="background:linear-gradient(135deg,#f97316,#ea580c);color:white;border:none;padding:16px 30px;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;width:100%;margin-bottom:10px;box-shadow:0 4px 15px rgba(249,115,22,0.4);">💳 Suscribirme - $49/mes</button>' +
+    '<button onclick="document.getElementById(\'v2PaywallModal\').remove();" style="background:transparent;color:#64748b;border:1px solid #64748b;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;width:100%;">Ahora no</button>' +
+    '</div>';
+  document.body.appendChild(modal);
+}
+
 try{
   var u=JSON.parse(localStorage.getItem('maestroac_user')||'{}');
   if(u&&u.nombre){
@@ -3830,7 +3862,18 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
       if (purchased === 'true') return true;
       // Check admin-granted access list
       const appAccessList = JSON.parse(localStorage.getItem('maestroac_app_access_list') || '[]');
-      return appAccessList.includes(currentUser.email);
+      if (appAccessList.includes(currentUser.email)) return true;
+      // Check Stripe membership (bronze/silver/gold OR $20/mes app)
+      if (currentMembership && currentMembership.activa) return true;
+      // Check cached membership for offline
+      const cached = localStorage.getItem('maestroac_membership_cache_' + currentUser.email);
+      if (cached) {
+        try {
+          const m = JSON.parse(cached);
+          if (m && m.activa) return true;
+        } catch(e) {}
+      }
+      return false;
     }
 
     // Check if free trial (30 days) is still valid
@@ -7732,6 +7775,12 @@ window.toggleFormula = function(id) {
       var membershipDate = localStorage.getItem('maestroac_membership_date_' + userEmail) || '';
       var hasAppPurchase = localStorage.getItem('maestroac_app_purchased_' + userEmail) === 'true';
 
+      // Also check Stripe membership from Supabase
+      if (!membershipType && currentMembership && currentMembership.activa) {
+        membershipType = currentMembership.tipo; // bronze, silver, gold
+        membershipDate = currentMembership.fecha_inicio || '';
+      }
+
       if (!membershipType && !hasAppPurchase) {
         alert('⚠️ Para solicitar un examen de certificación, debes estar inscrito en una membresía activa.\n\nMembresias disponibles:\n• Básica ($119/mes) — Examen disponible después de 1 año\n• Profesional ($299/mes) — Examen disponible después de 6 meses\n• Premium ($699/mes) — Examen disponible después de 6 meses\n\nVe a la sección de membresías para inscribirte.');
         return;
@@ -9666,8 +9715,7 @@ window.toggleFormula = function(id) {
           .select('*')
           .eq('email', email)
           .eq('activa', true)
-          .in('tipo', ['bronze', 'silver', 'gold'])
-          .order('fecha_inicio', { ascending: false })
+          .order('amount', { ascending: false })
           .limit(1);
         
         if (error || !data || data.length === 0) {
@@ -14002,8 +14050,8 @@ function saveAIQuestion(){
   }
 }
 function isAppPurchased(){
-  if(!window.currentUser) return false;
-  return localStorage.getItem('maestroac_app_purchased_' + window.currentUser.email) === 'true';
+  // AI flotante: TODOS tienen límite de 5 preguntas/semana, nadie tiene ilimitado
+  return false;
 }
 function showAIPaywall(){
   var modal = document.createElement('div');

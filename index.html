@@ -2072,6 +2072,56 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             </div>
           </div>
         </div>
+
+        <!-- ========== STUDENT SUCCESS SECTION ========== -->
+        <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🎫 Student Success - Cobros Fallidos</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button onclick="loadStudentSuccessTickets('abierto')" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔴 Abiertos</button>
+              <button onclick="loadStudentSuccessTickets('en_proceso')" style="background:#f39c12;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🟡 En Proceso</button>
+              <button onclick="loadStudentSuccessTickets('resuelto')" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🟢 Resueltos</button>
+              <button onclick="loadStudentSuccessTickets()" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📋 Todos</button>
+            </div>
+          </div>
+
+          <!-- Stats Cards -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px;">
+            <div style="background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:12px;padding:12px;text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssOpenCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Abiertos</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:12px;padding:12px;text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssProcessCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">En Proceso</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);border-radius:12px;padding:12px;text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssResolvedCount">0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Resueltos</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#9b59b6,#8e44ad);border-radius:12px;padding:12px;text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:white;" id="ssTotalAmount">$0</div>
+              <div style="font-size:11px;color:rgba(255,255,255,0.8);">En Riesgo</div>
+            </div>
+          </div>
+
+          <!-- Tickets List -->
+          <div id="ssTicketsList" style="max-height:400px;overflow-y:auto;">
+            <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando tickets...</div>
+          </div>
+
+          <!-- Ticket Detail Modal -->
+          <div id="ssTicketModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;">
+            <div style="background:#1a1a2e;border-radius:15px;padding:25px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;border:2px solid #00d4ff;margin:auto;margin-top:10vh;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <h3 style="color:#00d4ff;margin:0;">📋 Detalle del Ticket</h3>
+                <button onclick="document.getElementById('ssTicketModal').style.display='none'" style="background:none;border:none;color:white;font-size:24px;cursor:pointer;">✕</button>
+              </div>
+              <div id="ssTicketDetail"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -10390,7 +10440,151 @@ window.toggleFormula = function(id) {
       renderLevelPerformanceChart();
       loadAdminExamRequests();
       loadAdminStudentActivity();
+      loadStudentSuccessTickets();
     }
+
+    // ========== STUDENT SUCCESS FUNCTIONS ==========
+    async function loadStudentSuccessTickets(filterEstado) {
+      var container = document.getElementById('ssTicketsList');
+      if (!container || !supabaseClient) return;
+      
+      try {
+        // Load all tickets for stats
+        var { data: allTickets } = await supabaseClient
+          .from('student_success_tickets')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (!allTickets) allTickets = [];
+        
+        // Update stats
+        var open = allTickets.filter(function(t) { return t.estado === 'abierto'; });
+        var process = allTickets.filter(function(t) { return t.estado === 'en_proceso'; });
+        var resolved = allTickets.filter(function(t) { return t.estado === 'resuelto'; });
+        
+        document.getElementById('ssOpenCount').textContent = open.length;
+        document.getElementById('ssProcessCount').textContent = process.length;
+        document.getElementById('ssResolvedCount').textContent = resolved.length;
+        
+        // Calculate total at risk from descriptions
+        var totalRisk = 0;
+        open.concat(process).forEach(function(t) {
+          var match = (t.descripcion || '').match(/\$(\d+\.?\d*)/);
+          if (match) totalRisk += parseFloat(match[1]);
+        });
+        document.getElementById('ssTotalAmount').textContent = '$' + totalRisk.toFixed(0);
+        
+        // Filter tickets
+        var tickets = filterEstado ? allTickets.filter(function(t) { return t.estado === filterEstado; }) : allTickets;
+        
+        if (tickets.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;">' +
+            '<div style="font-size:40px;margin-bottom:10px;">🎉</div>' +
+            '<p>' + (filterEstado ? 'No hay tickets con estado "' + filterEstado + '"' : 'No hay tickets de Student Success') + '</p></div>';
+          return;
+        }
+        
+        container.innerHTML = tickets.map(function(t) {
+          var estadoColor = t.estado === 'abierto' ? '#e74c3c' : t.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
+          var estadoIcon = t.estado === 'abierto' ? '🔴' : t.estado === 'en_proceso' ? '🟡' : '🟢';
+          var emailIcons = (t.email_enviado_estudiante ? '📧✅' : '📧❌') + ' ' + (t.email_enviado_admin ? '👨‍💼✅' : '👨‍💼❌');
+          var fecha = new Date(t.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+          var diasRestantes = t.fecha_limite ? Math.max(0, Math.ceil((new Date(t.fecha_limite) - new Date()) / 86400000)) : '?';
+          var diasColor = diasRestantes <= 1 ? '#e74c3c' : diasRestantes <= 3 ? '#f39c12' : '#27ae60';
+          
+          return '<div style="background:rgba(255,255,255,0.05);border:1px solid ' + estadoColor + '33;border-left:4px solid ' + estadoColor + ';border-radius:10px;padding:12px;margin-bottom:8px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+              '<div>' +
+                '<strong style="color:#e2e8f0;font-size:14px;">👤 ' + (t.student_name || 'Sin nombre') + '</strong>' +
+                '<span style="color:#94a3b8;font-size:12px;margin-left:8px;">' + (t.student_email || '') + '</span>' +
+              '</div>' +
+              '<span style="background:' + estadoColor + ';color:white;padding:3px 10px;border-radius:12px;font-size:11px;">' + estadoIcon + ' ' + (t.estado || '').replace('_', ' ') + '</span>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+              '<div style="color:#94a3b8;font-size:12px;">' +
+                '📅 ' + fecha + ' | ' +
+                '<span style="color:' + diasColor + ';font-weight:bold;">⏳ ' + diasRestantes + ' días</span> | ' +
+                emailIcons +
+              '</div>' +
+              '<div style="display:flex;gap:6px;">' +
+                (t.estado === 'abierto' ? '<button onclick="updateTicketStatus(\'' + t.id + '\',\'en_proceso\')" style="background:#f39c12;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">En Proceso</button>' : '') +
+                (t.estado !== 'resuelto' ? '<button onclick="updateTicketStatus(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">✅ Resolver</button>' : '') +
+                '<button onclick="showTicketDetail(\'' + t.id + '\')" style="background:#3498db;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;">👁 Ver</button>' +
+              '</div>' +
+            '</div>' +
+            '<div style="color:#64748b;font-size:11px;margin-top:4px;">' + (t.descripcion || '') + '</div>' +
+          '</div>';
+        }).join('');
+        
+      } catch(e) {
+        console.error('[StudentSuccess] Error loading tickets:', e);
+        container.innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;">Error cargando tickets: ' + e.message + '</div>';
+      }
+    }
+    
+    async function updateTicketStatus(ticketId, newStatus) {
+      if (!supabaseClient) return;
+      try {
+        var updateData = { estado: newStatus, updated_at: new Date().toISOString() };
+        if (newStatus === 'resuelto') {
+          updateData.resuelto_por = 'admin';
+          updateData.resuelto_at = new Date().toISOString();
+          updateData.dias_gracia_restantes = 0;
+        }
+        await supabaseClient.from('student_success_tickets').update(updateData).eq('id', ticketId);
+        loadStudentSuccessTickets();
+      } catch(e) {
+        console.error('[StudentSuccess] Error updating ticket:', e);
+        alert('Error actualizando ticket: ' + e.message);
+      }
+    }
+    
+    async function showTicketDetail(ticketId) {
+      if (!supabaseClient) return;
+      try {
+        var { data: ticket } = await supabaseClient.from('student_success_tickets').select('*').eq('id', ticketId).single();
+        if (!ticket) return;
+        
+        var estadoColor = ticket.estado === 'abierto' ? '#e74c3c' : ticket.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
+        var diasRestantes = ticket.fecha_limite ? Math.max(0, Math.ceil((new Date(ticket.fecha_limite) - new Date()) / 86400000)) : '?';
+        var fechaCreacion = new Date(ticket.created_at).toLocaleDateString('es-MX', {weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+        var fechaLimite = ticket.fecha_limite ? new Date(ticket.fecha_limite).toLocaleDateString('es-MX', {weekday:'long',year:'numeric',month:'long',day:'numeric'}) : 'N/A';
+        
+        document.getElementById('ssTicketDetail').innerHTML = 
+          '<div style="space-y:12px;">' +
+            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
+              '<h4 style="color:#f39c12;margin:0 0 10px;">👤 Información del Estudiante</h4>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Nombre:</strong> ' + (ticket.student_name || 'N/A') + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Email:</strong> ' + (ticket.student_email || 'N/A') + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Stripe Customer:</strong> ' + (ticket.stripe_customer_id || 'N/A') + '</p>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
+              '<h4 style="color:#e74c3c;margin:0 0 10px;">⚠️ Detalles del Ticket</h4>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Estado:</strong> <span style="color:' + estadoColor + ';font-weight:bold;">' + ticket.estado + '</span></p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Tipo:</strong> ' + (ticket.tipo || 'N/A') + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Descripción:</strong> ' + (ticket.descripcion || 'N/A') + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Días restantes:</strong> <span style="color:' + (diasRestantes <= 1 ? '#e74c3c' : '#f39c12') + ';font-weight:bold;">' + diasRestantes + ' días</span></p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Fecha límite:</strong> ' + fechaLimite + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;"><strong>Creado:</strong> ' + fechaCreacion + '</p>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-bottom:12px;">' +
+              '<h4 style="color:#3498db;margin:0 0 10px;">📧 Notificaciones</h4>' +
+              '<p style="color:#e2e8f0;margin:4px 0;">Email estudiante: ' + (ticket.email_enviado_estudiante ? '✅ Enviado' : '❌ No enviado') + '</p>' +
+              '<p style="color:#e2e8f0;margin:4px 0;">Email admin: ' + (ticket.email_enviado_admin ? '✅ Enviado' : '❌ No enviado') + '</p>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;margin-top:15px;">' +
+              (ticket.estado === 'abierto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'en_proceso\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#f39c12;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">🟡 Marcar En Proceso</button>' : '') +
+              (ticket.estado !== 'resuelto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'resuelto\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#27ae60;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">✅ Marcar Resuelto</button>' : '') +
+              (ticket.estado === 'resuelto' ? '<button onclick="updateTicketStatus(\'' + ticket.id + '\',\'abierto\');document.getElementById(\'ssTicketModal\').style.display=\'none\';" style="flex:1;background:#e74c3c;color:white;border:none;padding:10px;border-radius:8px;font-size:13px;cursor:pointer;">🔄 Reabrir</button>' : '') +
+            '</div>' +
+          '</div>';
+        
+        document.getElementById('ssTicketModal').style.display = 'flex';
+      } catch(e) {
+        console.error('[StudentSuccess] Error loading ticket detail:', e);
+      }
+    }
+    // ========== END STUDENT SUCCESS FUNCTIONS ==========
 
     // Log exam request to Supabase
     async function logExamRequest(examName, examPrice, nombre, email, techNumber, studentId, results) {

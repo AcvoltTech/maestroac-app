@@ -13729,7 +13729,8 @@ if(cb)cb();
 #acvoltAI .ai-panel{background:linear-gradient(135deg,#0d1117,#161b22);border:1.5px solid rgba(243,156,18,0.3);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;max-height:440px}
 #acvoltAI .ai-head{background:linear-gradient(135deg,#f39c12,#e67e22);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 #acvoltAI .ai-head-left{display:flex;align-items:center;gap:10px;color:white}
-#acvoltAI .ai-head-left .ai-avatar-sm{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px}
+#acvoltAI .ai-head-left .ai-avatar-sm{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;padding:0}
+#acvoltAI .ai-head-left .ai-avatar-sm img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 #acvoltAI .ai-head-left div:last-child{line-height:1.3}
 #acvoltAI .ai-title{font-size:13px;font-weight:bold}
 #acvoltAI .ai-subtitle{font-size:10px;opacity:0.85}
@@ -13737,7 +13738,8 @@ if(cb)cb();
 #acvoltAI .ai-close:hover{color:white}
 .ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;max-height:280px;min-height:60px}
 .ai-m{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;max-width:88%;animation:aiIn .3s ease;word-wrap:break-word}
-.ai-m.b{background:rgba(243,156,18,0.08);color:#e2e8f0;border:1px solid rgba(243,156,18,0.15);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-m.b{background:rgba(243,156,18,0.08);color:#e2e8f0;border:1px solid rgba(243,156,18,0.15);align-self:flex-start;border-bottom-left-radius:4px;position:relative;margin-left:38px}
+.ai-m.b::before{content:'';position:absolute;left:-38px;top:4px;width:30px;height:30px;border-radius:50%;background:url(MARIO_PHOTO_URL) center/cover no-repeat;border:2px solid rgba(243,156,18,0.4)}
 .ai-m.u{background:linear-gradient(135deg,#f39c12,#e67e22);color:white;align-self:flex-end;border-bottom-right-radius:4px}
 .ai-m strong{color:#f39c12}
 .ai-qk{display:flex;flex-wrap:wrap;gap:5px;padding:4px 12px 8px}
@@ -13751,19 +13753,20 @@ if(cb)cb();
 .ai-dots span{width:5px;height:5px;border-radius:50%;background:#f39c12;animation:mTy 1.4s ease-in-out infinite}
 .ai-dots span:nth-child(2){animation-delay:.2s}
 .ai-dots span:nth-child(3){animation-delay:.4s}
-#acvoltBtn{position:fixed;bottom:20px;right:15px;z-index:961;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:2.5px solid rgba(243,156,18,0.6);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(243,156,18,0.4);transition:all .3s}
+#acvoltBtn{position:fixed;bottom:20px;right:15px;z-index:961;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.7);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(243,156,18,0.5);transition:all .3s;overflow:hidden;padding:0}
+#acvoltBtn img.mario-fab{width:100%;height:100%;object-fit:cover;border-radius:50%}
 #acvoltBtn:hover{transform:scale(1.1)}
 #acvoltBtn.speaking{animation:aiPulse 1.5s ease-in-out infinite}
 @keyframes aiPulse{0%,100%{box-shadow:0 4px 20px rgba(243,156,18,0.4)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
 .ai-bdg{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:#e74c3c;border-radius:10px;color:white;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:bold;border:2px solid #0d1117;padding:0 4px}
-@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:75px}#acvoltBtn{bottom:15px;right:10px;width:48px;height:48px}}
+@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:75px}#acvoltBtn{bottom:15px;right:10px;width:54px;height:54px}}
 </style>
 
-<div id="acvoltBtn" onclick="window._acAI.toggle()">🤖<div class="ai-bdg" id="aiBdg">1</div></div>
+<div id="acvoltBtn" onclick="window._acAI.toggle()"><img class="mario-fab" src="MARIO_PHOTO_URL" alt="Mario"><div class="ai-bdg" id="aiBdg">1</div></div>
 <div id="acvoltAI">
 <div class="ai-panel">
 <div class="ai-head">
-<div class="ai-head-left"><div class="ai-avatar-sm">🤖</div><div><div class="ai-title">Asistente ACVOLT</div><div class="ai-subtitle">Soporte · Guía · Student Success</div></div></div>
+<div class="ai-head-left"><div class="ai-avatar-sm"><img src="MARIO_PHOTO_URL" alt="Mario"></div><div><div class="ai-title">Asistente ACVOLT</div><div class="ai-subtitle">Soporte · Guía · Student Success</div></div></div>
 <button class="ai-close" onclick="window._acAI.toggle()">✕</button>
 </div>
 <div class="ai-msgs" id="aiMs"></div>
@@ -13832,7 +13835,15 @@ attendanceScreen:{g:'\ud83d\udccb Aqu\u00ed registras tu asistencia.\n\n1. Selec
 levelsScreen:{g:'\ud83d\udcda Tus 5 niveles de entrenamiento.\n\nEmpieza por **Principiante** (gratis). Completa todas las preguntas al 100% para desbloquear el siguiente.\n\n\u00bfEn qu\u00e9 nivel est\u00e1s?',q:['\u00bfC\u00f3mo desbloqueo?','\u00bfCu\u00e1ntas preguntas?','Necesito c\u00f3digo','Ver membres\u00edas'],c:'En NIVELES/EX\u00c1MENES.'},
 miPerfilScreen:{g:'\ud83d\udc64 Tu perfil de t\u00e9cnico.\n\nAseg\u00farate de tener datos completos: nombre, tel\u00e9fono, ciudad y estado. Es necesario para solicitar c\u00f3digos y certificados.',q:['Editar datos','Solicitar c\u00f3digo','\u00bfPara qu\u00e9 sirve el perfil?'],c:'En PERFIL.'},
 membershipZoneScreen:{g:'\ud83c\udf93 Planes disponibles:\n\n\u2022 **$20/mes** \u2014 5 niveles, 3,500+ preguntas\n\u2022 **$200/a\u00f1o** \u2014 Mejor valor, ahorra $40\n\u2022 **AI Maestro Mario $49/mes** \u2014 Videos personalizados, tutor HVAC con voz, y responde TODAS tus dudas del campo en **maestromario.com**\n\n\u00bfCu\u00e1l te interesa?',q:['Plan mensual $20','Plan anual $200','AI Maestro Mario $49','\u00bfQu\u00e9 incluye cada plan?'],c:'En MEMBRES\u00cdAS. Promueve plan anual como mejor valor y AI Maestro Mario para dudas t\u00e9cnicas.'},
-certificatesScreen:{g:'\ud83c\udfc6 Tus certificados aparecen aqu\u00ed cuando completes un nivel al 100%.\n\n\u00bfYa completaste tu primer nivel?',q:['No veo certificados','\u00bfC\u00f3mo los obtengo?','Ir a niveles'],c:'En CERTIFICADOS.'}
+certificatesScreen:{g:'\ud83c\udfc6 Tus certificados aparecen aqu\u00ed cuando completes un nivel al 100%.\n\n\u00bfYa completaste tu primer nivel?',q:['No veo certificados','\u00bfC\u00f3mo los obtengo?','Ir a niveles'],c:'En CERTIFICADOS.'},
+quizScreen:{g:'\ud83e\udde0 \u00a1A demostrar lo que sabes!\n\nLee cada pregunta con calma. Tienes tiempo, no hay prisa. Selecciona tu respuesta y avanza.\n\n\u00a1T\u00fa puedes, t\u00e9cnico!',q:['\u00bfCu\u00e1ntas preguntas son?','\u00bfPuedo repetir el examen?','\u00bfQu\u00e9 pasa si fallo?'],c:'Haciendo EXAMEN de nivel. Motivarlo y no dar respuestas.'},
+quizOnlyScreen:{g:'\ud83c\udfaf Modo Prueba R\u00e1pida \u2014 practica sin presi\u00f3n.\n\nEste modo es para que practiques. Las respuestas no cuentan para tu progreso de nivel, as\u00ed que experimenta.',q:['\u00bfCuenta para mi nivel?','\u00bfCu\u00e1ntas preguntas tiene?','Volver a niveles'],c:'En PRUEBA R\u00c1PIDA. No cuenta para desbloquear niveles.'},
+resultsScreen:{g:'\ud83d\udcca \u00a1Resultados listos!\n\nRevisa qu\u00e9 temas dominaste y cu\u00e1les necesitas repasar. Si no pasaste, no te desanimes \u2014 cada intento te hace mejor t\u00e9cnico.\n\n\u00bfQuieres estudiar los temas que fallaste?',q:['Repetir examen','Ver secciones de estudio','Ir a video lecciones','\u00bfC\u00f3mo mejoro mi puntaje?'],c:'Viendo RESULTADOS. Motivarlo a seguir estudiando.'},
+studySectionsScreen:{g:'\ud83d\udcda Secciones de Estudio \u2014 tu biblioteca de conocimiento.\n\nAqu\u00ed encuentras material organizado por temas. Selecciona una categor\u00eda para empezar a estudiar.\n\n\u00bfEn qu\u00e9 tema te quieres enfocar hoy?',q:['\u00bfPor d\u00f3nde empiezo?','\u00bfQu\u00e9 tema es m\u00e1s importante?','Ir a ex\u00e1menes'],c:'En SECCIONES DE ESTUDIO. Guiarlo a elegir un tema.'},
+studyCategoryDetailScreen:{g:'\ud83d\udcd6 \u00a1Excelente elecci\u00f3n!\n\nLee el material con calma. Toma notas mentales de los puntos clave. Cuando termines, practica con los ex\u00e1menes.\n\n\u00bfTienes alguna duda sobre el tema?',q:['\u00bfHay video de este tema?','Ir a examen','Volver a categor\u00edas'],c:'Leyendo MATERIAL DE ESTUDIO de una categor\u00eda espec\u00edfica.'},
+videoLessonsScreen:{g:'\ud83c\udfac Video Lecciones \u2014 aprende viendo.\n\nSelecciona un video para empezar. Los videos est\u00e1n organizados por nivel y tema.\n\n\u00bfQu\u00e9 tema quieres ver hoy?',q:['\u00bfQu\u00e9 video me recomiendas?','\u00bfCu\u00e1ntos videos hay?','Ir a ex\u00e1menes'],c:'En VIDEO LECCIONES. Ayudarlo a elegir un video.'},
+videoPlayerScreen:{g:'\u25b6\ufe0f \u00a1Dale play y aprende!\n\nMira el video completo. Si algo no queda claro, puedes repetirlo las veces que necesites.\n\n\ud83d\udca1 Recuerda: para dudas t\u00e9cnicas detalladas de HVAC, tu mejor recurso es **AI Maestro Mario** en maestromario.com \u2014 Mario te explica con videos personalizados.',q:['\u00bfQu\u00e9 es AI Maestro Mario?','Siguiente video','Volver a lecciones'],c:'Viendo un VIDEO. Si pregunta algo t\u00e9cnico HVAC, redirigir a AI Maestro Mario $49/mes.'},
+certCourseScreen:{g:'\ud83c\udf93 Curso de Certificaci\u00f3n \u2014 prep\u00e1rate para el examen oficial.\n\nEste curso te prepara para obtener tu certificaci\u00f3n profesional. Sigue las lecciones en orden para mejores resultados.\n\n\u00a1Vamos con todo!',q:['\u00bfQu\u00e9 certificaci\u00f3n obtengo?','\u00bfCu\u00e1nto dura el curso?','Ver mi progreso'],c:'En CURSO DE CERTIFICACI\u00d3N. Motivarlo a completar el curso.'}
 };
 
 // === CORE ===

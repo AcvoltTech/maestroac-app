@@ -1465,7 +1465,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
 
           <!-- Link de referido -->
-          <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
+          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
             <p style="color:#f39c12;font-size:12px;font-weight:bold;margin-bottom:8px;">Tu Link de Embajador:</p>
             <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px;margin-bottom:10px;">
               <code id="refLinkCode" style="color:#2ecc71;font-size:13px;word-break:break-all;">Cargando...</code>
@@ -2543,12 +2543,12 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               <div style="font-size:10px;color:#64748b;">Membresías activas × precio</div>
             </div>
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#3498db;font-weight:bold;">Estudiantes Pagando</div>
+              <div style="font-size:11px;color:#2563eb;font-weight:bold;">Estudiantes Pagando</div>
               <div id="finPaying" style="font-size:28px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
               <div id="finPayingPct" style="font-size:10px;color:#64748b;">0% del total</div>
             </div>
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Churn Rate (Mensual)</div>
+              <div style="font-size:11px;color:#dc2626;font-weight:bold;">Churn Rate (Mensual)</div>
               <div id="finChurn" style="font-size:28px;font-weight:bold;color:#e74c3c;margin:5px 0;">0%</div>
               <div style="font-size:10px;color:#64748b;">Cancelaciones / Total</div>
             </div>
@@ -2565,17 +2565,17 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               <div style="font-size:10px;color:#64748b;">Histórico total</div>
             </div>
             <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#2ecc71;font-weight:bold;">Membresías Activas</div>
+              <div style="font-size:11px;color:#16a34a;font-weight:bold;">Membresías Activas</div>
               <div id="finActive" style="font-size:24px;font-weight:bold;color:#2ecc71;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Status: active</div>
             </div>
             <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Cancelaciones (30 días)</div>
+              <div style="font-size:11px;color:#dc2626;font-weight:bold;">Cancelaciones (30 días)</div>
               <div id="finCanceled" style="font-size:24px;font-weight:bold;color:#e74c3c;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Membresías canceladas</div>
             </div>
             <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#3498db;font-weight:bold;">Gratis / Trial</div>
+              <div style="font-size:11px;color:#2563eb;font-weight:bold;">Gratis / Trial</div>
               <div id="finFree" style="font-size:24px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Sin membresía pagada</div>
             </div>
@@ -3950,29 +3950,29 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
         <div style="margin-bottom:8px;border:1px solid #333;border-radius:12px;overflow:hidden;">
           <div onclick="toggleFormula('acFormulas')" style="padding:14px 16px;background:rgba(52,152,219,0.1);cursor:pointer;display:flex;align-items:center;gap:10px;">
-            <span style="font-size:1.5em;">❄️</span><span style="color:#3498db;font-weight:bold;flex:1;">Aire Acondicionado</span><span id="acFormulas_arrow" style="color:#3498db;">▶</span>
+            <span style="font-size:1.5em;">❄️</span><span style="color:#2563eb;font-weight:bold;flex:1;">Aire Acondicionado</span><span id="acFormulas_arrow" style="color:#3498db;">▶</span>
           </div>
           <div id="acFormulas" style="display:none;padding:16px;background:rgba(0,0,0,0.3);color:#ddd;font-size:0.85em;line-height:1.8;">
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">Tonelaje / BTU</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">1 Ton = 12,000 BTU/h &nbsp;|&nbsp; Tons = BTU / 12,000</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 60,000 BTU = <b>5 Toneladas</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">Cálculo Rápido</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Tons ≈ Sq.Ft. / 500 &nbsp;(regla general)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 2,000 sq.ft: <b>4 Toneladas</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">SEER / EER / COP</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">EER = SEER × 0.875 &nbsp;|&nbsp; COP = EER / 3.412</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> SEER 16: EER=<b>14</b>, COP=<b>4.1</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">Superheat</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SH = T° Línea Succión - T° Sat. Succión &nbsp;(5-15°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Línea 55°F, Sat R-410A@118psi=45°F → SH=<b>10°F ✅</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">Subcooling</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SC = T° Sat. Desc. - T° Línea Líquido &nbsp;(8-14°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Sat R-410A@418psi=115°F, Línea=105°F → SC=<b>10°F ✅</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">Delta T</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">ΔT = T° Return - T° Supply &nbsp;(Normal: 15-22°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Return 75°F, Supply 55°F → ΔT=<b>20°F ✅</b></div></div>
-            <div style=""><div style="color:#3498db;font-weight:bold;margin-bottom:4px;">SHR</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SHR = Carga Sensible / Carga Total &nbsp;(0.70-0.80)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Sensible 30k, Total 40k → SHR=<b>0.75</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">Tonelaje / BTU</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">1 Ton = 12,000 BTU/h &nbsp;|&nbsp; Tons = BTU / 12,000</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 60,000 BTU = <b>5 Toneladas</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">Cálculo Rápido</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Tons ≈ Sq.Ft. / 500 &nbsp;(regla general)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 2,000 sq.ft: <b>4 Toneladas</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">SEER / EER / COP</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">EER = SEER × 0.875 &nbsp;|&nbsp; COP = EER / 3.412</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> SEER 16: EER=<b>14</b>, COP=<b>4.1</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">Superheat</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SH = T° Línea Succión - T° Sat. Succión &nbsp;(5-15°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Línea 55°F, Sat R-410A@118psi=45°F → SH=<b>10°F ✅</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">Subcooling</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SC = T° Sat. Desc. - T° Línea Líquido &nbsp;(8-14°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Sat R-410A@418psi=115°F, Línea=105°F → SC=<b>10°F ✅</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">Delta T</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">ΔT = T° Return - T° Supply &nbsp;(Normal: 15-22°F)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Return 75°F, Supply 55°F → ΔT=<b>20°F ✅</b></div></div>
+            <div style=""><div style="color:#2563eb;font-weight:bold;margin-bottom:4px;">SHR</div><div style="background:rgba(52,152,219,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">SHR = Carga Sensible / Carga Total &nbsp;(0.70-0.80)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Sensible 30k, Total 40k → SHR=<b>0.75</b></div></div>
           </div>
         </div>
         <div style="margin-bottom:8px;border:1px solid #333;border-radius:12px;overflow:hidden;">
           <div onclick="toggleFormula('refFormulas')" style="padding:14px 16px;background:rgba(46,204,113,0.1);cursor:pointer;display:flex;align-items:center;gap:10px;">
-            <span style="font-size:1.5em;">🧊</span><span style="color:#2ecc71;font-weight:bold;flex:1;">Refrigeración</span><span id="refFormulas_arrow" style="color:#2ecc71;">▶</span>
+            <span style="font-size:1.5em;">🧊</span><span style="color:#16a34a;font-weight:bold;flex:1;">Refrigeración</span><span id="refFormulas_arrow" style="color:#2ecc71;">▶</span>
           </div>
           <div id="refFormulas" style="display:none;padding:16px;background:rgba(0,0,0,0.3);color:#ddd;font-size:0.85em;line-height:1.8;">
-            <div style="margin-bottom:15px;"><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">Net Refrigeration Effect</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">NRE = h1 - h4 &nbsp;(entalpía salida-entrada evap)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> h1=110, h4=42 → NRE=<b>68 BTU/lb</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">Carga Refrigerante Extra</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Extra = (Long. lineset - 15ft) × oz/ft</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 50ft, R-410A 3/8" (0.6oz/ft): <b>21oz extra</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">Compression Ratio</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">CR = P desc.(abs) / P succ.(abs) &nbsp;(2:1 a 4:1)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> (260+14.7)/(70+14.7) = <b>3.2:1 ✅</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">Tabla P/T</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">R-410A: 118psi=45°F | R-22: 69psi=40°F | R-404A: 62psi=20°F</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Siempre usar tabla P/T del refrigerante específico</div></div>
-            <div style="margin-bottom:15px;"><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">Heat of Rejection</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">HR ≈ Capacidad × 1.25</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 3 Ton: 36,000×1.25 = <b>45,000 BTU/h</b></div></div>
-            <div style=""><div style="color:#2ecc71;font-weight:bold;margin-bottom:4px;">TD Evap/Cond</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">TD Evap=T°Box-T°Sat.Succ | TD Cond=T°Sat.Desc-T°Amb</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Walk-in 35-25=<b>10°F</b> | Cond 120-95=<b>25°F</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">Net Refrigeration Effect</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">NRE = h1 - h4 &nbsp;(entalpía salida-entrada evap)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> h1=110, h4=42 → NRE=<b>68 BTU/lb</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">Carga Refrigerante Extra</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Extra = (Long. lineset - 15ft) × oz/ft</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 50ft, R-410A 3/8" (0.6oz/ft): <b>21oz extra</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">Compression Ratio</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">CR = P desc.(abs) / P succ.(abs) &nbsp;(2:1 a 4:1)</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> (260+14.7)/(70+14.7) = <b>3.2:1 ✅</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">Tabla P/T</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">R-410A: 118psi=45°F | R-22: 69psi=40°F | R-404A: 62psi=20°F</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Siempre usar tabla P/T del refrigerante específico</div></div>
+            <div style="margin-bottom:15px;"><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">Heat of Rejection</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">HR ≈ Capacidad × 1.25</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 3 Ton: 36,000×1.25 = <b>45,000 BTU/h</b></div></div>
+            <div style=""><div style="color:#16a34a;font-weight:bold;margin-bottom:4px;">TD Evap/Cond</div><div style="background:rgba(46,204,113,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">TD Evap=T°Box-T°Sat.Succ | TD Cond=T°Sat.Desc-T°Amb</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Walk-in 35-25=<b>10°F</b> | Cond 120-95=<b>25°F</b></div></div>
           </div>
         </div>
         <div style="margin-bottom:8px;border:1px solid #333;border-radius:12px;overflow:hidden;">
@@ -3990,14 +3990,14 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
         <div style="margin-bottom:8px;border:1px solid #333;border-radius:12px;overflow:hidden;">
           <div onclick="toggleFormula('heatFormulas')" style="padding:14px 16px;background:rgba(231,76,60,0.1);cursor:pointer;display:flex;align-items:center;gap:10px;">
-            <span style="font-size:1.5em;">🔥</span><span style="color:#e74c3c;font-weight:bold;flex:1;">Cálculo Térmico</span><span id="heatFormulas_arrow" style="color:#e74c3c;">▶</span>
+            <span style="font-size:1.5em;">🔥</span><span style="color:#dc2626;font-weight:bold;flex:1;">Cálculo Térmico</span><span id="heatFormulas_arrow" style="color:#e74c3c;">▶</span>
           </div>
           <div id="heatFormulas" style="display:none;padding:16px;background:rgba(0,0,0,0.3);color:#ddd;font-size:0.85em;line-height:1.8;">
-            <div style="margin-bottom:15px;"><div style="color:#e74c3c;font-weight:bold;margin-bottom:4px;">Heat Transfer</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Q = U × A × ΔT</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> U=0.08, A=200sqft, ΔT=30 → <b>480 BTU/h</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#e74c3c;font-weight:bold;margin-bottom:4px;">Infiltración</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Qs = 1.08 × CFM × ΔT &nbsp;|&nbsp; Ql = 0.68 × CFM × ΔW</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 100CFM, ΔT=20: <b>2,160 BTU/h</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#e74c3c;font-weight:bold;margin-bottom:4px;">Carga Solar</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Q = Área × SHGC × Factor Solar</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Ventana sur 30sqft: <b>1,800 BTU/h</b></div></div>
-            <div style="margin-bottom:15px;"><div style="color:#e74c3c;font-weight:bold;margin-bottom:4px;">Personas/Equipos</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Persona: ~600 BTU/h | Equipos: W × 3.412</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 10 personas + 5kW: <b>23,060 BTU/h</b></div></div>
-            <div style=""><div style="color:#e74c3c;font-weight:bold;margin-bottom:4px;">Calefacción</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">BTU = Sqft × Factor &nbsp;|&nbsp; Zona4:35-40 | Zona5:45-50</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 2,000sqft×38 = <b>76,000 → Furnace 80,000</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#dc2626;font-weight:bold;margin-bottom:4px;">Heat Transfer</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Q = U × A × ΔT</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> U=0.08, A=200sqft, ΔT=30 → <b>480 BTU/h</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#dc2626;font-weight:bold;margin-bottom:4px;">Infiltración</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Qs = 1.08 × CFM × ΔT &nbsp;|&nbsp; Ql = 0.68 × CFM × ΔW</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 100CFM, ΔT=20: <b>2,160 BTU/h</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#dc2626;font-weight:bold;margin-bottom:4px;">Carga Solar</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Q = Área × SHGC × Factor Solar</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> Ventana sur 30sqft: <b>1,800 BTU/h</b></div></div>
+            <div style="margin-bottom:15px;"><div style="color:#dc2626;font-weight:bold;margin-bottom:4px;">Personas/Equipos</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">Persona: ~600 BTU/h | Equipos: W × 3.412</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 10 personas + 5kW: <b>23,060 BTU/h</b></div></div>
+            <div style=""><div style="color:#dc2626;font-weight:bold;margin-bottom:4px;">Calefacción</div><div style="background:rgba(231,76,60,0.08);padding:10px;border-radius:8px;font-family:monospace;text-align:center;font-size:1.05em;margin-bottom:5px;">BTU = Sqft × Factor &nbsp;|&nbsp; Zona4:35-40 | Zona5:45-50</div><div style="color:#aaa;font-size:0.9em;">📌 <b>Ejemplo:</b> 2,000sqft×38 = <b>76,000 → Furnace 80,000</b></div></div>
           </div>
         </div>
         <div style="margin-bottom:8px;border:1px solid #333;border-radius:12px;overflow:hidden;">
@@ -10913,7 +10913,7 @@ if (screenId === 'adminDashboardScreen') {
             '<p style="color:#64748b;font-size:14px;margin-bottom:8px;">No hemos detectado actividad en los últimos 10 minutos.</p>' +
             '<p style="color:#e74c3c;font-size:14px;font-weight:bold;margin-bottom:20px;">Se hará check-out automático en ~' + remainMin + ' minutos si no hay actividad.</p>' +
             '<button onclick="lastActivityTime=Date.now();inactivityWarningShown=false;this.closest(\'div[style*=position]\').remove();" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;margin-bottom:10px;">✅ ¡Sí, sigo aquí!</button>' +
-            '<button onclick="this.closest(\'div[style*=position]\').remove();doCheckOut();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(231,76,60,0.15);color:#e74c3c;font-weight:bold;">🛑 Hacer Check-Out</button>' +
+            '<button onclick="this.closest(\'div[style*=position]\').remove();doCheckOut();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(231,76,60,0.15);color:#dc2626;font-weight:bold;">🛑 Hacer Check-Out</button>' +
             '</div>';
           document.body.appendChild(modal);
         }
@@ -11869,7 +11869,7 @@ if (screenId === 'adminDashboardScreen') {
           critical.forEach(function(s) {
             html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(231,76,60,0.08);border-radius:6px;margin:3px 0;">' +
               '<div><strong style="color:#e2e8f0;font-size:12px;">' + s.nombre + '</strong><br><span style="color:#64748b;font-size:10px;">' + (s.email || '') + '</span></div>' +
-              '<div style="text-align:right;"><span style="color:#e74c3c;font-weight:bold;font-size:14px;">' + s.days + ' días</span><br><span style="color:#64748b;font-size:9px;">' + s.lastActive.toLocaleDateString('es-MX') + '</span></div>' +
+              '<div style="text-align:right;"><span style="color:#dc2626;font-weight:bold;font-size:14px;">' + s.days + ' días</span><br><span style="color:#64748b;font-size:9px;">' + s.lastActive.toLocaleDateString('es-MX') + '</span></div>' +
             '</div>';
           });
         }
@@ -13494,7 +13494,7 @@ if (screenId === 'adminDashboardScreen') {
           html += '<div style="padding: 12px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center;">';
           html += '<div><strong>' + exam.titulo + '</strong>';
           if(exam.descripcion) html += '<br><span style="font-size:0.8em;color:#888;">' + exam.descripcion + '</span>';
-          if(exam.calificacion !== null && exam.estado === 'completado') html += '<br><span style="font-size:0.9em;color:#2ecc71;font-weight:bold;">Calificación: ' + exam.calificacion + '/100</span>';
+          if(exam.calificacion !== null && exam.estado === 'completado') html += '<br><span style="font-size:0.9em;color:#16a34a;font-weight:bold;">Calificación: ' + exam.calificacion + '/100</span>';
           html += '</div>';
           html += '<span style="padding:3px 10px;background:' + color + ';color:#fff;border-radius:12px;font-size:0.75em;font-weight:bold;">' + exam.estado.toUpperCase() + '</span>';
           html += '</div>';

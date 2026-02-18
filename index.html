@@ -4601,17 +4601,14 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     async function supabaseSaveCertificate(cert) {
       if (!supabaseClient || !isOnline || !supabaseUserId) return;
       try {
-        var userEmail = currentUser ? currentUser.email : '';
-        var userName = currentUser ? currentUser.nombre : '';
         await supabaseClient.from('certificates').upsert({
           user_id: supabaseUserId, 
-          user_email: userEmail,
-          user_name: userName,
           nivel: cert.level || cert.nivel, 
-          score: cert.score || cert.percentage,
-          certificate_code: cert.certificateNumber || null, 
-          qr_data: 'https://maestromario.com/verify?cert=' + (cert.certificateNumber || ''),
-          fecha_emision: cert.date || new Date().toISOString()
+          score: cert.score || 0,
+          total_questions: cert.totalQuestions || 0,
+          porcentaje: cert.percentage || cert.score || 0,
+          certificate_number: cert.certificateNumber || null, 
+          fecha_obtenido: cert.date || new Date().toISOString()
         }, { onConflict: 'user_id,nivel', ignoreDuplicates: false });
         console.log('[Cert] Saved to Supabase:', cert.level || cert.nivel);
       } catch (e) { console.error('Supabase save certificate error:', e); }
@@ -12972,7 +12969,7 @@ if (screenId === 'adminDashboardScreen') {
     async function loadAdminCertificates() {
       if (!supabaseClient) return;
       try {
-        var { data: certs } = await supabaseClient.from('certificates').select('*').order('fecha_emision', { ascending: false });
+        var { data: certs } = await supabaseClient.from('certificates').select('*').order('fecha_obtenido', { ascending: false });
         certs = certs || [];
         
         var totalCerts = certs.length;
@@ -13007,11 +13004,13 @@ if (screenId === 'adminDashboardScreen') {
         
         // Recent certificates
         var recentHtml = certs.slice(0, 20).map(function(c) {
-          var name = c.user_name || c.user_email || 'Desconocido';
+          // Find user name from allTechnicians
+          var userInfo = (allTechnicians || []).find(function(t) { return t.id === c.user_id; });
+          var name = userInfo ? (userInfo.nombre || userInfo.email) : 'Estudiante';
           var nivel = c.nivel ? c.nivel.charAt(0).toUpperCase() + c.nivel.slice(1) : '?';
-          var fecha = c.fecha_emision ? new Date(c.fecha_emision).toLocaleDateString('es-MX') : '—';
-          var score = c.score || '—';
-          var code = c.certificate_code || '—';
+          var fecha = c.fecha_obtenido ? new Date(c.fecha_obtenido).toLocaleDateString('es-MX') : '—';
+          var score = c.porcentaje || c.score || '—';
+          var code = c.certificate_number || '—';
           return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">' +
             '<div><span style="font-weight:600;color:#1e293b;">' + name + '</span><br><span style="font-size:10px;color:#94a3b8;">' + code + '</span></div>' +
             '<div style="text-align:right;"><span style="color:' + (levelColors[c.nivel]||'#64748b') + ';font-weight:600;font-size:12px;">' + nivel + '</span><br><span style="font-size:10px;color:#94a3b8;">' + fecha + ' · ' + score + '%</span></div>' +

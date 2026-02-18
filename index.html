@@ -2612,7 +2612,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div id="weeklyEmailPreview" style="display:none;background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-top:10px;border:1px solid rgba(52,152,219,0.3);">
           </div>
           <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;margin-top:8px;">
-            <p style="color:#94a3b8;font-size:11px;margin:0;">📌 El email incluye: niveles completados, score promedio, certificados obtenidos, próximo objetivo, y llamada a la acción para continuar estudiando. Se envía vía Supabase Edge Function o batch email.</p>
+            <p style="color:#475569;font-size:11px;margin:0;">📌 Cada estudiante recibe un email personalizado con sus niveles, score, certificados y próximo objetivo. Se envía via Resend desde noreply@maestromario.com</p>
           </div>
         </div>
 
@@ -11980,27 +11980,36 @@ if (screenId === 'adminDashboardScreen') {
     
     async function sendWeeklyEmails() {
       if (!supabaseClient) { alert('Sin conexión a Supabase'); return; }
-      if (!confirm('¿Enviar email de progreso semanal a todos los estudiantes activos?')) return;
+      if (!confirm('¿Enviar email de progreso semanal a todos los estudiantes activos?\n\nSe enviará via Resend a cada estudiante con su progreso personalizado.')) return;
       
       try {
-        var { data: users } = await supabaseClient.from('users').select('id, nombre, email');
-        var sentCount = 0;
+        var btn = event.target;
+        btn.disabled = true;
+        btn.textContent = '📤 Enviando...';
         
-        // Log the batch send
-        try {
-          await supabaseClient.from('email_log').insert({
-            tipo: 'weekly_progress',
-            destinatarios: (users || []).length,
-            fecha_envio: new Date().toISOString(),
-            estado: 'sent'
-          });
-        } catch(logErr) { console.log('[Email Log] Error:', logErr); }
+        var response = await fetch('https://htklsowiyjwsjnacnvnr.supabase.co/functions/v1/send-weekly-progress', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (await supabaseClient.auth.getSession()).data.session?.access_token
+          },
+          body: JSON.stringify({})
+        });
         
-        sentCount = (users || []).length;
-        document.getElementById('weLastSent').textContent = new Date().toLocaleDateString('es-MX');
-        alert('✅ ' + sentCount + ' emails de progreso programados para envío.\n\n📌 Nota: Para envío real, configura Supabase Edge Function o integra con SendGrid/Mailgun.');
+        var result = await response.json();
+        
+        if (result.success) {
+          document.getElementById('weLastSent').textContent = new Date().toLocaleDateString('es-MX');
+          alert('✅ Emails enviados!\n\n📤 Enviados: ' + result.sent + '\n❌ Fallidos: ' + result.failed + '\n📊 Total: ' + result.total);
+        } else {
+          alert('Error: ' + (result.error || 'Unknown error'));
+        }
+        
+        btn.disabled = false;
+        btn.textContent = '📤 Enviar';
       } catch(e) {
         alert('Error: ' + e.message);
+        if (event.target) { event.target.disabled = false; event.target.textContent = '📤 Enviar'; }
       }
     }
 

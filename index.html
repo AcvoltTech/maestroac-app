@@ -2272,30 +2272,30 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div class="admin-section-header">
             <span class="admin-section-title">🎫 Student Success</span>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button onclick="ssShowTab('tickets')" id="ssTabTickets" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔴 Cobros Fallidos</button>
-              <button onclick="ssShowTab('surveys')" id="ssTabSurveys" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📋 Surveys</button>
-              <button onclick="ssShowTab('newsurvey')" id="ssTabNew" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">➕ Nuevo Survey</button>
-              <button onclick="ssShowTab('staff')" id="ssTabStaff" class="ssStaffOnly" style="background:#e67e22;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👥 Staff</button>
+              <button onclick="ssShowTab('tickets')" id="ssTabTickets" style="background:#fef2f2;padding:6px 12px;border-radius:8px;color:#dc2626;border:1px solid #fecaca;cursor:pointer;font-size:11px;">🔴 Cobros Fallidos</button>
+              <button onclick="ssShowTab('surveys')" id="ssTabSurveys" style="background:#eff6ff;padding:6px 12px;border-radius:8px;color:#2563eb;border:1px solid #bfdbfe;cursor:pointer;font-size:11px;">📋 Surveys</button>
+              <button onclick="ssShowTab('newsurvey')" id="ssTabNew" style="background:#f0fdf4;padding:6px 12px;border-radius:8px;color:#16a34a;border:1px solid #bbf7d0;cursor:pointer;font-size:11px;">➕ Nuevo Survey</button>
+              <button onclick="ssShowTab('staff')" id="ssTabStaff" class="ssStaffOnly" style="background:#fffbeb;padding:6px 12px;border-radius:8px;color:#d97706;border:1px solid #fde68a;cursor:pointer;font-size:11px;">👥 Staff</button>
             </div>
           </div>
 
           <!-- Stats Cards -->
           <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:15px;">
-            <div style="background:linear-gradient(135deg,#e74c3c,#c0392b);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssOpenCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Cobros Fallidos</div>
+            <div style="background:#ffffff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e2e8f0;">
+              <div style="font-size:24px;font-weight:bold;color:#dc2626;" id="ssOpenCount">0</div>
+              <div style="font-size:11px;color:#64748b;">Cobros Fallidos</div>
             </div>
-            <div style="background:linear-gradient(135deg,#3498db,#2980b9);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssSurveyCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Surveys Hechos</div>
+            <div style="background:#ffffff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e2e8f0;">
+              <div style="font-size:24px;font-weight:bold;color:#2563eb;" id="ssSurveyCount">0</div>
+              <div style="font-size:11px;color:#64748b;">Surveys Hechos</div>
             </div>
-            <div style="background:linear-gradient(135deg,#f39c12,#e67e22);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssCancelCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Cancelaciones</div>
+            <div style="background:#ffffff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e2e8f0;">
+              <div style="font-size:24px;font-weight:bold;color:#d97706;" id="ssCancelCount">0</div>
+              <div style="font-size:11px;color:#64748b;">Cancelaciones</div>
             </div>
-            <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);border-radius:12px;padding:12px;text-align:center;">
-              <div style="font-size:24px;font-weight:bold;color:white;" id="ssCertCount">0</div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.8);">Con Certificado</div>
+            <div style="background:#ffffff;border-radius:12px;padding:12px;text-align:center;border:1px solid #e2e8f0;">
+              <div style="font-size:24px;font-weight:bold;color:#16a34a;" id="ssCertCount">0</div>
+              <div style="font-size:11px;color:#64748b;">Con Certificado</div>
             </div>
           </div>
 

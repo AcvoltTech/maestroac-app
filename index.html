@@ -539,6 +539,33 @@
   </style>
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- OFFLINE / CONNECTION BANNER -->
+<div id="offlineBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#e74c3c,#c0392b);color:#fff;text-align:center;padding:10px 15px;font-size:14px;font-weight:bold;box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+  <span id="offlineBannerText">📡 Sin conexión a internet — Algunas funciones no estarán disponibles</span>
+  <button onclick="location.reload()" style="margin-left:10px;padding:4px 12px;background:rgba(255,255,255,0.25);color:#fff;border:1px solid rgba(255,255,255,0.5);border-radius:6px;cursor:pointer;font-size:12px;">🔄 Reintentar</button>
+</div>
+<!-- SUPABASE LOAD FAILED BANNER -->
+<div id="supabaseFailBanner" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9998;background:linear-gradient(135deg,#f39c12,#e67e22);color:#fff;text-align:center;padding:10px 15px;font-size:13px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,0.3);">
+  ⚠️ Problemas de conexión con el servidor. <button onclick="location.reload()" style="margin-left:8px;padding:4px 12px;background:rgba(255,255,255,0.3);color:#fff;border:1px solid rgba(255,255,255,0.5);border-radius:6px;cursor:pointer;font-size:12px;">🔄 Recargar</button>
+</div>
+<script>
+// Global offline/online detection
+(function(){
+  function showOffline() { document.getElementById('offlineBanner').style.display = 'block'; }
+  function hideOffline() { document.getElementById('offlineBanner').style.display = 'none'; }
+  window.addEventListener('offline', showOffline);
+  window.addEventListener('online', function() { hideOffline(); });
+  if (!navigator.onLine) showOffline();
+  // Check if Supabase loaded
+  setTimeout(function() {
+    if (!window.supabase) {
+      document.getElementById('supabaseFailBanner').style.display = 'block';
+      console.error('[MaestroAC] Supabase library failed to load!');
+    }
+  }, 5000);
+})();
+</script>
 <style id="wow-theme">
 /* WOW THEME - Vibrant overrides */
 body { background: linear-gradient(180deg, #f0f4ff 0%, #faf8ff 50%, #f0f4ff 100%) !important; }
@@ -1080,6 +1107,28 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <h1>MAESTRO ACVOLT</h1>
       </div>
 
+      <!-- Connection Status Indicator -->
+      <div id="connectionStatus" style="text-align:center;margin-bottom:10px;">
+        <span id="connStatusDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#27ae60;margin-right:6px;"></span>
+        <span id="connStatusText" style="font-size:12px;color:#64748b;">Conectado al servidor</span>
+      </div>
+      <script>
+        (function checkConn(){
+          var dot = document.getElementById('connStatusDot');
+          var txt = document.getElementById('connStatusText');
+          if(!dot || !txt) return;
+          function update(){
+            if(!navigator.onLine){ dot.style.background='#e74c3c'; txt.textContent='Sin conexión a internet'; txt.style.color='#e74c3c'; }
+            else if(!window.supabase){ dot.style.background='#f39c12'; txt.textContent='Conectando al servidor...'; txt.style.color='#f39c12'; }
+            else { dot.style.background='#27ae60'; txt.textContent='Conectado al servidor'; txt.style.color='#64748b'; }
+          }
+          update();
+          setInterval(update, 3000);
+          window.addEventListener('online', update);
+          window.addEventListener('offline', update);
+        })();
+      </script>
+
       <!-- YA TIENES CUENTA - Zona de Login -->
       <div class="card" style="border:2px solid rgba(243,156,18,0.4); background:linear-gradient(135deg, rgba(243,156,18,0.08), rgba(230,126,34,0.05));">
         <div style="text-align:center; margin-bottom:15px;">
@@ -1263,15 +1312,24 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <h3 style="color:#f39c12;margin-bottom:10px;">¡Revisa tu correo electrónico!</h3>
         <p style="color:#64748b;font-size:14px;margin-bottom:15px;" id="pendingEmailText">Te enviamos un link de confirmación a tu correo.</p>
         <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.4);border-radius:12px;padding:15px;margin-bottom:15px;">
-          <p style="color:#64748b;font-size:13px;">📌 Pasos:</p>
-          <p style="color:#64748b;font-size:13px;margin-top:8px;">1. Abre tu correo electrónico</p>
-          <p style="color:#64748b;font-size:13px;">2. Busca el email de <strong>ACVOLT Tech School</strong></p>
-          <p style="color:#64748b;font-size:13px;">3. Haz click en el link de confirmación</p>
-          <p style="color:#64748b;font-size:13px;">4. Regresa aquí e inicia sesión</p>
+          <p style="color:#1e293b;font-size:14px;font-weight:bold;margin-bottom:8px;">📌 Sigue estos pasos:</p>
+          <p style="color:#64748b;font-size:13px;margin-top:8px;">1️⃣ Abre tu correo electrónico (Gmail, Outlook, Yahoo, etc.)</p>
+          <p style="color:#64748b;font-size:13px;">2️⃣ Busca un email de <strong style="color:#f39c12;">ACVOLT Tech School</strong> o <strong style="color:#f39c12;">noreply@</strong></p>
+          <p style="color:#64748b;font-size:13px;">3️⃣ Haz click en el botón o link de confirmación</p>
+          <p style="color:#64748b;font-size:13px;">4️⃣ Regresa aquí e inicia sesión con tu correo y contraseña</p>
         </div>
-        <p style="color:#7f8c8d;font-size:12px;margin-bottom:15px;">Si no lo ves, revisa tu carpeta de spam o correo no deseado.</p>
-        <button class="btn btn-primary" onclick="showScreen('loginScreen')">Ya confirmé - Ir al Login</button>
+        <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:12px;padding:12px;margin-bottom:15px;">
+          <p style="color:#e74c3c;font-size:13px;font-weight:bold;">⚠️ ¿No encuentras el correo?</p>
+          <p style="color:#64748b;font-size:12px;margin-top:5px;">• Revisa tu carpeta de <strong>SPAM</strong> o <strong>Correo no deseado</strong></p>
+          <p style="color:#64748b;font-size:12px;">• En Gmail: revisa la pestaña <strong>"Promociones"</strong> o <strong>"Social"</strong></p>
+          <p style="color:#64748b;font-size:12px;">• Espera 2-3 minutos y vuelve a revisar</p>
+        </div>
+        <button class="btn btn-primary" onclick="showScreen('loginScreen')" style="margin-bottom:8px;">🔑 Ya confirmé — Ir al Login</button>
         <button class="btn btn-secondary" onclick="resendConfirmation()" style="margin-top:8px;font-size:13px;">📧 Reenviar correo de confirmación</button>
+        <div style="margin-top:15px;padding-top:15px;border-top:1px solid rgba(243,156,18,0.2);">
+          <p style="color:#94a3b8;font-size:12px;margin-bottom:8px;">¿Sigues sin recibir el correo? Intenta entrar sin contraseña:</p>
+          <button class="btn btn-secondary" onclick="pendingRegEmail && sendMagicLinkDirect(pendingRegEmail); this.textContent='✅ Link enviado! Revisa tu correo'" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;font-size:13px;padding:10px;">✨ Recibir Link de Acceso Directo</button>
+        </div>
       </div>
     </div>
 
@@ -3798,13 +3856,36 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     // ============================================
     const SUPABASE_URL = 'https://htklsowiyjwsjnacnvnr.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
-    const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-        auth: {
-            persistSession: true,
-            autoRefreshToken: true,
-            detectSessionInUrl: true
+    let supabaseClient = null;
+    
+    // Initialize Supabase with retry logic
+    function initSupabase() {
+      if (window.supabase) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
+        console.log('[MaestroAC] Supabase connected ✅');
+        var failBanner = document.getElementById('supabaseFailBanner');
+        if (failBanner) failBanner.style.display = 'none';
+        return true;
+      }
+      return false;
+    }
+    
+    // Try to init immediately
+    if (!initSupabase()) {
+      // Retry after 3 seconds if CDN was slow
+      console.warn('[MaestroAC] Supabase not ready, retrying in 3s...');
+      setTimeout(function() {
+        if (!supabaseClient && initSupabase()) {
+          console.log('[MaestroAC] Supabase connected on retry ✅');
+          // Re-run init if we were stuck on login
+          if (document.querySelector('#loginScreen.active')) {
+            init();
+          }
         }
-    }) : null;
+      }, 3000);
+    }
     let supabaseUserId = null;
     let isOnline = navigator.onLine;
 
@@ -4489,7 +4570,70 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
       return localStorage.getItem('tecnico_authenticated') === 'true' && localStorage.getItem('tecnico_email');
     }
 
-    // Handle login with Supabase Auth
+    // Robust session recovery: check Supabase session even if localStorage was cleared
+    async function recoverSession() {
+      if (!supabaseClient) return false;
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user && session.user.email) {
+          const email = session.user.email;
+          console.log('[MaestroAC] Session recovered for:', email);
+          localStorage.setItem('tecnico_authenticated', 'true');
+          localStorage.setItem('tecnico_email', email);
+          // Load profile from Supabase technicians table
+          try {
+            const { data: techData } = await supabaseClient.from('technicians').select('*').eq('email', email).single();
+            if (techData && techData.nombre) {
+              currentUser = {
+                nombre: techData.nombre,
+                email: email,
+                telefono: techData.telefono || '',
+                ciudad: techData.ciudad || '',
+                experiencia: techData.experiencia || '',
+                registrationDate: techData.registration_date
+              };
+              const users = JSON.parse(localStorage.getItem('maestroac_users') || '{}');
+              users[email] = { ...currentUser, password: '(supabase-auth)', verified: true };
+              localStorage.setItem('maestroac_users', JSON.stringify(users));
+              localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+              localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+            }
+          } catch(e) { console.log('[MaestroAC] Recover profile error:', e); }
+          return true;
+        }
+      } catch(e) { console.log('[MaestroAC] Session recovery failed:', e); }
+      return false;
+    }
+
+    // Helper: resend confirmation email from login error
+    async function resendConfirmationForLogin(email) {
+      var msgDiv = document.getElementById('loginConfirmMsg');
+      if (!supabaseClient) { if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">Error de conexión</span>'; return; }
+      try {
+        if(msgDiv) msgDiv.innerHTML = '<span style="color:#f39c12;">Enviando...</span>';
+        var { error } = await supabaseClient.auth.resend({ type: 'signup', email: email });
+        if (error) {
+          if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">' + error.message + '</span>';
+        } else {
+          if(msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;">✅ ¡Correo enviado! Revisa tu bandeja y <strong>SPAM</strong>.</span>';
+        }
+      } catch(e) { if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">Error de conexión</span>'; }
+    }
+
+    // Helper: send magic link directly from login error
+    async function sendMagicLinkDirect(email) {
+      var msgDiv = document.getElementById('loginConfirmMsg');
+      if (!supabaseClient) { if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">Error de conexión</span>'; return; }
+      try {
+        if(msgDiv) msgDiv.innerHTML = '<span style="color:#9b59b6;">Enviando link de acceso...</span>';
+        var { error } = await supabaseClient.auth.signInWithOtp({ email: email, options: { emailRedirectTo: 'https://maestromario.com' } });
+        if (error) {
+          if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">' + error.message + '</span>';
+        } else {
+          if(msgDiv) msgDiv.innerHTML = '<span style="color:#27ae60;">✅ ¡Link enviado a <strong>' + email + '</strong>! Revisa tu correo y SPAM.</span>';
+        }
+      } catch(e) { if(msgDiv) msgDiv.innerHTML = '<span style="color:#e74c3c;">Error de conexión</span>'; }
+    }
     async function handleLogin(event) {
       event.preventDefault();
       const email = document.getElementById('loginEmail').value.trim().toLowerCase();
@@ -4497,7 +4641,9 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
       const errorDiv = document.getElementById('loginError');
 
       if (!supabaseClient) {
-        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        errorDiv.innerHTML = '⚠️ <strong>Sin conexión al servidor.</strong><br>' +
+          '<span style="font-size:13px;">Verifica tu internet e intenta de nuevo.</span><br><br>' +
+          '<button onclick="location.reload()" style="padding:10px 20px;background:#3498db;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;">🔄 Reintentar</button>';
         errorDiv.classList.add('show');
         return false;
       }
@@ -4510,12 +4656,21 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
 
         if (error) {
           if (error.message.includes('Email not confirmed')) {
-            errorDiv.textContent = '📧 Debes confirmar tu correo electrónico primero. Revisa tu bandeja de entrada.';
             pendingRegEmail = email;
+            errorDiv.innerHTML = '📧 <strong>Tu correo no está confirmado.</strong><br>' +
+              '<span style="font-size:13px;">Revisa tu bandeja de entrada y carpeta de <strong>SPAM</strong>.</span><br><br>' +
+              '<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">' +
+              '<button onclick="resendConfirmationForLogin(\'' + email + '\')" style="padding:8px 14px;background:#3498db;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold;">📧 Reenviar Confirmación</button>' +
+              '<button onclick="sendMagicLinkDirect(\'' + email + '\')" style="padding:8px 14px;background:#9b59b6;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:bold;">✨ Entrar sin contraseña</button>' +
+              '</div>' +
+              '<div id="loginConfirmMsg" style="margin-top:8px;font-size:12px;"></div>';
           } else if (error.message.includes('Invalid login')) {
-            errorDiv.textContent = 'Correo o contraseña incorrectos';
+            errorDiv.innerHTML = '❌ Correo o contraseña incorrectos.<br>' +
+              '<span style="font-size:13px;color:#94a3b8;">Verifica que tu correo y contraseña sean correctos.</span>';
+          } else if (error.message.includes('rate') || error.message.includes('limit')) {
+            errorDiv.innerHTML = '⏳ Demasiados intentos. Espera unos minutos e intenta de nuevo.';
           } else {
-            errorDiv.textContent = error.message;
+            errorDiv.innerHTML = '⚠️ ' + error.message;
           }
           errorDiv.classList.add('show');
           return false;
@@ -4589,7 +4744,9 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
           showScreen('welcomeScreen');
         }
       } catch(e) {
-        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        console.error('[MaestroAC] Login exception:', e);
+        errorDiv.innerHTML = '⚠️ <strong>Error de conexión.</strong><br>' +
+          '<span style="font-size:13px;">Verifica tu internet. Si el problema continúa, intenta con el link de acceso abajo.</span>';
         errorDiv.classList.add('show');
       }
       return false;
@@ -4643,7 +4800,8 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
       }
 
       if (!supabaseClient) {
-        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        errorDiv.innerHTML = '⚠️ <strong>Sin conexión al servidor.</strong><br><span style="font-size:13px;">Verifica tu internet y recarga la página.</span><br><br>' +
+          '<button onclick="location.reload()" style="padding:10px 20px;background:#3498db;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold;">🔄 Recargar Página</button>';
         errorDiv.classList.add('show');
         return false;
       }
@@ -4720,7 +4878,8 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         errorDiv.classList.remove('show');
         showScreen('emailPendingScreen');
       } catch(e) {
-        errorDiv.textContent = 'Error de conexión. Intenta de nuevo.';
+        console.error('[MaestroAC] Register exception:', e);
+        errorDiv.innerHTML = '⚠️ <strong>Error de conexión.</strong><br><span style="font-size:13px;">Verifica tu internet e intenta de nuevo.</span>';
         errorDiv.classList.add('show');
       }
       return false;
@@ -4927,7 +5086,22 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
           showScreen('welcomeScreen');
         }
       } else {
-        showScreen('loginScreen');
+        // localStorage doesn't have auth — but maybe Supabase still has an active session
+        const recovered = await recoverSession();
+        if (recovered) {
+          const email = localStorage.getItem('tecnico_email');
+          if (email) loadUserProgress(email);
+          console.log('[MaestroAC] Session auto-recovered! Redirecting to welcome.');
+          const savedState = loadLastQuizState();
+          if (savedState && savedState.levelKey && savedState.questionIndex > 0) {
+            showScreen('welcomeScreen');
+            showResumeBanner(savedState);
+          } else {
+            showScreen('welcomeScreen');
+          }
+        } else {
+          showScreen('loginScreen');
+        }
       }
 
       // Register form handler (profile creation form)

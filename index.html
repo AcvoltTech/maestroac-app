@@ -1776,7 +1776,21 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div id="statDetailContent"></div>
         </div>
 
-        <!-- ============ BANDEJA DE ENTRADA DEL ADMINISTRADOR ============ -->
+        
+        <!-- ============ NAVEGACIÓN RÁPIDA ADMIN ============ -->
+        <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:10px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
+          <button onclick="document.getElementById('adminTecnicos').scrollIntoView({behavior:'smooth'})" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.3);color:#3498db;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">👥 Técnicos</button>
+          <button onclick="document.getElementById('adminAsistencia').scrollIntoView({behavior:'smooth'})" style="background:rgba(39,174,96,0.2);border:1px solid rgba(39,174,96,0.3);color:#27ae60;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📋 Asistencia</button>
+          <button onclick="document.getElementById('adminStudentSuccess').scrollIntoView({behavior:'smooth'})" style="background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">🎫 Student Success</button>
+          <button onclick="document.getElementById('adminFinanzas').scrollIntoView({behavior:'smooth'})" style="background:rgba(39,174,96,0.2);border:1px solid rgba(39,174,96,0.3);color:#27ae60;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">💰 Finanzas</button>
+          <button onclick="document.getElementById('adminReferidos').scrollIntoView({behavior:'smooth'})" style="background:rgba(155,89,182,0.2);border:1px solid rgba(155,89,182,0.3);color:#9b59b6;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">💰 Embajadores</button>
+          <button onclick="document.getElementById('adminCalendario').scrollIntoView({behavior:'smooth'})" style="background:rgba(0,212,255,0.2);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📅 Calendario</button>
+          <button onclick="document.getElementById('adminWeeklyEmails').scrollIntoView({behavior:'smooth'})" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.3);color:#3498db;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📧 Emails</button>
+          <button onclick="document.getElementById('adminInactivityAlerts').scrollIntoView({behavior:'smooth'})" style="background:rgba(230,126,34,0.2);border:1px solid rgba(230,126,34,0.3);color:#e67e22;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">⚠️ Inactividad</button>
+          <button onclick="document.getElementById('adminLandingPage').scrollIntoView({behavior:'smooth'})" style="background:rgba(46,204,113,0.2);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📖 Landing</button>
+        </div>
+
+<!-- ============ BANDEJA DE ENTRADA DEL ADMINISTRADOR ============ -->
         <div class="admin-section admin-grid-full" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #e74c3c; margin-bottom: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <h3 style="color: #e74c3c; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
@@ -1815,7 +1829,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <div class="admin-grid-2col">
 
         <!-- Technicians List Section -->
-        <div class="admin-section admin-grid-full">
+        <div class="admin-section admin-grid-full" id="adminTecnicos">
           <div class="admin-section-header">
             <span class="admin-section-title">👥 Técnicos Inscritos</span>
             <span id="technicianCount" style="color: #64748b; font-size: 14px;">0 técnicos</span>
@@ -1838,7 +1852,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- Activity Chart -->
-        <div class="admin-section admin-grid-full">
+        <div class="admin-section admin-grid-full" id="adminRendimiento">
           <div class="admin-section-header">
             <span class="admin-section-title">📊 Rendimiento por Nivel</span>
           </div>
@@ -1848,7 +1862,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ===== SECCIÓN ASISTENCIA ADMIN ===== -->
-        <div class="admin-section admin-grid-full">
+        <div class="admin-section admin-grid-full" id="adminAsistencia">
           <div class="admin-section-header">
             <span class="admin-section-title">📋 Control de Asistencia</span>
           </div>
@@ -2606,8 +2620,30 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             </div>
           </div>
           <div style="background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;">
-            <p style="color:#bb86fc;font-size:12px;font-weight:bold;margin:0 0 8px;">🏆 Top Referidores</p>
+            <p style="color:#bb86fc;font-size:12px;font-weight:bold;margin:0 0 8px;">🏆 Top Embajadores</p>
             <div id="refTopList" style="color:#94a3b8;font-size:12px;">Cargando...</div>
+          </div>
+          
+          <!-- W-9 REVIEW PANEL -->
+          <div style="margin-top:12px;background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:0;">📋 Formularios W-9 Pendientes</p>
+              <button onclick="loadW9Reviews()" style="background:#e74c3c;padding:4px 10px;border-radius:6px;color:white;border:none;cursor:pointer;font-size:10px;">🔄</button>
+            </div>
+            <div id="w9ReviewList" style="max-height:250px;overflow-y:auto;">
+              <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
+            </div>
+          </div>
+          
+          <!-- PAYMENT TRACKER -->
+          <div style="margin-top:12px;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <p style="color:#27ae60;font-size:12px;font-weight:bold;margin:0;">💳 Pagos a Embajadores</p>
+              <button onclick="loadAmbassadorPayments()" style="background:#27ae60;padding:4px 10px;border-radius:6px;color:white;border:none;cursor:pointer;font-size:10px;">🔄</button>
+            </div>
+            <div id="ambassadorPaymentList" style="max-height:250px;overflow-y:auto;">
+              <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
+            </div>
           </div>
         </div>
 
@@ -5758,6 +5794,8 @@ if (screenId === 'adminDashboardScreen') {
         try { loadInactivityAlerts(); } catch(e) {}
         try { loadCalendarData(); } catch(e) {}
         try { loadReferidosData(); } catch(e) {}
+        try { loadW9Reviews(); } catch(e) {}
+        try { loadAmbassadorPayments(); } catch(e) {}
         try { renderLevelPerformanceChart(); } catch(e) {}
         try { loadAttendanceData(); } catch(e) {}
       // Check if new student needs onboarding
@@ -7917,6 +7955,8 @@ if (screenId === 'adminDashboardScreen') {
         try { loadInactivityAlerts(); } catch(e) {}
         try { loadCalendarData(); } catch(e) {}
         try { loadReferidosData(); } catch(e) {}
+        try { loadW9Reviews(); } catch(e) {}
+        try { loadAmbassadorPayments(); } catch(e) {}
       }
     };
 
@@ -12406,6 +12446,146 @@ if (screenId === 'adminDashboardScreen') {
           }
         }
       } catch(e) {}
+    }
+
+
+    // ==================== ADMIN: W-9 REVIEW & AMBASSADOR PAYMENTS ====================
+    async function loadW9Reviews() {
+      if (!supabaseClient) return;
+      var container = document.getElementById('w9ReviewList');
+      container.innerHTML = '<div style="text-align:center;color:#f39c12;padding:10px;">Cargando W-9...</div>';
+      
+      try {
+        var { data: w9s } = await supabaseClient.from('ambassador_w9').select('*').order('submitted_date', { ascending: false });
+        w9s = w9s || [];
+        
+        if (w9s.length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#64748b;padding:15px;font-size:12px;">No hay formularios W-9 enviados aún</div>';
+          return;
+        }
+        
+        container.innerHTML = w9s.map(function(w) {
+          var statusColor = w.status === 'approved' ? '#27ae60' : (w.status === 'rejected' ? '#e74c3c' : '#f39c12');
+          var statusText = w.status === 'approved' ? '✅ Aprobado' : (w.status === 'rejected' ? '❌ Rechazado' : '⏳ Pendiente');
+          var date = new Date(w.submitted_date).toLocaleDateString('es-MX');
+          
+          return '<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;margin:4px 0;border-left:3px solid ' + statusColor + ';">' +
+            '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+              '<div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (w.user_name || 'Sin nombre') + '</div>' +
+                '<div style="color:#64748b;font-size:10px;">' + (w.user_email || '') + ' | ' + date + '</div>' +
+                '<div style="color:#94a3b8;font-size:10px;margin-top:3px;">📋 ' + (w.entity_type || '') + ' | SSN: ***' + (w.tax_id_last4 || '') + ' | 💳 ' + (w.payment_method || '') + ': ' + (w.payment_info || '') + '</div>' +
+                '<div style="color:#94a3b8;font-size:10px;">📍 ' + (w.address || '') + ', ' + (w.city_state_zip || '') + '</div>' +
+                '<div style="color:#bb86fc;font-size:10px;">🔗 Código: ' + (w.referral_code || '') + '</div>' +
+              '</div>' +
+              '<div style="text-align:right;min-width:80px;">' +
+                '<span style="color:' + statusColor + ';font-size:10px;font-weight:bold;">' + statusText + '</span>' +
+                (w.status === 'pending_review' ? '<div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;">' +
+                  '<button onclick="approveW9(\'' + w.user_email + '\')" style="background:#27ae60;color:white;border:none;padding:3px 8px;border-radius:4px;font-size:9px;cursor:pointer;">✅ Aprobar</button>' +
+                  '<button onclick="rejectW9(\'' + w.user_email + '\')" style="background:#e74c3c;color:white;border:none;padding:3px 8px;border-radius:4px;font-size:9px;cursor:pointer;">❌ Rechazar</button>' +
+                '</div>' : '') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join('');
+      } catch(e) {
+        container.innerHTML = '<div style="color:#e74c3c;padding:10px;font-size:12px;">Error: ' + e.message + '</div>';
+      }
+    }
+    
+    async function approveW9(email) {
+      if (!confirm('¿Aprobar W-9 de ' + email + '? Esto activa su cuenta de embajador.')) return;
+      try {
+        await supabaseClient.from('ambassador_w9').update({ 
+          status: 'approved', 
+          approved_date: new Date().toISOString(),
+          approved_by: 'admin'
+        }).eq('user_email', email);
+        alert('✅ W-9 aprobado para ' + email);
+        loadW9Reviews();
+      } catch(e) { alert('Error: ' + e.message); }
+    }
+    
+    async function rejectW9(email) {
+      var reason = prompt('Razón del rechazo para ' + email + ':');
+      if (!reason) return;
+      try {
+        await supabaseClient.from('ambassador_w9').update({ 
+          status: 'rejected',
+          notes: reason
+        }).eq('user_email', email);
+        alert('❌ W-9 rechazado para ' + email);
+        loadW9Reviews();
+      } catch(e) { alert('Error: ' + e.message); }
+    }
+    
+    async function loadAmbassadorPayments() {
+      if (!supabaseClient) return;
+      var container = document.getElementById('ambassadorPaymentList');
+      container.innerHTML = '<div style="text-align:center;color:#f39c12;padding:10px;">Cargando pagos...</div>';
+      
+      try {
+        // Get all completed referrals
+        var { data: refs } = await supabaseClient.from('referrals').select('*').eq('status', 'completed');
+        refs = refs || [];
+        
+        // Get approved ambassadors
+        var { data: w9s } = await supabaseClient.from('ambassador_w9').select('*').eq('status', 'approved');
+        w9s = w9s || [];
+        var w9Map = {};
+        w9s.forEach(function(w) { w9Map[w.referral_code] = w; });
+        
+        // Group by ambassador
+        var ambassadorRefs = {};
+        refs.forEach(function(r) {
+          if (!ambassadorRefs[r.referral_code]) ambassadorRefs[r.referral_code] = [];
+          ambassadorRefs[r.referral_code].push(r);
+        });
+        
+        if (Object.keys(ambassadorRefs).length === 0) {
+          container.innerHTML = '<div style="text-align:center;color:#64748b;padding:15px;font-size:12px;">No hay pagos pendientes. Los pagos se generan cuando un referido activa membresía.</div>';
+          return;
+        }
+        
+        var html = '';
+        Object.entries(ambassadorRefs).forEach(function(entry) {
+          var code = entry[0], refList = entry[1];
+          var w9 = w9Map[code];
+          var total = refList.length * 20;
+          var paid = refList.filter(function(r) { return r.free_month_applied; }).length;
+          var pending = refList.length - paid;
+          var pendingAmount = pending * 20;
+          
+          html += '<div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;margin:4px 0;border-left:3px solid ' + (pendingAmount > 0 ? '#f39c12' : '#27ae60') + ';">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+              '<div>' +
+                '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (w9 ? w9.user_name : code) + '</div>' +
+                '<div style="color:#64748b;font-size:10px;">' + (w9 ? w9.payment_method + ': ' + w9.payment_info : 'W-9 no aprobado') + '</div>' +
+                '<div style="color:#94a3b8;font-size:10px;">' + refList.length + ' referidos | $' + total + ' total | $' + (paid * 20) + ' pagado</div>' +
+              '</div>' +
+              '<div style="text-align:right;">' +
+                (pendingAmount > 0 ? '<div style="color:#f39c12;font-size:16px;font-weight:bold;">$' + pendingAmount + '</div>' +
+                  '<button onclick="markAsPaid(\'' + code + '\')" style="background:#27ae60;color:white;border:none;padding:4px 10px;border-radius:4px;font-size:10px;cursor:pointer;margin-top:3px;">💰 Marcar Pagado</button>'
+                : '<div style="color:#27ae60;font-size:12px;font-weight:bold;">✅ Al día</div>') +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        });
+        
+        container.innerHTML = html;
+      } catch(e) {
+        container.innerHTML = '<div style="color:#e74c3c;padding:10px;font-size:12px;">Error: ' + e.message + '</div>';
+      }
+    }
+    
+    async function markAsPaid(refCode) {
+      if (!confirm('¿Marcar todos los referidos de ' + refCode + ' como PAGADOS?')) return;
+      try {
+        await supabaseClient.from('referrals').update({ free_month_applied: true }).eq('referral_code', refCode).eq('status', 'completed');
+        alert('✅ Pagos marcados como completados');
+        loadAmbassadorPayments();
+        loadReferidosData();
+      } catch(e) { alert('Error: ' + e.message); }
     }
 
     // ==================== END ADMIN SECTION ====================

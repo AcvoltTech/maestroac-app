@@ -1803,6 +1803,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <button onclick="document.getElementById('adminCalendario').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📅 Clases</button>
           <button onclick="document.getElementById('adminWeeklyEmails').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📧 Emails</button>
           <button onclick="document.getElementById('adminAnalytics').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📊 Analytics</button>
+          <button onclick="document.getElementById('adminCertificados').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">🏆 Certificados</button>
           <button onclick="document.getElementById('adminInactivityAlerts').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">⚠️ Alertas</button>
         </div>
 
@@ -2728,6 +2729,37 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-top:8px;">
             <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">🏆 Top 10 Estudiantes</p>
             <div id="anTopStudents" style="max-height:200px;overflow-y:auto;color:#64748b;font-size:12px;">Haz clic 🔄 para cargar</div>
+          </div>
+        </div>
+
+
+        <!-- ========== CERTIFICADOS DE ESTUDIANTES — ADMIN ========== -->
+        <div class="admin-section admin-grid-full" id="adminCertificados" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🏆 Certificados Emitidos</span>
+            <button onclick="loadAdminCertificates()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:10px 0;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#92400e;font-weight:500;">🏆 Total Certificados</div>
+              <div id="acTotalCerts" style="font-size:22px;font-weight:bold;color:#92400e;">—</div>
+            </div>
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#166534;font-weight:500;">👤 Estudiantes con Cert</div>
+              <div id="acStudentsWithCert" style="font-size:22px;font-weight:bold;color:#166534;">—</div>
+            </div>
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#1e40af;font-weight:500;">📊 Tasa de Certificación</div>
+              <div id="acCertRate" style="font-size:22px;font-weight:bold;color:#1e40af;">—</div>
+            </div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-top:8px;">
+            <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">📋 Certificados por Nivel</p>
+            <div id="acByLevel" style="color:#64748b;font-size:12px;">Haz clic 🔄 para cargar</div>
+          </div>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-top:8px;">
+            <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">🏅 Últimos Certificados Emitidos</p>
+            <div id="acRecentCerts" style="max-height:250px;overflow-y:auto;color:#64748b;font-size:12px;">Haz clic 🔄 para cargar</div>
           </div>
         </div>
 
@@ -4569,11 +4601,19 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     async function supabaseSaveCertificate(cert) {
       if (!supabaseClient || !isOnline || !supabaseUserId) return;
       try {
+        var userEmail = currentUser ? currentUser.email : '';
+        var userName = currentUser ? currentUser.nombre : '';
         await supabaseClient.from('certificates').upsert({
-          user_id: supabaseUserId, nivel: cert.level || cert.nivel, score: cert.score,
-          total_questions: cert.totalQuestions || cert.total, porcentaje: cert.percentage || cert.porcentaje,
-          certificate_number: cert.certificateNumber || null, fecha_obtenido: cert.date || new Date().toISOString()
-        }, { onConflict: 'user_id,nivel' });
+          user_id: supabaseUserId, 
+          user_email: userEmail,
+          user_name: userName,
+          nivel: cert.level || cert.nivel, 
+          score: cert.score || cert.percentage,
+          certificate_code: cert.certificateNumber || null, 
+          qr_data: 'https://maestromario.com/verify?cert=' + (cert.certificateNumber || ''),
+          fecha_emision: cert.date || new Date().toISOString()
+        }, { onConflict: 'user_id,nivel', ignoreDuplicates: false });
+        console.log('[Cert] Saved to Supabase:', cert.level || cert.nivel);
       } catch (e) { console.error('Supabase save certificate error:', e); }
     }
 
@@ -4891,25 +4931,18 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     // ===== ACVOLT STUDENT ACCESS SYSTEM =====
     // Students get full access via special URL: maestromario.com?access=acvolt2026
     // Access is saved in localStorage so they only need to open the link once
-    const ACVOLT_ACCESS_CODES = ['acvolt2026', 'acvolt2025', 'nivel33'];
+    const ACVOLT_ACCESS_CODES = []; // REMOVED hardcoded codes — now only Supabase codes work
     
     function checkStudentAccess() {
-      // Check URL parameter
       const params = new URLSearchParams(window.location.search);
-      const accessParam = params.get('access');
       
-      if (accessParam && ACVOLT_ACCESS_CODES.includes(accessParam.toLowerCase())) {
-        // Grant access and save to localStorage
-        localStorage.setItem('maestroac_student_access', 'true');
-        localStorage.setItem('maestroac_student_code', accessParam.toLowerCase());
-        localStorage.setItem('maestroac_student_date', new Date().toISOString());
-        
-        // Clean URL (remove ?access= parameter) so it looks normal
+      // ====== ACCESS CODE from URL ======
+      const accessParam = params.get('access');
+      if (accessParam) {
+        // Save code to validate against Supabase later
+        localStorage.setItem('maestroac_pending_access_code', accessParam.toLowerCase());
         const cleanUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, cleanUrl);
-        
-        console.log('✅ ACVOLT Student access granted via URL');
-        return true;
       }
       
       // ====== REFERRAL CODE CAPTURE ======
@@ -4918,13 +4951,73 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         localStorage.setItem('maestroac_referral_code', refParam);
         localStorage.setItem('maestroac_referral_date', new Date().toISOString());
         console.log('🎁 Referral code captured: ' + refParam);
-        // Clean URL
         const cleanRefUrl = window.location.origin + window.location.pathname;
         window.history.replaceState({}, document.title, cleanRefUrl);
       }
       
-      // Check if previously granted
-      return localStorage.getItem('maestroac_student_access') === 'true';
+      // Check if access was validated against Supabase
+      return localStorage.getItem('maestroac_student_access_validated') === 'true';
+    }
+    
+    // Validate access code against Supabase (called after login)
+    async function validateAccessCode() {
+      if (!supabaseClient || !currentUser) return;
+      
+      // Check pending code from URL
+      var pendingCode = localStorage.getItem('maestroac_pending_access_code');
+      if (pendingCode) {
+        try {
+          var { data } = await supabaseClient.from('access_codes')
+            .select('*')
+            .eq('code', pendingCode.toUpperCase())
+            .eq('used', false)
+            .eq('revoked', false)
+            .single();
+          
+          if (data) {
+            localStorage.setItem('maestroac_student_access_validated', 'true');
+            localStorage.setItem('maestroac_student_code', pendingCode);
+            localStorage.removeItem('maestroac_pending_access_code');
+            // Mark code as used
+            try {
+              await supabaseClient.from('access_codes').update({
+                email: currentUser.email,
+                nombre: currentUser.nombre || '',
+                used: true,
+                used_at: new Date().toISOString()
+              }).eq('code', pendingCode.toUpperCase());
+            } catch(e) {}
+            console.log('✅ Access code validated via Supabase');
+            return true;
+          }
+        } catch(e) { console.log('Access code not found in Supabase'); }
+        localStorage.removeItem('maestroac_pending_access_code');
+      }
+      
+      // Also validate existing access against Supabase membership
+      if (currentMembership && currentMembership.activa) {
+        localStorage.setItem('maestroac_student_access_validated', 'true');
+        return true;
+      }
+      
+      // Check if user already used a code before
+      try {
+        var { data: userAccess } = await supabaseClient.from('access_codes')
+          .select('*')
+          .eq('email', currentUser.email)
+          .eq('used', true)
+          .eq('revoked', false)
+          .limit(1);
+        if (userAccess && userAccess.length > 0) {
+          localStorage.setItem('maestroac_student_access_validated', 'true');
+          return true;
+        }
+      } catch(e) {}
+      
+      // No valid access found - clear any old localStorage grants
+      localStorage.removeItem('maestroac_student_access');
+      localStorage.removeItem('maestroac_student_access_validated');
+      return false;
     }
     
     // Run on page load
@@ -4933,17 +5026,11 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     // Check if a level is locked
     // Check if user has purchased full app access
     function hasAppAccess() {
-      // ACVOLT students always have access (via URL link or saved)
-      if (isAcvoltStudent) return true;
+      // ACVOLT students with VALIDATED access (checked against Supabase)
+      if (localStorage.getItem('maestroac_student_access_validated') === 'true') return true;
       
       if (!currentUser || !currentUser.email) return false;
-      // Check individual purchase flag
-      const purchased = localStorage.getItem('maestroac_app_purchased_' + currentUser.email);
-      if (purchased === 'true') return true;
-      // Check admin-granted access list
-      const appAccessList = JSON.parse(localStorage.getItem('maestroac_app_access_list') || '[]');
-      if (appAccessList.includes(currentUser.email)) return true;
-      // Check Stripe membership (bronze/silver/gold OR $20/mes app)
+      // Check Stripe membership (active subscription)
       if (currentMembership && currentMembership.activa) return true;
       // Check cached membership for offline
       const cached = localStorage.getItem('maestroac_membership_cache_' + currentUser.email);
@@ -4953,6 +5040,9 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
           if (m && m.activa) return true;
         } catch(e) {}
       }
+      // Check admin-granted access list (from Supabase, not localStorage)
+      const appAccessList = JSON.parse(localStorage.getItem('maestroac_app_access_list') || '[]');
+      if (appAccessList.includes(currentUser.email)) return true;
       return false;
     }
 
@@ -5856,6 +5946,7 @@ if (screenId === 'adminDashboardScreen') {
         try { loadW9Reviews(); } catch(e) {}
         try { loadAmbassadorPayments(); } catch(e) {}
         try { loadAnalytics(); } catch(e) {}
+        try { loadAdminCertificates(); } catch(e) {}
         try { renderLevelPerformanceChart(); } catch(e) {}
         try { loadAttendanceData(); } catch(e) {}
       // Check if new student needs onboarding
@@ -6456,8 +6547,8 @@ if (screenId === 'adminDashboardScreen') {
       await loadQuestions();
       currentLevel = levelId;
       let quizPool = [...questions[levelId]];
-      // Limit principiante to 50 questions for free users (probadita)
-      if (levelId === 'principiante' && !hasAppAccess()) {
+      // Limit to 50 questions for ALL free users (probadita)
+      if (!hasAppAccess()) {
         quizPool = quizPool.slice(0, 50);
       }
       currentQuestions = shuffleArray(quizPool);
@@ -6997,6 +7088,12 @@ if (screenId === 'adminDashboardScreen') {
       }
 
       saveCertificates();
+      
+      // Save to Supabase cloud
+      supabaseSaveCertificate({
+        level: levelId, nivel: levelId, score: score, percentage: score,
+        totalQuestions: 0, certificateNumber: certId, date: now.toISOString()
+      });
       
       // Notification: Level completed
       const _userName = currentUser ? currentUser.nombre.split(' ')[0] : 'Técnico';
@@ -8018,6 +8115,7 @@ if (screenId === 'adminDashboardScreen') {
         try { loadW9Reviews(); } catch(e) {}
         try { loadAmbassadorPayments(); } catch(e) {}
         try { loadAnalytics(); } catch(e) {}
+        try { loadAdminCertificates(); } catch(e) {}
       }
     };
 
@@ -12869,6 +12967,61 @@ if (screenId === 'adminDashboardScreen') {
       return null;
     }
 
+
+    // ==================== ADMIN: CERTIFICADOS ====================
+    async function loadAdminCertificates() {
+      if (!supabaseClient) return;
+      try {
+        var { data: certs } = await supabaseClient.from('certificates').select('*').order('fecha_emision', { ascending: false });
+        certs = certs || [];
+        
+        var totalCerts = certs.length;
+        var uniqueStudents = [...new Set(certs.map(function(c) { return c.user_id; }))].length;
+        var totalStudents = (allTechnicians || []).length || 1;
+        var certRate = Math.round((uniqueStudents / totalStudents) * 100);
+        
+        document.getElementById('acTotalCerts').textContent = totalCerts;
+        document.getElementById('acStudentsWithCert').textContent = uniqueStudents;
+        document.getElementById('acCertRate').textContent = certRate + '%';
+        
+        // By level
+        var byLevel = {};
+        var levelNames = {principiante:'Principiante',intermedio:'Intermedio',avanzado:'Avanzado',elite:'Elite',platino:'Platino'};
+        var levelColors = {principiante:'#3498db',intermedio:'#27ae60',avanzado:'#f39c12',elite:'#e74c3c',platino:'#9b59b6'};
+        certs.forEach(function(c) {
+          if (!byLevel[c.nivel]) byLevel[c.nivel] = 0;
+          byLevel[c.nivel]++;
+        });
+        
+        var levelHtml = '<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+        Object.entries(levelNames).forEach(function(e) {
+          var nivel = e[0], name = e[1];
+          var count = byLevel[nivel] || 0;
+          var color = levelColors[nivel] || '#64748b';
+          levelHtml += '<div style="background:rgba(' + (nivel==='principiante'?'52,152,219':nivel==='intermedio'?'39,174,96':nivel==='avanzado'?'243,156,18':nivel==='elite'?'231,76,60':'155,89,182') + ',0.1);border:1px solid ' + color + '33;border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;">' +
+            '<div style="font-size:18px;font-weight:bold;color:' + color + ';">' + count + '</div>' +
+            '<div style="font-size:9px;color:#64748b;">' + name + '</div></div>';
+        });
+        levelHtml += '</div>';
+        document.getElementById('acByLevel').innerHTML = levelHtml;
+        
+        // Recent certificates
+        var recentHtml = certs.slice(0, 20).map(function(c) {
+          var name = c.user_name || c.user_email || 'Desconocido';
+          var nivel = c.nivel ? c.nivel.charAt(0).toUpperCase() + c.nivel.slice(1) : '?';
+          var fecha = c.fecha_emision ? new Date(c.fecha_emision).toLocaleDateString('es-MX') : '—';
+          var score = c.score || '—';
+          var code = c.certificate_code || '—';
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">' +
+            '<div><span style="font-weight:600;color:#1e293b;">' + name + '</span><br><span style="font-size:10px;color:#94a3b8;">' + code + '</span></div>' +
+            '<div style="text-align:right;"><span style="color:' + (levelColors[c.nivel]||'#64748b') + ';font-weight:600;font-size:12px;">' + nivel + '</span><br><span style="font-size:10px;color:#94a3b8;">' + fecha + ' · ' + score + '%</span></div>' +
+          '</div>';
+        }).join('');
+        document.getElementById('acRecentCerts').innerHTML = recentHtml || '<div style="text-align:center;padding:15px;color:#94a3b8;">Sin certificados aún. Se guardan cuando un estudiante completa un nivel con 80%+</div>';
+        
+      } catch(e) { console.error('[Admin Certs]', e); }
+    }
+
     // ==================== END ADMIN SECTION ====================
 
     // Initialize on load
@@ -12943,7 +13096,7 @@ if (screenId === 'adminDashboardScreen') {
       const code = input.value.trim().toUpperCase();
       msgDiv.style.display = 'block';
       
-      if (!code || code.length < 6) {
+      if (!code || code.length < 4) {
         msgDiv.style.color = '#e74c3c';
         msgDiv.textContent = '\u26A0\uFE0F Ingresa un c\u00F3digo v\u00E1lido';
         return;
@@ -12951,35 +13104,47 @@ if (screenId === 'adminDashboardScreen') {
       
       let valid = false;
       
+      // 1. Check access_codes table (admin-created codes)
       try {
-        const { data, error } = await supabase
-          .from('access_code_requests')
+        const { data, error } = await supabaseClient
+          .from('access_codes')
           .select('*')
           .eq('code', code)
-          .eq('status', 'approved')
+          .eq('used', false)
+          .eq('revoked', false)
           .single();
         
         if (data && !error) {
           valid = true;
-          await supabaseClient.from('access_code_requests').update({ status: 'redeemed', redeemed_at: new Date().toISOString() }).eq('id', data.id);
+          // Mark as used
+          await supabaseClient.from('access_codes').update({ 
+            email: currentUser ? currentUser.email : 'unknown',
+            nombre: currentUser ? currentUser.nombre : '',
+            used: true, 
+            used_at: new Date().toISOString() 
+          }).eq('code', code);
         }
-      } catch(e) {
-        console.warn('Supabase check failed, checking localStorage', e);
-      }
+      } catch(e) { console.log('Code not in access_codes, checking requests...'); }
       
+      // 2. Check access_code_requests table (student-requested codes)
       if (!valid) {
-        const requests = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
-        const found = requests.find(r => r.code === code && r.status === 'approved');
-        if (found) {
-          valid = true;
-          found.status = 'redeemed';
-          found.redeemed_at = new Date().toISOString();
-          localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
-        }
+        try {
+          const { data, error } = await supabaseClient
+            .from('access_code_requests')
+            .select('*')
+            .eq('code', code)
+            .eq('status', 'approved')
+            .single();
+          
+          if (data && !error) {
+            valid = true;
+            await supabaseClient.from('access_code_requests').update({ status: 'redeemed', redeemed_at: new Date().toISOString() }).eq('id', data.id);
+          }
+        } catch(e) { console.warn('Supabase request check failed', e); }
       }
       
       if (valid) {
-        localStorage.setItem('maestroac_full_access', 'true');
+        localStorage.setItem('maestroac_student_access_validated', 'true');
         localStorage.setItem('maestroac_access_code', code);
         addNotification('\uD83D\uDD13 Niveles desbloqueados con c\u00F3digo: ' + code);
         msgDiv.style.color = '#27ae60';
@@ -12988,7 +13153,7 @@ if (screenId === 'adminDashboardScreen') {
         setTimeout(() => renderLevels(), 500);
       } else {
         msgDiv.style.color = '#e74c3c';
-        msgDiv.textContent = '\u274C C\u00F3digo inv\u00E1lido o no aprobado. Contacta al administrador.';
+        msgDiv.textContent = '\u274C C\u00F3digo inv\u00E1lido o ya usado. Contacta al administrador.';
       }
     }
 

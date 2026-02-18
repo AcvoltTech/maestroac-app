@@ -12067,7 +12067,7 @@ if (screenId === 'adminDashboardScreen') {
         '<label style="color:#94a3b8;font-size:12px;">Link de Zoom (opcional)</label>' +
         '<input type="url" id="ncZoom" placeholder="https://zoom.us/j/..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 15px;box-sizing:border-box;">' +
         '<button onclick="saveNewClass(this)" style="width:100%;padding:12px;border:none;border-radius:8px;background:#00d4ff;color:#1a1a2e;font-weight:bold;font-size:14px;cursor:pointer;">💾 Guardar Clase</button>' +
-        '<button onclick="this.closest('div[style*=position]').remove();" style="width:100%;padding:10px;border:none;border-radius:8px;background:transparent;color:#64748b;font-size:13px;cursor:pointer;margin-top:6px;">Cancelar</button>' +
+        '<button onclick="this.parentElement.parentElement.remove();" style="width:100%;padding:10px;border:none;border-radius:8px;background:transparent;color:#64748b;font-size:13px;cursor:pointer;margin-top:6px;">Cancelar</button>' +
       '</div>';
       document.body.appendChild(modal);
     }
@@ -14919,11 +14919,11 @@ if(cb)cb();
 @media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:75px}#acvoltBtn{bottom:15px;right:10px;width:48px;height:48px}}
 </style>
 
-<div id="acvoltBtn" onclick="window._acAI.toggle()">🤖<div class="ai-bdg" id="aiBdg">1</div></div>
+<div id="acvoltBtn" onclick="window._acAI.toggle()" style="overflow:hidden;"><img src="mario-black.jpg" alt="AI" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><div class="ai-bdg" id="aiBdg">1</div></div>
 <div id="acvoltAI">
 <div class="ai-panel">
 <div class="ai-head">
-<div class="ai-head-left"><div class="ai-avatar-sm">🤖</div><div><div class="ai-title">Asistente ACVOLT</div><div class="ai-subtitle">Soporte · Guía · Student Success</div></div></div>
+<div class="ai-head-left"><div class="ai-avatar-sm" style="overflow:hidden;padding:0;background:none;"><img src="mario-black.jpg" alt="Mario" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"></div><div><div class="ai-title">Asistente ACVOLT</div><div class="ai-subtitle">Soporte · Guía · Student Success</div></div></div>
 <button class="ai-close" onclick="window._acAI.toggle()">✕</button>
 </div>
 <div class="ai-msgs" id="aiMs"></div>

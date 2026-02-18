@@ -2659,11 +2659,13 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             <div id="stripeFailedAlert" style="display:none;background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:15px;margin-bottom:15px;">
               <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
                 <span style="font-size:24px;">🚨</span>
-                <div>
+                <div style="flex:1;">
                   <div style="color:#dc2626;font-weight:bold;font-size:14px;">Cobros Fallidos — Requieren Atención</div>
                   <div style="color:#64748b;font-size:11px;">Estos estudiantes tienen pagos que no pasaron. Contactar para actualizar método de pago.</div>
                 </div>
+                <button onclick="importFailedToStudentSuccess()" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:white;border:none;padding:10px 16px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;white-space:nowrap;">🎫 Importar TODOS a Student Success</button>
               </div>
+              <div id="stripeImportStatus" style="display:none;padding:8px;border-radius:8px;margin-bottom:10px;font-size:12px;"></div>
               <div id="stripeFailedList" style="max-height:200px;overflow-y:auto;"></div>
             </div>
 
@@ -11997,6 +11999,140 @@ if (screenId === 'adminDashboardScreen') {
       }
     }
 
+    // ---- IMPORT FAILED CHARGES TO STUDENT SUCCESS ----
+    
+    async function createSingleFailedTicket(email, amount, failMsg, stripeId, btn) {
+      if (!email) { alert('No hay email para este cobro'); return; }
+      btn.disabled = true;
+      btn.textContent = '⏳';
+      try {
+        var { data: existing } = await supabaseClient.from('student_success_tickets')
+          .select('id').eq('student_email', email).eq('tipo', 'pago_fallido')
+          .ilike('detalles', '%' + stripeId + '%').limit(1);
+        if (existing && existing.length > 0) {
+          btn.textContent = '✓';
+          btn.style.background = '#94a3b8';
+          return;
+        }
+        var studentName = '';
+        var { data: userData } = await supabaseClient.from('users').select('nombre').eq('email', email).limit(1);
+        if (userData && userData[0]) studentName = userData[0].nombre;
+        
+        await supabaseClient.from('student_success_tickets').insert({
+          student_email: email,
+          student_name: studentName || email,
+          tipo: 'pago_fallido',
+          status: 'abierto',
+          prioridad: 'alta',
+          detalles: '🚨 COBRO FALLIDO\n💰 $' + (amount/100).toFixed(2) + '\n❌ ' + failMsg + '\n🔗 ' + stripeId + '\n📞 Llamar para actualizar método de pago.',
+          source: 'stripe_import'
+        });
+        btn.textContent = '✅';
+        btn.style.background = '#16a34a';
+        try { loadSSTickets('abierto'); } catch(e) {}
+      } catch(e) {
+        btn.textContent = '❌';
+        btn.style.background = '#dc2626';
+        console.error('[Ticket]', e);
+      }
+    }
+
+    async function importFailedToStudentSuccess() {
+      var statusEl = document.getElementById('stripeImportStatus');
+      statusEl.style.display = 'block';
+      statusEl.style.background = 'rgba(99,91,255,0.1)';
+      statusEl.style.color = '#635bff';
+      statusEl.innerHTML = '⏳ Importando cobros fallidos a Student Success...';
+      
+      if (!stripeDataCache || !stripeDataCache.failed_charges_list || !stripeDataCache.failed_charges_list.length) {
+        statusEl.style.background = 'rgba(231,76,60,0.1)';
+        statusEl.style.color = '#dc2626';
+        statusEl.innerHTML = '❌ No hay cobros fallidos para importar. Carga datos de Stripe primero.';
+        return;
+      }
+      
+      var failedList = stripeDataCache.failed_charges_list;
+      var imported = 0;
+      var skipped = 0;
+      var errors = 0;
+      
+      for (var i = 0; i < failedList.length; i++) {
+        var fc = failedList[i];
+        var email = fc.customer_email || '';
+        if (!email) { skipped++; continue; }
+        
+        try {
+          // Check if ticket already exists for this charge
+          var { data: existing } = await supabaseClient.from('student_success_tickets')
+            .select('id')
+            .eq('student_email', email)
+            .eq('tipo', 'pago_fallido')
+            .ilike('detalles', '%' + fc.id + '%')
+            .limit(1);
+          
+          if (existing && existing.length > 0) {
+            skipped++;
+            continue;
+          }
+          
+          // Get student name from users table
+          var studentName = fc.customer_name || '';
+          if (!studentName && email) {
+            var { data: userData } = await supabaseClient.from('users')
+              .select('nombre')
+              .eq('email', email)
+              .limit(1);
+            if (userData && userData[0]) studentName = userData[0].nombre;
+          }
+          
+          var amount = (fc.amount / 100).toFixed(2);
+          var fecha = new Date(fc.created * 1000).toLocaleDateString('es-MX');
+          
+          var { error: insertErr } = await supabaseClient.from('student_success_tickets').insert({
+            student_email: email,
+            student_name: studentName || email,
+            tipo: 'pago_fallido',
+            status: 'abierto',
+            prioridad: 'alta',
+            detalles: '🚨 COBRO FALLIDO DE STRIPE\n' +
+              '💰 Monto: $' + amount + ' USD\n' +
+              '📅 Fecha: ' + fecha + '\n' +
+              '❌ Razón: ' + (fc.failure_message || 'Declined') + '\n' +
+              '🔗 Stripe ID: ' + fc.id + '\n' +
+              '📞 ACCIÓN: Llamar al estudiante para actualizar método de pago.',
+            source: 'stripe_import'
+          });
+          
+          if (insertErr) {
+            console.error('[Import] Error for ' + email + ':', insertErr);
+            errors++;
+          } else {
+            imported++;
+          }
+        } catch(e) {
+          console.error('[Import] Error:', e);
+          errors++;
+        }
+        
+        // Update progress
+        statusEl.innerHTML = '⏳ Importando... ' + (i + 1) + '/' + failedList.length + ' (' + imported + ' nuevos, ' + skipped + ' ya existentes)';
+      }
+      
+      // Final status
+      if (imported > 0) {
+        statusEl.style.background = 'rgba(22,163,74,0.1)';
+        statusEl.style.color = '#16a34a';
+        statusEl.innerHTML = '✅ Importación completa: <strong>' + imported + ' tickets creados</strong> | ' + skipped + ' ya existían | ' + errors + ' errores<br><span style="font-size:11px;">Ve a 🎫 Student Success → 🔴 Cobros Fallidos para dar seguimiento.</span>';
+      } else {
+        statusEl.style.background = 'rgba(243,156,18,0.1)';
+        statusEl.style.color = '#d97706';
+        statusEl.innerHTML = '⚠️ No se importaron tickets nuevos. ' + skipped + ' ya existían en Student Success.';
+      }
+      
+      // Reload Student Success tickets if function exists
+      try { loadSSTickets('abierto'); } catch(e) {}
+    }
+
     // ==================== STRIPE INTEGRATION — SESIÓN 5 ====================
     
     // Tab switching for Finanzas
@@ -12142,13 +12278,19 @@ if (screenId === 'adminDashboardScreen') {
       alertEl.style.display = 'block';
       var html = '';
       data.failed_charges_list.forEach(function(fc) {
-        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:white;border-radius:8px;margin-bottom:6px;border:1px solid #fecaca;">';
-        html += '<div>';
-        html += '<div style="font-weight:bold;color:#1e293b;font-size:12px;">👤 ' + (fc.customer_email || fc.customer_name || 'Desconocido') + '</div>';
-        html += '<div style="color:#dc2626;font-size:11px;">$' + (fc.amount/100).toFixed(2) + ' — ' + (fc.failure_message || 'Declined') + '</div>';
-        html += '<div style="color:#94a3b8;font-size:10px;">' + new Date(fc.created * 1000).toLocaleDateString('es-MX') + '</div>';
+        var email = fc.customer_email || fc.customer_name || 'Desconocido';
+        var amount = (fc.amount/100).toFixed(2);
+        var fecha = new Date(fc.created * 1000).toLocaleDateString('es-MX');
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:white;border-radius:8px;margin-bottom:6px;border:1px solid #fecaca;flex-wrap:wrap;gap:6px;">';
+        html += '<div style="flex:1;min-width:200px;">';
+        html += '<div style="font-weight:bold;color:#1e293b;font-size:12px;">👤 ' + email + '</div>';
+        html += '<div style="color:#dc2626;font-size:11px;">$' + amount + ' — ' + (fc.failure_message || 'Declined') + '</div>';
+        html += '<div style="color:#94a3b8;font-size:10px;">' + fecha + '</div>';
         html += '</div>';
-        html += '<button onclick="window.open(\'https://dashboard.stripe.com/payments/' + fc.id + '\',\'_blank\')" style="padding:5px 10px;background:#635bff;color:white;border:none;border-radius:6px;font-size:10px;cursor:pointer;">Ver en Stripe</button>';
+        html += '<div style="display:flex;gap:4px;">';
+        html += '<button onclick="createSingleFailedTicket(\'' + (fc.customer_email || '').replace(/'/g, "\\'") + '\',' + fc.amount + ',\'' + (fc.failure_message || 'Declined').replace(/'/g, "\\'") + '\',\'' + fc.id + '\',this)" style="padding:5px 8px;background:#e74c3c;color:white;border:none;border-radius:6px;font-size:10px;cursor:pointer;" title="Crear ticket">🎫</button>';
+        html += '<button onclick="window.open(\'https://dashboard.stripe.com/payments/' + fc.id + '\',\'_blank\')" style="padding:5px 8px;background:#635bff;color:white;border:none;border-radius:6px;font-size:10px;cursor:pointer;" title="Ver en Stripe">💳</button>';
+        html += '</div>';
         html += '</div>';
       });
       listEl.innerHTML = html;

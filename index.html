@@ -1414,22 +1414,43 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
     </div>
 
     <!-- ============================================ -->
-    <!-- PANTALLA: PROGRAMA DE REFERIDOS (ESTUDIANTE) -->
+    <!-- PANTALLA: PROGRAMA DE EMBAJADORES (ESTUDIANTE) -->
     <!-- ============================================ -->
     <div class="screen" id="referidosScreen">
       <div class="container">
         <div class="header">
-          <h1>🎁 Invita un Amigo</h1>
-          <p class="subtitle">Gana 1 mes gratis por cada referido</p>
+          <h1>💰 Programa de Embajadores</h1>
+          <p class="subtitle">Gana dinero real por cada referido</p>
         </div>
-        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(243,156,18,0.15),rgba(230,126,34,0.05));border:2px solid rgba(243,156,18,0.3);">
+
+        <!-- Hero Card -->
+        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(243,156,18,0.2),rgba(39,174,96,0.1));border:2px solid rgba(243,156,18,0.4);">
           <div style="text-align:center;">
-            <div style="font-size:50px;margin-bottom:10px;">🏆</div>
-            <h2 style="color:#f39c12;font-size:20px;margin-bottom:5px;">¡Refiere y Gana!</h2>
-            <p style="color:#e2e8f0;font-size:14px;margin-bottom:20px;">Por cada amigo que se registre con tu link, <strong style="color:#2ecc71;">tú recibes 1 mes gratis</strong> de membresía.</p>
+            <div style="font-size:50px;margin-bottom:10px;">💰</div>
+            <h2 style="color:#f39c12;font-size:22px;margin-bottom:5px;">¡Refiere y Gana Dinero!</h2>
+            <p style="color:#e2e8f0;font-size:14px;margin-bottom:15px;">Gana <strong style="color:#2ecc71;">$20 por cada referido</strong> que active su membresía</p>
           </div>
+
+          <!-- Pago escalado -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px;">
+            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">1️⃣</div>
+              <div style="color:#2ecc71;font-size:18px;font-weight:bold;">$20</div>
+              <div style="color:#94a3b8;font-size:10px;">Por 1 referido</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">5️⃣</div>
+              <div style="color:#f39c12;font-size:18px;font-weight:bold;">$100</div>
+              <div style="color:#94a3b8;font-size:10px;">Por 5 referidos</div>
+            </div>
+          </div>
+          <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:10px;text-align:center;margin-bottom:15px;">
+            <div style="color:#bb86fc;font-size:12px;">💳 Pago por <strong>Zelle o Transferencia Bancaria</strong></div>
+          </div>
+
+          <!-- Link de referido -->
           <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
-            <p style="color:#f39c12;font-size:12px;font-weight:bold;margin-bottom:8px;">Tu Link de Referido:</p>
+            <p style="color:#f39c12;font-size:12px;font-weight:bold;margin-bottom:8px;">Tu Link de Embajador:</p>
             <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px;margin-bottom:10px;">
               <code id="refLinkCode" style="color:#2ecc71;font-size:13px;word-break:break-all;">Cargando...</code>
             </div>
@@ -1439,28 +1460,45 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               <button onclick="shareRefFacebook()" style="padding:10px 16px;border:none;border-radius:8px;background:#1877F2;color:white;font-weight:bold;font-size:13px;cursor:pointer;">📘 Facebook</button>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
-            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:#2ecc71;">✅ Referidos Exitosos</div>
-              <div id="myRefCount" style="font-size:24px;font-weight:bold;color:#2ecc71;">0</div>
+
+          <!-- Stats -->
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:15px;">
+            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:10px;color:#3498db;">📤 Registrados</div>
+              <div id="myRefCount" style="font-size:22px;font-weight:bold;color:#3498db;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:#f39c12;">🎁 Meses Gratis Ganados</div>
-              <div id="myFreeMonths" style="font-size:24px;font-weight:bold;color:#f39c12;">0</div>
+            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:10px;color:#2ecc71;">✅ Activos</div>
+              <div id="myRefActive" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
             </div>
-          </div>
-          <div style="text-align:center;">
-            <p style="color:#64748b;font-size:11px;">Los meses gratis se aplican automáticamente a tu próxima facturación.</p>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">💰 Ganado</div>
+              <div id="myFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">$0</div>
+            </div>
           </div>
         </div>
+
+        <!-- W-9 Requirement -->
+        <div class="card" style="padding:15px;margin-top:15px;border:2px solid rgba(231,76,60,0.3);background:linear-gradient(135deg,rgba(231,76,60,0.08),rgba(192,57,43,0.03));">
+          <h3 style="color:#e74c3c;font-size:14px;margin:0 0 10px;">📋 Requisito: Formulario W-9</h3>
+          <p style="color:#e2e8f0;font-size:13px;line-height:1.6;margin-bottom:12px;">Para poder recibir tu pago, necesitas llenar el <strong style="color:#f39c12;">formulario W-9</strong> (requerido por el IRS para pagos mayores a $600/año). Sin este formulario no podemos procesarte el pago.</p>
+          <div id="w9StatusBox">
+            <button onclick="showW9Form()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-weight:bold;font-size:14px;cursor:pointer;">📝 Llenar Formulario W-9</button>
+          </div>
+        </div>
+
+        <!-- How it works -->
         <div class="card" style="padding:15px;margin-top:15px;">
           <h3 style="color:#f39c12;font-size:14px;margin:0 0 10px;">¿Cómo funciona?</h3>
           <div style="color:#e2e8f0;font-size:13px;line-height:2;">
-            <div>1️⃣ Comparte tu link con un amigo técnico HVAC</div>
-            <div>2️⃣ Tu amigo se registra usando tu link</div>
-            <div>3️⃣ Cuando tu amigo active su membresía, ¡tú recibes 1 mes gratis!</div>
+            <div>1️⃣ Llena tu formulario W-9 (una sola vez)</div>
+            <div>2️⃣ Comparte tu link con técnicos HVAC</div>
+            <div>3️⃣ Tu referido se registra con tu link</div>
+            <div>4️⃣ Cuando active su membresía pagada = <strong style="color:#2ecc71;">$20 para ti</strong></div>
+            <div>5️⃣ Pago por Zelle o transferencia bancaria</div>
           </div>
         </div>
+
         <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Menú</button>
       </div>
     </div>
@@ -2550,7 +2588,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <!-- ========== PROGRAMA DE REFERIDOS — FASE 2 #7 ========== -->
         <div class="admin-section admin-grid-full" id="adminReferidos" style="border: 2px solid #9b59b6; background: linear-gradient(135deg, #1a0a2e 0%, #200d33 100%);">
           <div class="admin-section-header">
-            <span class="admin-section-title">🎁 Programa de Referidos</span>
+            <span class="admin-section-title">💰 Programa de Embajadores</span>
             <button onclick="loadReferidosData()" style="background:#9b59b6;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Actualizar</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
@@ -2559,11 +2597,11 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
               <div id="refShared" style="font-size:22px;font-weight:bold;color:#9b59b6;">0</div>
             </div>
             <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:#2ecc71;">✅ Referidos Exitosos</div>
+              <div style="font-size:10px;color:#2ecc71;">✅ Membresías Activas</div>
               <div id="refSuccess" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
             </div>
             <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:10px;color:#f39c12;">🎁 Meses Regalados</div>
+              <div style="font-size:10px;color:#f39c12;">💰 Pagos Pendientes</div>
               <div id="refFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">0</div>
             </div>
           </div>
@@ -2825,7 +2863,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <!-- Calendario de Clases + Referidos -->
         <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
           <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:10px; background: linear-gradient(135deg, #00d4ff, #0099cc); color: white;">📅 Calendario de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">🎁 Invita un Amigo — 1 Mes Gratis</button>
+          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">💰 Programa de Embajadores — Gana $20</button>
         </div>
 
         <!-- Zona de Membresía - Botón de acceso -->
@@ -4779,6 +4817,17 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         return true;
       }
       
+      // ====== REFERRAL CODE CAPTURE ======
+      const refParam = params.get('ref');
+      if (refParam) {
+        localStorage.setItem('maestroac_referral_code', refParam);
+        localStorage.setItem('maestroac_referral_date', new Date().toISOString());
+        console.log('🎁 Referral code captured: ' + refParam);
+        // Clean URL
+        const cleanRefUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, cleanRefUrl);
+      }
+      
       // Check if previously granted
       return localStorage.getItem('maestroac_student_access') === 'true';
     }
@@ -5341,6 +5390,23 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
             hvace: hvace || '',
             registration_date: new Date().toISOString()
           });
+          
+          // ====== SAVE REFERRAL IF EXISTS ======
+          var savedRefCode = localStorage.getItem('maestroac_referral_code');
+          if (savedRefCode) {
+            try {
+              await supabaseClient.from('referrals').insert({
+                referral_code: savedRefCode,
+                referred_email: email,
+                referred_name: name,
+                referred_date: new Date().toISOString(),
+                status: 'registered'
+              });
+              localStorage.removeItem('maestroac_referral_code');
+              localStorage.removeItem('maestroac_referral_date');
+              console.log('🎁 Referral saved: ' + savedRefCode + ' -> ' + email);
+            } catch(refErr) { console.log('[Referral] Save error:', refErr); }
+          }
         } catch(e) { console.log('[MaestroAC] Save technician error:', e); }
 
         // Show email confirmation pending screen
@@ -11838,9 +11904,19 @@ if (screenId === 'adminDashboardScreen') {
     // ==================== PROGRAMA DE REFERIDOS — #7 ====================
     function generateRefCode() {
       if (!currentUser || !currentUser.email) return 'N/A';
+      var email = currentUser.email.toLowerCase();
       var hash = 0;
-      for (var i = 0; i < currentUser.email.length; i++) { hash = ((hash << 5) - hash) + currentUser.email.charCodeAt(i); hash = hash & hash; }
+      for (var i = 0; i < email.length; i++) { hash = ((hash << 5) - hash) + email.charCodeAt(i); hash = hash & hash; }
       return 'REF-' + Math.abs(hash).toString(36).toUpperCase().substring(0, 6);
+    }
+    
+    // Save ref code to user profile on first load so admin can track
+    async function saveRefCodeToProfile() {
+      if (!supabaseClient || !currentUser || !currentUser.email) return;
+      var refCode = generateRefCode();
+      try {
+        await supabaseClient.from('users').update({ referral_code: refCode }).eq('email', currentUser.email.toLowerCase());
+      } catch(e) {}
     }
     
     function initReferidosScreen() {
@@ -11849,22 +11925,39 @@ if (screenId === 'adminDashboardScreen') {
       var el = document.getElementById('refLinkCode');
       if (el) el.textContent = refLink;
       
-      // Load referral stats from localStorage or Supabase
-      var stats = JSON.parse(localStorage.getItem('maestroac_ref_stats_' + (currentUser ? currentUser.email : '')) || '{"count":0,"months":0}');
       var countEl = document.getElementById('myRefCount');
       var monthsEl = document.getElementById('myFreeMonths');
-      if (countEl) countEl.textContent = stats.count;
-      if (monthsEl) monthsEl.textContent = stats.months;
       
-      // Try loading from Supabase
-      if (supabaseClient && supabaseUserId) {
-        supabaseClient.from('referrals').select('*').eq('referrer_id', supabaseUserId).then(function(res) {
+      // Save ref code to profile
+      saveRefCodeToProfile();
+      
+      // Load referral stats from Supabase
+      var activeEl = document.getElementById('myRefActive');
+      
+      if (supabaseClient) {
+        supabaseClient.from('referrals').select('*').eq('referral_code', refCode).then(function(res) {
           if (res.data) {
-            var successful = res.data.filter(function(r) { return r.status === 'completed'; });
-            if (countEl) countEl.textContent = successful.length;
-            if (monthsEl) monthsEl.textContent = successful.length;
+            var allRefs = res.data;
+            var registered = allRefs.filter(function(r) { return r.status === 'registered' || r.status === 'completed'; });
+            var completed = allRefs.filter(function(r) { return r.status === 'completed'; });
+            if (countEl) countEl.textContent = registered.length;
+            if (activeEl) activeEl.textContent = completed.length;
+            if (monthsEl) monthsEl.textContent = '$' + (completed.length * 20);
+            
+            localStorage.setItem('maestroac_ref_stats_' + (currentUser ? currentUser.email : ''), JSON.stringify({count: registered.length, active: completed.length, earned: completed.length * 20}));
           }
-        }).catch(function() {});
+          
+          // Check W-9 status
+          supabaseClient.from('referrals').select('w9_status').eq('referral_code', refCode).limit(1).then(function() {
+            checkW9Status(refCode);
+          });
+        }).catch(function(e) {
+          console.log('[Embajadores] Load error:', e);
+          var stats = JSON.parse(localStorage.getItem('maestroac_ref_stats_' + (currentUser ? currentUser.email : '')) || '{"count":0,"active":0,"earned":0}');
+          if (countEl) countEl.textContent = stats.count;
+          if (activeEl) activeEl.textContent = stats.active || 0;
+          if (monthsEl) monthsEl.textContent = '$' + (stats.earned || 0);
+        });
       }
     }
     
@@ -11885,7 +11978,7 @@ if (screenId === 'adminDashboardScreen') {
     function shareRefWhatsApp() {
       var refCode = generateRefCode();
       var link = 'https://maestromario.com/app?ref=' + refCode;
-      var text = '🔧 ¡Aprende HVAC con MaestroAC! Yo ya estoy estudiando y avanzando. Regístrate con mi link y los dos ganamos 1 mes gratis: ' + link;
+      var text = '🔧 ¡Aprende HVAC con MaestroAC! La app de Maestro Mario con 2,350+ preguntas de certificación. Regístrate con mi link: ' + link;
       window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
     }
     
@@ -11900,26 +11993,40 @@ if (screenId === 'adminDashboardScreen') {
       try {
         var { data: refs } = await supabaseClient.from('referrals').select('*');
         refs = refs || [];
-        var successful = refs.filter(function(r) { return r.status === 'completed'; });
+        var registered = refs.filter(function(r) { return r.status === 'registered' || r.status === 'completed'; });
+        var completed = refs.filter(function(r) { return r.status === 'completed'; });
         
         document.getElementById('refShared').textContent = refs.length;
-        document.getElementById('refSuccess').textContent = successful.length;
-        document.getElementById('refFreeMonths').textContent = successful.length;
+        document.getElementById('refSuccess').textContent = registered.length;
+        document.getElementById('refFreeMonths').textContent = '$' + (completed.length * 20);
         
-        // Top referrers
-        var referrers = {};
-        successful.forEach(function(r) { 
-          var name = r.referrer_name || r.referrer_email || 'Anónimo';
-          referrers[name] = (referrers[name] || 0) + 1; 
+        // Top referrers - group by referral_code, then lookup who owns that code
+        var codeCount = {};
+        registered.forEach(function(r) { 
+          codeCount[r.referral_code] = (codeCount[r.referral_code] || 0) + 1; 
         });
-        var sorted = Object.entries(referrers).sort(function(a,b) { return b[1] - a[1]; }).slice(0, 5);
         
-        var topHtml = sorted.length > 0 ? sorted.map(function(entry, i) {
-          return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
-            '<span style="color:#e2e8f0;font-size:12px;">' + (i+1) + '. ' + entry[0] + '</span>' +
-            '<span style="color:#9b59b6;font-weight:bold;font-size:12px;">' + entry[1] + ' referidos</span>' +
-          '</div>';
-        }).join('') : '<div style="color:#64748b;font-size:12px;">Aún no hay referidos completados</div>';
+        // Try to resolve ref codes to names via technicians table
+        var codes = Object.keys(codeCount);
+        var topHtml = '';
+        
+        if (codes.length > 0) {
+          var { data: techs } = await supabaseClient.from('users').select('nombre, email, referral_code').in('referral_code', codes);
+          techs = techs || [];
+          var codeToName = {};
+          techs.forEach(function(t) { codeToName[t.referral_code] = t.nombre || t.email; });
+          
+          var sorted = Object.entries(codeCount).sort(function(a,b) { return b[1] - a[1]; }).slice(0, 10);
+          topHtml = sorted.map(function(entry, i) {
+            var name = codeToName[entry[0]] || entry[0];
+            return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+              '<span style="color:#e2e8f0;font-size:12px;">' + (i+1) + '. ' + name + ' <span style="color:#64748b;">(' + entry[0] + ')</span></span>' +
+              '<span style="color:#9b59b6;font-weight:bold;font-size:12px;">' + entry[1] + ' referidos</span>' +
+            '</div>';
+          }).join('');
+        } else {
+          topHtml = '<div style="color:#64748b;font-size:12px;">Aún no hay referidos. Cuando los estudiantes compartan su link y alguien se registre, aparecerán aquí.</div>';
+        }
         
         document.getElementById('refTopList').innerHTML = topHtml;
       } catch(e) { console.error('[Referidos]', e); }
@@ -12105,6 +12212,200 @@ if (screenId === 'adminDashboardScreen') {
       
       btn.closest('div[style*="position"]').remove();
       alert('✅ Clase programada: ' + title);
+    }
+
+
+    // ==================== REFERRAL COMPLETION ON MEMBERSHIP ==================== 
+    async function checkAndCompleteReferral(studentEmail) {
+      if (!supabaseClient || !studentEmail) return;
+      try {
+        // Find if this student was referred
+        var { data: refs } = await supabaseClient.from('referrals')
+          .select('*')
+          .eq('referred_email', studentEmail.toLowerCase())
+          .eq('status', 'registered');
+        
+        if (refs && refs.length > 0) {
+          var ref = refs[0];
+          // Mark as completed
+          await supabaseClient.from('referrals').update({
+            status: 'completed',
+            completed_date: new Date().toISOString()
+          }).eq('id', ref.id);
+          
+          // Find the referrer and credit them
+          var { data: referrer } = await supabaseClient.from('users')
+            .select('email, nombre')
+            .eq('referral_code', ref.referral_code)
+            .single();
+          
+          if (referrer) {
+            // Create a student success ticket to apply the free month
+            await supabaseClient.from('student_success_tickets').insert({
+              student_name: referrer.nombre || referrer.email,
+              student_email: referrer.email,
+              estado: 'abierto',
+              descripcion: '💰 [EMBAJADOR - PAGO PENDIENTE] El referido ' + ref.referred_name + ' (' + ref.referred_email + ') activó su membresía pagada. PAGAR $20 USD a ' + (referrer.nombre || referrer.email) + ' via Zelle/Transferencia. Código embajador: ' + ref.referral_code + '. Verificar W-9 antes de pagar.',
+              fecha_limite: new Date(Date.now() + 3 * 24*60*60*1000).toISOString(),
+              email_enviado_estudiante: false
+            });
+            console.log('🎁 Referral completed! Free month ticket created for ' + referrer.email);
+          }
+        }
+      } catch(e) { console.error('[Referral Complete]', e); }
+    }
+
+
+    // ==================== W-9 FORM & AMBASSADOR PAYMENT ====================
+    function showW9Form() {
+      var modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.95);display:flex;align-items:center;justify-content:center;z-index:9999;padding:15px;';
+      var userName = currentUser ? currentUser.nombre || '' : '';
+      var userEmail = currentUser ? currentUser.email || '' : '';
+      
+      modal.innerHTML = '<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:15px;padding:25px;max-width:450px;width:100%;border:2px solid #e74c3c;max-height:90vh;overflow-y:auto;">' +
+        '<h3 style="color:#e74c3c;margin:0 0 5px;">📋 Formulario W-9</h3>' +
+        '<p style="color:#94a3b8;font-size:11px;margin:0 0 15px;">Requerido por el IRS para recibir pagos del programa de embajadores</p>' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">Nombre Legal Completo *</label>' +
+        '<input type="text" id="w9Name" value="' + userName + '" placeholder="Como aparece en tu tax return" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">Nombre del Negocio (si aplica)</label>' +
+        '<input type="text" id="w9Business" placeholder="Nombre de tu LLC o empresa" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">Tipo de Entidad *</label>' +
+        '<select id="w9Entity" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+          '<option value="">Selecciona...</option>' +
+          '<option value="individual">Individual / Sole Proprietor</option>' +
+          '<option value="llc_single">LLC — Single Member</option>' +
+          '<option value="llc_multi">LLC — Multi Member</option>' +
+          '<option value="scorp">S Corporation</option>' +
+          '<option value="ccorp">C Corporation</option>' +
+          '<option value="partnership">Partnership</option>' +
+        '</select>' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">SSN o EIN * (último 4 dígitos)</label>' +
+        '<input type="text" id="w9TaxId" placeholder="XXXX (solo últimos 4)" maxlength="4" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">Dirección *</label>' +
+        '<input type="text" id="w9Address" placeholder="123 Main St" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+        
+        '<label style="color:#94a3b8;font-size:11px;">Ciudad, Estado, ZIP *</label>' +
+        '<input type="text" id="w9CityState" placeholder="San Bernardino, CA 92401" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
+        
+        '<div style="margin:10px 0;padding:10px;background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:8px;">' +
+          '<label style="color:#bb86fc;font-size:11px;font-weight:bold;">💳 Método de Pago Preferido *</label>' +
+          '<select id="w9PayMethod" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0;box-sizing:border-box;font-size:14px;">' +
+            '<option value="">Selecciona...</option>' +
+            '<option value="zelle">Zelle</option>' +
+            '<option value="bank_transfer">Transferencia Bancaria</option>' +
+          '</select>' +
+          '<label style="color:#94a3b8;font-size:11px;margin-top:6px;display:block;">Email o teléfono para Zelle / datos bancarios</label>' +
+          '<input type="text" id="w9PayInfo" placeholder="Email de Zelle o número de cuenta" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0;box-sizing:border-box;font-size:14px;">' +
+        '</div>' +
+        
+        '<div style="margin:12px 0;padding:10px;background:rgba(243,156,18,0.1);border-radius:8px;">' +
+          '<label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:12px;color:#e2e8f0;">' +
+            '<input type="checkbox" id="w9Certify" style="margin-top:2px;width:18px;height:18px;">' +
+            '<span>Bajo pena de perjurio, certifico que el número de identificación fiscal es correcto y que no estoy sujeto a retención de respaldo.</span>' +
+          '</label>' +
+        '</div>' +
+        
+        '<button onclick="submitW9Form(this)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;font-weight:bold;font-size:15px;cursor:pointer;margin-top:5px;">✅ Enviar W-9</button>' +
+        '<button onclick="this.parentElement.parentElement.remove();" style="width:100%;padding:10px;border:none;border-radius:8px;background:transparent;color:#64748b;font-size:13px;cursor:pointer;margin-top:6px;">Cancelar</button>' +
+      '</div>';
+      document.body.appendChild(modal);
+    }
+    
+    async function submitW9Form(btn) {
+      var name = document.getElementById('w9Name').value.trim();
+      var business = document.getElementById('w9Business').value.trim();
+      var entity = document.getElementById('w9Entity').value;
+      var taxId = document.getElementById('w9TaxId').value.trim();
+      var address = document.getElementById('w9Address').value.trim();
+      var cityState = document.getElementById('w9CityState').value.trim();
+      var payMethod = document.getElementById('w9PayMethod').value;
+      var payInfo = document.getElementById('w9PayInfo').value.trim();
+      var certified = document.getElementById('w9Certify').checked;
+      
+      if (!name || !entity || !taxId || !address || !cityState || !payMethod || !payInfo) {
+        alert('Por favor completa todos los campos marcados con *');
+        return;
+      }
+      if (taxId.length !== 4) {
+        alert('Ingresa los últimos 4 dígitos de tu SSN o EIN');
+        return;
+      }
+      if (!certified) {
+        alert('Debes certificar la información para continuar');
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.textContent = 'Enviando...';
+      
+      var w9Data = {
+        user_email: currentUser ? currentUser.email : '',
+        user_name: name,
+        business_name: business,
+        entity_type: entity,
+        tax_id_last4: taxId,
+        address: address,
+        city_state_zip: cityState,
+        payment_method: payMethod,
+        payment_info: payInfo,
+        certified: true,
+        referral_code: generateRefCode(),
+        submitted_date: new Date().toISOString(),
+        status: 'pending_review'
+      };
+      
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('ambassador_w9').upsert(w9Data, { onConflict: 'user_email' });
+          
+          // Also create a Student Success ticket for admin review
+          await supabaseClient.from('student_success_tickets').insert({
+            student_name: name,
+            student_email: currentUser ? currentUser.email : '',
+            estado: 'abierto',
+            descripcion: '📋 [W-9 RECIBIDO] Nuevo embajador: ' + name + '. Método de pago: ' + payMethod + ' (' + payInfo + '). Código: ' + generateRefCode() + '. REVISAR y APROBAR para activar pagos.',
+            fecha_limite: new Date(Date.now() + 3 * 24*60*60*1000).toISOString(),
+            email_enviado_estudiante: false
+          });
+          
+          alert('✅ Formulario W-9 enviado exitosamente.\n\nUn administrador revisará tu información y activará tu cuenta de embajador.');
+          btn.closest('div[style*="position"]') ? btn.closest('div[style*="position"]').remove() : btn.parentElement.parentElement.remove();
+          
+          // Update W-9 status display
+          var statusBox = document.getElementById('w9StatusBox');
+          if (statusBox) {
+            statusBox.innerHTML = '<div style="padding:10px;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:8px;text-align:center;">' +
+              '<span style="color:#2ecc71;font-size:13px;font-weight:bold;">✅ W-9 Enviado — Pendiente de Revisión</span></div>';
+          }
+        } catch(e) {
+          alert('Error al enviar: ' + e.message);
+          btn.disabled = false;
+          btn.textContent = '✅ Enviar W-9';
+        }
+      }
+    }
+    
+    async function checkW9Status(refCode) {
+      if (!supabaseClient || !currentUser) return;
+      try {
+        var { data } = await supabaseClient.from('ambassador_w9').select('status').eq('user_email', currentUser.email).single();
+        var statusBox = document.getElementById('w9StatusBox');
+        if (data && statusBox) {
+          if (data.status === 'approved') {
+            statusBox.innerHTML = '<div style="padding:10px;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:8px;text-align:center;">' +
+              '<span style="color:#2ecc71;font-size:13px;font-weight:bold;">✅ W-9 Aprobado — Embajador Activo</span></div>';
+          } else if (data.status === 'pending_review') {
+            statusBox.innerHTML = '<div style="padding:10px;background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:8px;text-align:center;">' +
+              '<span style="color:#f39c12;font-size:13px;font-weight:bold;">⏳ W-9 Enviado — Pendiente de Revisión</span></div>';
+          }
+        }
+      } catch(e) {}
     }
 
     // ==================== END ADMIN SECTION ====================

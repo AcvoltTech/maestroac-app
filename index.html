@@ -2822,6 +2822,44 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <p class="subtitle">Control de horas de entrenamiento</p>
         </div>
         <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:15px;">← Volver al Menú</button>
+        
+        <!-- Class Schedule Info -->
+        <div class="attendance-card" id="scheduleInfoCard" style="border:1px solid rgba(243,156,18,0.3);background:linear-gradient(135deg,rgba(243,156,18,0.08),rgba(230,126,34,0.05));">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+            <span style="font-size:28px;">📅</span>
+            <div>
+              <p style="color:#f39c12;font-size:16px;font-weight:bold;margin:0;">Clases en Vivo</p>
+              <p style="color:#64748b;font-size:13px;margin:0;">Mar y Mié 6-10 PM California = sin límite de inactividad</p>
+            </div>
+          </div>
+          <div style="background:rgba(52,152,219,0.08);border-radius:8px;padding:10px;margin-bottom:8px;">
+            <p style="color:#64748b;font-size:12px;margin:0;">⏱️ <strong>Máx 4 horas</strong> por sesión · Fuera de clase: check-out auto si <strong>15 min sin actividad</strong></p>
+          </div>
+          <div id="scheduleStatusLine" style="text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:bold;"></div>
+        </div>
+        <script>
+          (function updateScheduleStatus(){
+            var el = document.getElementById('scheduleStatusLine');
+            if(!el) return;
+            var now = new Date();
+            var ca = new Date(now.toLocaleString('en-US',{timeZone:'America/Los_Angeles'}));
+            var day = ca.getDay(), hr = ca.getHours(), mn = ca.getMinutes();
+            var totalMin = hr*60+mn;
+            var isDay = (day===2||day===3);
+            var isHour = (totalMin>=1080&&totalMin<=1320);
+            var caStr = ca.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',hour12:true});
+            var days = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+            if(isDay && isHour){
+              el.style.background='rgba(39,174,96,0.15)'; el.style.color='#27ae60';
+              el.innerHTML='🟢 CLASE EN VIVO — '+days[day]+' '+caStr+' · Sin detección de inactividad';
+            } else {
+              el.style.background='rgba(52,152,219,0.1)'; el.style.color='#3498db';
+              el.innerHTML='📖 Modo Estudio — '+days[day]+' '+caStr+'<br><span style="font-size:11px;color:#94a3b8;">Check-out automático si 15 min sin actividad</span>';
+            }
+            setTimeout(updateScheduleStatus, 30000);
+          })();
+        </script>
+        
         <div class="attendance-card">
           <div id="attendanceStatusBadge" class="attendance-status status-inactive">⭕ Sin Check-in</div>
           <div id="attendanceTimer" class="attendance-timer">00:00:00</div>
@@ -10004,10 +10042,149 @@ window.toggleFormula = function(id) {
     let currentCheckInTime = null;
     let currentAttendanceId = null;
     let selectedClassType = 'presencial';
+    let lastActivityTime = Date.now();
+    let inactivityCheckInterval = null;
+    let inactivityWarningShown = false;
+    const INACTIVITY_LIMIT_MS = 15 * 60 * 1000; // 15 minutes of inactivity = auto check-out
+    const INACTIVITY_WARNING_MS = 10 * 60 * 1000; // Warning at 10 minutes
     
     // ===== FORCED CHECK-IN SYSTEM =====
-    // Users MUST check-in before accessing quizzes/levels each session
     let sessionCheckedIn = false;
+
+    // ===== INACTIVITY DETECTION SYSTEM =====
+    // Track user activity (clicks, scrolls, typing, touches)
+    ['click','keydown','scroll','touchstart','mousemove'].forEach(function(ev){
+      document.addEventListener(ev, function(){
+        if (currentAttendanceId) {
+          lastActivityTime = Date.now();
+          // If warning was showing, dismiss it
+          if (inactivityWarningShown) {
+            var warnEl = document.getElementById('inactivityWarningModal');
+            if (warnEl) warnEl.remove();
+            inactivityWarningShown = false;
+            console.log('[Attendance] Activity detected — inactivity timer reset');
+          }
+        }
+      }, {passive:true});
+    });
+
+    // Also track visibility changes
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'visible' && currentAttendanceId) {
+        // User came back to the app
+        lastActivityTime = Date.now();
+        console.log('[Attendance] App visible again — activity updated');
+      }
+    });
+
+    function startInactivityMonitor() {
+      // Clear any existing interval
+      if (inactivityCheckInterval) clearInterval(inactivityCheckInterval);
+      
+      // Check inactivity every 60 seconds
+      inactivityCheckInterval = setInterval(function() {
+        if (!currentAttendanceId || !currentCheckInTime) {
+          clearInterval(inactivityCheckInterval);
+          return;
+        }
+        
+        // ===== EXCEPTION: During class hours (Tue/Wed 6-10PM California), NO inactivity check =====
+        var schedule = isClassTime();
+        if (schedule.allowed) {
+          // During class time — don't check inactivity, they're in class with Maestro Mario
+          return;
+        }
+        
+        // Outside class hours — check inactivity
+        var inactiveMs = Date.now() - lastActivityTime;
+        
+        // Show warning at 10 minutes
+        if (inactiveMs >= INACTIVITY_WARNING_MS && !inactivityWarningShown) {
+          inactivityWarningShown = true;
+          var remainSec = Math.ceil((INACTIVITY_LIMIT_MS - inactiveMs) / 1000);
+          var remainMin = Math.ceil(remainSec / 60);
+          
+          var modal = document.createElement('div');
+          modal.id = 'inactivityWarningModal';
+          modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+          modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;">' +
+            '<div style="font-size:60px;margin-bottom:15px;">⏳</div>' +
+            '<h3 style="color:#f39c12;margin-bottom:10px;font-size:20px;">¿Sigues estudiando?</h3>' +
+            '<p style="color:#64748b;font-size:14px;margin-bottom:8px;">No hemos detectado actividad en los últimos 10 minutos.</p>' +
+            '<p style="color:#e74c3c;font-size:14px;font-weight:bold;margin-bottom:20px;">Se hará check-out automático en ~' + remainMin + ' minutos si no hay actividad.</p>' +
+            '<button onclick="lastActivityTime=Date.now();inactivityWarningShown=false;this.closest(\'div[style*=position]\').remove();" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;margin-bottom:10px;">✅ ¡Sí, sigo aquí!</button>' +
+            '<button onclick="this.closest(\'div[style*=position]\').remove();doCheckOut();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(231,76,60,0.15);color:#e74c3c;font-weight:bold;">🛑 Hacer Check-Out</button>' +
+            '</div>';
+          document.body.appendChild(modal);
+        }
+        
+        // Auto check-out at 15 minutes of inactivity
+        if (inactiveMs >= INACTIVITY_LIMIT_MS) {
+          console.log('[Attendance] 15 min inactivity outside class hours — auto check-out');
+          // Remove warning modal if showing
+          var warnEl = document.getElementById('inactivityWarningModal');
+          if (warnEl) warnEl.remove();
+          inactivityWarningShown = false;
+          
+          // Do the auto check-out
+          autoCheckOutInactivity();
+        }
+        
+      }, 60000); // Check every 60 seconds
+    }
+
+    // Auto check-out due to inactivity (different from max time)
+    async function autoCheckOutInactivity() {
+      if (!currentAttendanceId || !currentCheckInTime) return;
+      try {
+        // Use lastActivityTime as the real check-out time (when they actually stopped)
+        var checkOutTime = new Date(lastActivityTime);
+        var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
+        totalMinutes = Math.min(totalMinutes, 240);
+        
+        if (supabaseClient) {
+          await supabaseClient.from('attendance')
+            .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
+            .eq('id', currentAttendanceId);
+        }
+        
+        clearInterval(attendanceTimerInterval);
+        attendanceTimerInterval = null;
+        clearInterval(inactivityCheckInterval);
+        inactivityCheckInterval = null;
+        
+        document.getElementById('btnCheckIn').style.display = 'block';
+        document.getElementById('btnCheckOut').style.display = 'none';
+        document.getElementById('attendanceStatusBadge').className = 'attendance-status status-inactive';
+        document.getElementById('attendanceStatusBadge').textContent = '⭕ Check-out por inactividad';
+        document.getElementById('attendanceTimer').textContent = '00:00:00';
+        document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'auto'; });
+        
+        var hrs = Math.floor(totalMinutes / 60);
+        var mins = totalMinutes % 60;
+        addNotification('checkout', '⏳ Check-out automático por inactividad — Tiempo real: ' + hrs + 'h ' + mins + 'm', '⏳');
+        localStorage.removeItem('attendance_active_session');
+        localStorage.removeItem('attendance_pending_checkout');
+        
+        currentAttendanceId = null;
+        currentCheckInTime = null;
+        
+        // Show notification modal
+        var modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+        modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;">' +
+          '<div style="font-size:60px;margin-bottom:15px;">⏳</div>' +
+          '<h3 style="color:#f39c12;margin-bottom:10px;font-size:20px;">Check-Out Automático</h3>' +
+          '<p style="color:#64748b;font-size:14px;margin-bottom:8px;">Se detectó inactividad de 15 minutos fuera de horario de clase.</p>' +
+          '<p style="color:#1e293b;font-size:16px;font-weight:bold;margin-bottom:5px;">Tiempo registrado: ' + hrs + 'h ' + mins + 'm</p>' +
+          '<p style="color:#94a3b8;font-size:12px;margin-bottom:20px;">Solo se contó el tiempo con actividad real.</p>' +
+          '<button onclick="this.closest(\'div[style*=position]\').remove(); loadAttendanceData();" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#f39c12,#e67e22);color:white;">Entendido</button>' +
+          '</div>';
+        document.body.appendChild(modal);
+        
+        loadAttendanceData();
+      } catch(e) { console.error('[Attendance] Inactivity check-out error:', e); }
+    }
 
     // ===== AUTO CHECK-OUT ON EXIT =====
     // When technician closes browser/tab, auto-checkout immediately
@@ -10046,17 +10223,27 @@ window.toggleFormula = function(id) {
         var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
         totalMinutes = Math.min(totalMinutes, 240);
         
+        // Save pending checkout in case they don't come back
         localStorage.setItem('attendance_pending_checkout', JSON.stringify({
           id: currentAttendanceId,
           checkIn: currentCheckInTime.toISOString(),
           checkOut: checkOutTime.toISOString(),
           totalMinutes: totalMinutes,
-          classType: selectedClassType
+          classType: selectedClassType,
+          wasClassTime: isClassTime().allowed
         }));
         
-        console.log("[Attendance] Sesion guardada - NO checkout");
+        // Outside class hours: if they leave the app, start a countdown
+        // If they don't return within 5 minutes, the pending checkout will be processed on next load
+        var schedule = isClassTime();
+        if (!schedule.allowed) {
+          console.log("[Attendance] App hidden OUTSIDE class hours — pending checkout saved");
+        } else {
+          console.log("[Attendance] App hidden DURING class hours — session preserved");
+        }
       }
       if (document.visibilityState === 'visible' && currentAttendanceId) {
+        lastActivityTime = Date.now();
         updateTimer();
       }
     });
@@ -10435,19 +10622,134 @@ window.toggleFormula = function(id) {
       if (!currentCheckInTime) return;
       var now = new Date();
       var diff = Math.floor((now - currentCheckInTime) / 1000);
+      
+      // ===== AUTO CHECK-OUT AT 4 HOURS MAX =====
+      if (diff >= 14400) { // 4 hours = 14400 seconds
+        console.log('[Attendance] 4 horas alcanzadas — auto check-out');
+        autoCheckOutMaxTime();
+        return;
+      }
+      
       var hrs = Math.floor(diff / 3600);
       var mins = Math.floor((diff % 3600) / 60);
       var secs = diff % 60;
-      document.getElementById('attendanceTimer').textContent = 
-        String(hrs).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+      var timerEl = document.getElementById('attendanceTimer');
+      if (timerEl) {
+        timerEl.textContent = String(hrs).padStart(2,'0') + ':' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+      }
+      
+      // Show remaining time warning at 3:30 hours
+      if (diff >= 12600 && diff < 12610) {
+        var remainMin = Math.ceil((14400 - diff) / 60);
+        addNotification('checkin', '⏰ Quedan ' + remainMin + ' minutos — Check-out automático a las 4 horas', '⏰');
+      }
+    }
+
+    // ===== CLASS SCHEDULE VALIDATION =====
+    // Classes: Tuesday & Wednesday 6:00 PM - 10:00 PM Pacific Time (California)
+    function isClassTime() {
+      // Get current time in California (America/Los_Angeles)
+      var now = new Date();
+      var caTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+      var day = caTime.getDay(); // 0=Sun, 1=Mon, 2=Tue, 3=Wed...
+      var hour = caTime.getHours();
+      var minutes = caTime.getMinutes();
+      var totalMinutes = hour * 60 + minutes;
+      
+      // Tuesday (2) or Wednesday (3), 6:00 PM (1080) to 10:00 PM (1320)
+      var isClassDay = (day === 2 || day === 3);
+      var isClassHour = (totalMinutes >= 1080 && totalMinutes <= 1320); // 18:00 - 22:00
+      
+      return { allowed: isClassDay && isClassHour, day: day, hour: hour, minutes: minutes, caTime: caTime };
+    }
+
+    function getNextClassInfo() {
+      var now = new Date();
+      var caTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
+      var day = caTime.getDay();
+      var days = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      
+      // Find next Tuesday (2) or Wednesday (3)
+      var nextDay;
+      if (day < 2) nextDay = 'Martes';
+      else if (day === 2 && caTime.getHours() < 22) nextDay = 'Martes (hoy)';
+      else if (day === 2 || (day === 3 && caTime.getHours() >= 22)) nextDay = 'Martes (próx. semana)';
+      else if (day === 3 && caTime.getHours() < 22) nextDay = 'Miércoles (hoy)';
+      else nextDay = 'Martes';
+      
+      return nextDay;
+    }
+
+    // Auto check-out when 4 hours reached
+    async function autoCheckOutMaxTime() {
+      if (!currentAttendanceId || !currentCheckInTime) return;
+      try {
+        var checkOutTime = new Date(currentCheckInTime.getTime() + 4 * 60 * 60 * 1000); // Exactly 4 hours after check-in
+        var totalMinutes = 240;
+        
+        if (supabaseClient) {
+          await supabaseClient.from('attendance')
+            .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
+            .eq('id', currentAttendanceId);
+        }
+        
+        clearInterval(attendanceTimerInterval);
+        attendanceTimerInterval = null;
+        document.getElementById('btnCheckIn').style.display = 'block';
+        document.getElementById('btnCheckOut').style.display = 'none';
+        document.getElementById('attendanceStatusBadge').className = 'attendance-status status-inactive';
+        document.getElementById('attendanceStatusBadge').textContent = '⭕ Clase terminada (4h máx)';
+        document.getElementById('attendanceTimer').textContent = '04:00:00';
+        document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'auto'; });
+        
+        addNotification('checkout', '⏰ Check-out automático — 4 horas máximo alcanzadas', '⏰');
+        localStorage.removeItem('attendance_active_session');
+        localStorage.removeItem('attendance_pending_checkout');
+        
+        currentAttendanceId = null;
+        currentCheckInTime = null;
+        
+        // Show modal notification
+        var modal = document.createElement('div');
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+        modal.innerHTML = '<div style="background:#fff;border-radius:20px;padding:30px;max-width:400px;width:100%;text-align:center;">' +
+          '<div style="font-size:60px;margin-bottom:15px;">⏰</div>' +
+          '<h3 style="color:#E31937;margin-bottom:10px;font-size:20px;">¡Clase Terminada!</h3>' +
+          '<p style="color:#64748b;font-size:14px;margin-bottom:8px;">Se completaron las <strong>4 horas máximas</strong> de clase.</p>' +
+          '<p style="color:#64748b;font-size:14px;margin-bottom:20px;">Tu asistencia de 4:00 horas ha sido registrada.</p>' +
+          '<button onclick="this.closest(\'div[style*=position]\').remove(); loadAttendanceData();" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;">✅ Entendido</button>' +
+          '</div>';
+        document.body.appendChild(modal);
+        
+        loadAttendanceData();
+      } catch(e) { console.error('[Attendance] Auto check-out error:', e); }
     }
 
     async function doCheckIn() {
       try {
         if (!supabaseClient) { alert('Error: Supabase no conectado'); return; }
+        
         var userResp = await supabaseClient.auth.getUser();
         var user = userResp.data.user;
         if (!user) { alert('Debes iniciar sesion primero'); return; }
+        
+        // Check if already hit 4 hours today
+        var todayStart = new Date();
+        todayStart.setHours(0,0,0,0);
+        var existingRes = await supabaseClient.from('attendance')
+          .select('*')
+          .eq('student_id', user.id)
+          .gte('check_in', todayStart.toISOString())
+          .not('total_minutes', 'is', null);
+        var todayMinutes = 0;
+        if (existingRes.data) {
+          existingRes.data.forEach(function(r) { todayMinutes += (r.total_minutes || 0); });
+        }
+        if (todayMinutes >= 240) {
+          alert('⚠️ Ya completaste 4 horas hoy. El máximo por día es 4 horas.');
+          return;
+        }
+        
         var res = await supabaseClient
           .from('attendance')
           .insert({ student_id: user.id, class_type: selectedClassType, check_in: new Date().toISOString(), status: 'presente' })
@@ -10456,7 +10758,8 @@ window.toggleFormula = function(id) {
         var data = res.data;
         currentAttendanceId = data.id;
         currentCheckInTime = new Date(data.check_in);
-        sessionCheckedIn = true; // Unlock quizzes/levels for this session
+        sessionCheckedIn = true;
+        lastActivityTime = Date.now(); // Track activity
         addNotification('checkin', '✅ Check-in registrado — ' + getClassTypeLabel(selectedClassType), '📋');
         document.getElementById('btnCheckIn').style.display = 'none';
         document.getElementById('btnCheckOut').style.display = 'block';
@@ -10465,6 +10768,10 @@ window.toggleFormula = function(id) {
         document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
         attendanceTimerInterval = setInterval(updateTimer, 1000);
         updateTimer();
+        
+        // Start inactivity monitor (only outside class hours)
+        startInactivityMonitor();
+        
       } catch (err) {
         console.error('Error en check-in:', err);
         alert('Error al hacer check-in: ' + err.message);
@@ -10476,6 +10783,7 @@ window.toggleFormula = function(id) {
         if (!currentAttendanceId) return;
         var checkOutTime = new Date();
         var totalMinutes = Math.round((checkOutTime - currentCheckInTime) / 60000);
+        totalMinutes = Math.min(totalMinutes, 240); // Cap at 4 hours max
         var res = await supabaseClient
           .from('attendance')
           .update({ check_out: checkOutTime.toISOString(), total_minutes: totalMinutes })
@@ -10483,6 +10791,8 @@ window.toggleFormula = function(id) {
         if (res.error) throw res.error;
         clearInterval(attendanceTimerInterval);
         attendanceTimerInterval = null;
+        if (inactivityCheckInterval) { clearInterval(inactivityCheckInterval); inactivityCheckInterval = null; }
+        inactivityWarningShown = false;
         document.getElementById('btnCheckIn').style.display = 'block';
         document.getElementById('btnCheckOut').style.display = 'none';
         document.getElementById('attendanceStatusBadge').className = 'attendance-status status-inactive';
@@ -10498,7 +10808,7 @@ window.toggleFormula = function(id) {
         var hrs = Math.floor(totalMinutes / 60);
         var mins = totalMinutes % 60;
         addNotification('checkout', '🚪 Check-out completado — Tiempo: ' + hrs + 'h ' + mins + 'm', '🚪');
-        alert('Check-out exitoso! Tiempo: ' + hrs + 'h ' + mins + 'm');
+        alert('✅ Check-out exitoso!\nTiempo registrado: ' + hrs + 'h ' + mins + 'm' + (totalMinutes >= 240 ? '\n(Máximo 4 horas por clase)' : ''));
       } catch (err) {
         console.error('Error en check-out:', err);
         alert('Error al hacer check-out: ' + err.message);
@@ -10515,17 +10825,32 @@ window.toggleFormula = function(id) {
         var activeSession = activeRes.data;
         if (activeSession && activeSession.length > 0) {
           var session = activeSession[0];
-          currentAttendanceId = session.id;
-          currentCheckInTime = new Date(session.check_in);
-          selectedClassType = session.class_type;
-          sessionCheckedIn = true; // Restore session state
-          selectClassType(session.class_type);
-          document.getElementById('btnCheckIn').style.display = 'none';
-          document.getElementById('btnCheckOut').style.display = 'block';
-          document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
-          document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + getClassTypeLabel(session.class_type);
-          document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
-          if (!attendanceTimerInterval) { attendanceTimerInterval = setInterval(updateTimer, 1000); updateTimer(); }
+          var sessionAge = (new Date() - new Date(session.check_in)) / (1000 * 60 * 60);
+          
+          // If session is older than 4 hours, auto-close it
+          if (sessionAge >= 4) {
+            var autoCloseTime = new Date(new Date(session.check_in).getTime() + 4 * 60 * 60 * 1000);
+            await supabaseClient.from('attendance')
+              .update({ check_out: autoCloseTime.toISOString(), total_minutes: 240 })
+              .eq('id', session.id);
+            console.log('[Attendance] Auto-closed stale active session:', session.id);
+            addNotification('checkout', '⏰ Sesión anterior cerrada automáticamente (4h máx)', '⏰');
+          } else {
+            currentAttendanceId = session.id;
+            currentCheckInTime = new Date(session.check_in);
+            selectedClassType = session.class_type;
+            sessionCheckedIn = true;
+            selectClassType(session.class_type);
+            document.getElementById('btnCheckIn').style.display = 'none';
+            document.getElementById('btnCheckOut').style.display = 'block';
+            document.getElementById('attendanceStatusBadge').className = 'attendance-status status-active';
+            document.getElementById('attendanceStatusBadge').textContent = '🟢 En Clase - ' + getClassTypeLabel(session.class_type);
+            document.querySelectorAll('.type-option').forEach(function(el) { el.style.pointerEvents = 'none'; });
+            if (!attendanceTimerInterval) { attendanceTimerInterval = setInterval(updateTimer, 1000); updateTimer(); }
+            // Start inactivity monitor for restored session
+            lastActivityTime = Date.now();
+            startInactivityMonitor();
+          }
         }
         var today = new Date(); today.setHours(0,0,0,0);
         var weekStart = new Date(today); weekStart.setDate(weekStart.getDate() - weekStart.getDay());

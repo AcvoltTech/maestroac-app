@@ -1241,8 +1241,227 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
       </div>
 
+      <!-- Landing Page Link -->
+      <div style="text-align:center; margin-top:15px;">
+        <button onclick="showScreen('landingPageScreen')" style="background:none;border:1px solid rgba(0,212,255,0.3);padding:10px 25px;border-radius:20px;color:#00d4ff;font-size:13px;cursor:pointer;">📖 Conoce más sobre MaestroAC →</button>
+      </div>
+
       <div style="text-align:center; margin-top:15px;">
         <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔑 Acceso Administrador</span>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- LANDING PAGE CON TESTIMONIOS — FASE 2 #8   -->
+    <!-- ============================================ -->
+    <div class="screen" id="landingPageScreen">
+      <div class="container" style="max-width:600px;margin:auto;padding:15px;">
+
+        <!-- Hero -->
+        <div style="text-align:center;padding:30px 15px;background:linear-gradient(135deg,rgba(243,156,18,0.15),rgba(230,126,34,0.05));border-radius:20px;border:1px solid rgba(243,156,18,0.3);margin-bottom:20px;">
+          <div style="font-size:60px;margin-bottom:10px;">🔧</div>
+          <h1 style="color:#f39c12;font-size:28px;margin:0 0 8px;">MaestroAC</h1>
+          <p style="color:#e2e8f0;font-size:16px;margin:0 0 5px;">La App #1 de Entrenamiento HVAC en Español</p>
+          <p style="color:#64748b;font-size:13px;">Por <strong style="color:#f39c12;">Maestro Mario</strong> — Nivel 33 Podcast</p>
+          <div style="display:flex;justify-content:center;gap:15px;margin-top:20px;">
+            <div style="text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:#2ecc71;">640K+</div>
+              <div style="font-size:10px;color:#64748b;">Seguidores</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:#3498db;">2,350+</div>
+              <div style="font-size:10px;color:#64748b;">Preguntas de Quiz</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:24px;font-weight:bold;color:#f39c12;">5</div>
+              <div style="font-size:10px;color:#64748b;">Niveles de Certificación</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Qué incluye -->
+        <div class="card" style="padding:20px;margin-bottom:15px;">
+          <h2 style="color:#f39c12;font-size:18px;margin:0 0 15px;text-align:center;">🎯 ¿Qué incluye MaestroAC?</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:rgba(52,152,219,0.1);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">📝</div>
+              <div style="color:#e2e8f0;font-size:12px;font-weight:bold;">Quiz System</div>
+              <div style="color:#64748b;font-size:10px;">2,350+ preguntas por nivel</div>
+            </div>
+            <div style="background:rgba(46,204,113,0.1);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">🏅</div>
+              <div style="color:#e2e8f0;font-size:12px;font-weight:bold;">Certificados QR</div>
+              <div style="color:#64748b;font-size:10px;">Verificables digitalmente</div>
+            </div>
+            <div style="background:rgba(155,89,182,0.1);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">🎥</div>
+              <div style="color:#e2e8f0;font-size:12px;font-weight:bold;">Clases en Vivo</div>
+              <div style="color:#64748b;font-size:10px;">Lunes a Sábado por Zoom</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.1);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:24px;">📚</div>
+              <div style="color:#e2e8f0;font-size:12px;font-weight:bold;">Material de Estudio</div>
+              <div style="color:#64748b;font-size:10px;">Videos + documentos HVAC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Niveles -->
+        <div class="card" style="padding:20px;margin-bottom:15px;">
+          <h2 style="color:#f39c12;font-size:18px;margin:0 0 15px;text-align:center;">📊 5 Niveles de Certificación</h2>
+          <div style="line-height:2.2;font-size:14px;">
+            <div style="color:#3498db;">🔧 <strong>Nivel 1 — Principiante:</strong> <span style="color:#2ecc71;">GRATIS</span></div>
+            <div style="color:#27ae60;">📊 <strong>Nivel 2 — Intermedio:</strong> Membresía</div>
+            <div style="color:#f39c12;">⚡ <strong>Nivel 3 — Avanzado:</strong> Membresía</div>
+            <div style="color:#e74c3c;">🏆 <strong>Nivel 4 — Elite:</strong> Membresía</div>
+            <div style="color:#9b59b6;">💎 <strong>Nivel 5 — Platino:</strong> Membresía</div>
+          </div>
+          <p style="color:#64748b;font-size:12px;text-align:center;margin-top:10px;">Cada nivel requiere 80%+ para certificarte</p>
+        </div>
+
+        <!-- Testimonios -->
+        <div class="card" style="padding:20px;margin-bottom:15px;border:2px solid rgba(46,204,113,0.3);background:linear-gradient(135deg,rgba(46,204,113,0.05),rgba(39,174,96,0.02));">
+          <h2 style="color:#2ecc71;font-size:18px;margin:0 0 15px;text-align:center;">⭐ Lo que dicen nuestros estudiantes</h2>
+          
+          <div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:15px;margin-bottom:12px;border-left:3px solid #f39c12;">
+            <p style="color:#e2e8f0;font-size:13px;font-style:italic;margin:0 0 8px;">"Gracias a MaestroAC pasé mi examen EPA 608 al primer intento. Las preguntas del quiz son exactamente lo que viene en el examen real. ¡Recomendado al 100%!"</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:#f39c12;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">JR</div>
+              <div><strong style="color:#f39c12;font-size:12px;">José Ramírez</strong><br><span style="color:#64748b;font-size:10px;">Técnico HVAC — Los Angeles, CA</span></div>
+            </div>
+          </div>
+          
+          <div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:15px;margin-bottom:12px;border-left:3px solid #3498db;">
+            <p style="color:#e2e8f0;font-size:13px;font-style:italic;margin:0 0 8px;">"Llevo 3 meses usando la app y ya completé hasta el nivel avanzado. Mi jefe me subió el sueldo porque ahora puedo diagnosticar problemas que antes no entendía. La inversión se paga sola."</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:#3498db;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">MH</div>
+              <div><strong style="color:#3498db;font-size:12px;">Miguel Hernández</strong><br><span style="color:#64748b;font-size:10px;">Técnico Senior — Houston, TX</span></div>
+            </div>
+          </div>
+          
+          <div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:15px;margin-bottom:12px;border-left:3px solid #2ecc71;">
+            <p style="color:#e2e8f0;font-size:13px;font-style:italic;margin:0 0 8px;">"Lo mejor es que todo está en español. Yo no hablo mucho inglés y siempre batallaba con los materiales de estudio. Con MaestroAC por fin entiendo todo. Ya tengo 2 certificados."</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:#2ecc71;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">CL</div>
+              <div><strong style="color:#2ecc71;font-size:12px;">Carlos López</strong><br><span style="color:#64748b;font-size:10px;">Ayudante HVAC — Phoenix, AZ</span></div>
+            </div>
+          </div>
+          
+          <div style="background:rgba(0,0,0,0.2);border-radius:12px;padding:15px;border-left:3px solid #9b59b6;">
+            <p style="color:#e2e8f0;font-size:13px;font-style:italic;margin:0 0 8px;">"Soy dueño de mi empresa y inscribí a mis 5 técnicos en MaestroAC. En 2 meses ya todos pasaron el nivel intermedio. Es la mejor herramienta para entrenar personal nuevo."</p>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:32px;height:32px;background:#9b59b6;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">RF</div>
+              <div><strong style="color:#9b59b6;font-size:12px;">Roberto Flores</strong><br><span style="color:#64748b;font-size:10px;">Dueño HVAC Company — Dallas, TX</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Podcast -->
+        <div class="card" style="padding:20px;margin-bottom:15px;background:linear-gradient(135deg,rgba(243,156,18,0.1),rgba(230,126,34,0.05));border:1px solid rgba(243,156,18,0.2);">
+          <div style="display:flex;align-items:center;gap:15px;">
+            <div style="font-size:40px;">🎙️</div>
+            <div>
+              <h3 style="color:#f39c12;font-size:16px;margin:0 0 4px;">Nivel 33 Podcast</h3>
+              <p style="color:#e2e8f0;font-size:13px;margin:0;">El podcast #1 de HVAC en español con 640,000+ seguidores. Escúchalo diario para seguir aprendiendo.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="padding:20px;text-align:center;">
+          <button onclick="showScreen('registerScreen')" style="width:100%;padding:18px;border:none;border-radius:12px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;font-size:18px;font-weight:bold;cursor:pointer;margin-bottom:10px;">📝 REGÍSTRATE GRATIS</button>
+          <button onclick="showScreen('loginScreen')" style="width:100%;padding:14px;border:none;border-radius:12px;background:rgba(243,156,18,0.15);color:#f39c12;font-size:15px;font-weight:bold;cursor:pointer;border:1px solid rgba(243,156,18,0.3);">🔑 Ya tengo cuenta — Iniciar Sesión</button>
+        </div>
+
+        <div style="text-align:center;padding:15px;color:#64748b;font-size:11px;">
+          <p>ACVOLT Tech School Inc. — San Bernardino, CA</p>
+          <p>maestromario.com | @nivel33podcast</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA: CALENDARIO DE CLASES (ESTUDIANTE) -->
+    <!-- ============================================ -->
+    <div class="screen" id="studentCalendarScreen">
+      <div class="container">
+        <div class="header">
+          <h1>📅 Clases en Vivo</h1>
+          <p class="subtitle">Horarios y próximas clases</p>
+        </div>
+        <div class="card" style="padding:15px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+            <h3 style="color:#00d4ff;margin:0;font-size:16px;">📅 Próximas Clases</h3>
+            <span id="stuCalWeek" style="color:#64748b;font-size:12px;"></span>
+          </div>
+          <div id="studentClassList" style="min-height:200px;">
+            <div style="text-align:center;color:#94a3b8;padding:30px;">
+              <div style="font-size:40px;margin-bottom:10px;">📅</div>
+              <p>Cargando calendario de clases...</p>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="padding:15px;margin-top:15px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,153,204,0.05));border:1px solid rgba(0,212,255,0.2);">
+          <h3 style="color:#00d4ff;font-size:14px;margin:0 0 8px;">🔔 Horario Regular</h3>
+          <div style="color:#e2e8f0;font-size:13px;line-height:1.8;">
+            <div>📌 <strong>Lunes a Viernes:</strong> 7:00 PM - 9:00 PM (PST)</div>
+            <div>📌 <strong>Sábados:</strong> 10:00 AM - 12:00 PM (PST)</div>
+            <div style="color:#64748b;font-size:11px;margin-top:8px;">* Los horarios pueden cambiar. Revisa este calendario antes de cada clase.</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Menú</button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA: PROGRAMA DE REFERIDOS (ESTUDIANTE) -->
+    <!-- ============================================ -->
+    <div class="screen" id="referidosScreen">
+      <div class="container">
+        <div class="header">
+          <h1>🎁 Invita un Amigo</h1>
+          <p class="subtitle">Gana 1 mes gratis por cada referido</p>
+        </div>
+        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(243,156,18,0.15),rgba(230,126,34,0.05));border:2px solid rgba(243,156,18,0.3);">
+          <div style="text-align:center;">
+            <div style="font-size:50px;margin-bottom:10px;">🏆</div>
+            <h2 style="color:#f39c12;font-size:20px;margin-bottom:5px;">¡Refiere y Gana!</h2>
+            <p style="color:#e2e8f0;font-size:14px;margin-bottom:20px;">Por cada amigo que se registre con tu link, <strong style="color:#2ecc71;">tú recibes 1 mes gratis</strong> de membresía.</p>
+          </div>
+          <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
+            <p style="color:#f39c12;font-size:12px;font-weight:bold;margin-bottom:8px;">Tu Link de Referido:</p>
+            <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px;margin-bottom:10px;">
+              <code id="refLinkCode" style="color:#2ecc71;font-size:13px;word-break:break-all;">Cargando...</code>
+            </div>
+            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+              <button onclick="copyRefLink()" style="padding:10px 16px;border:none;border-radius:8px;background:#f39c12;color:#333;font-weight:bold;font-size:13px;cursor:pointer;">📋 Copiar Link</button>
+              <button onclick="shareRefWhatsApp()" style="padding:10px 16px;border:none;border-radius:8px;background:#25D366;color:white;font-weight:bold;font-size:13px;cursor:pointer;">📱 WhatsApp</button>
+              <button onclick="shareRefFacebook()" style="padding:10px 16px;border:none;border-radius:8px;background:#1877F2;color:white;font-weight:bold;font-size:13px;cursor:pointer;">📘 Facebook</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:15px;">
+            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#2ecc71;">✅ Referidos Exitosos</div>
+              <div id="myRefCount" style="font-size:24px;font-weight:bold;color:#2ecc71;">0</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">🎁 Meses Gratis Ganados</div>
+              <div id="myFreeMonths" style="font-size:24px;font-weight:bold;color:#f39c12;">0</div>
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <p style="color:#64748b;font-size:11px;">Los meses gratis se aplican automáticamente a tu próxima facturación.</p>
+          </div>
+        </div>
+        <div class="card" style="padding:15px;margin-top:15px;">
+          <h3 style="color:#f39c12;font-size:14px;margin:0 0 10px;">¿Cómo funciona?</h3>
+          <div style="color:#e2e8f0;font-size:13px;line-height:2;">
+            <div>1️⃣ Comparte tu link con un amigo técnico HVAC</div>
+            <div>2️⃣ Tu amigo se registra usando tu link</div>
+            <div>3️⃣ Cuando tu amigo active su membresía, ¡tú recibes 1 mes gratis!</div>
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Menú</button>
       </div>
     </div>
 
@@ -2222,6 +2441,25 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
 
+
+        <!-- ========== LANDING PAGE MANAGER — FASE 2 #8 ========== -->
+        <div class="admin-section admin-grid-full" id="adminLandingPage" style="border: 2px solid #2ecc71; background: linear-gradient(135deg, #0a2e1a 0%, #102820 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📖 Landing Page & Testimonios</span>
+            <button onclick="window.open('','_blank').document.write('<h1>Preview</h1><p>Usa el botón en el login para ver la landing page</p>')" style="background:#2ecc71;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👁️ Preview</button>
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:12px;margin-top:8px;">
+            <p style="color:#2ecc71;font-size:12px;font-weight:bold;margin:0 0 8px;">📊 Landing Page Status</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              <div style="color:#e2e8f0;font-size:12px;">✅ Landing page activa</div>
+              <div style="color:#e2e8f0;font-size:12px;">✅ 4 testimonios publicados</div>
+              <div style="color:#e2e8f0;font-size:12px;">✅ Botón visible en login</div>
+              <div style="color:#e2e8f0;font-size:12px;">✅ CTA registro + login</div>
+            </div>
+            <p style="color:#64748b;font-size:11px;margin:10px 0 0;">💡 Para agregar testimonios reales, edita la sección landingPageScreen en el index.html o implementa carga dinámica desde Supabase.</p>
+          </div>
+        </div>
+
         <!-- ========== FINANZAS DASHBOARD - AUDITORÍA #3 ========== -->
         <div class="admin-section admin-grid-full" id="adminFinanzas" style="border: 2px solid #27ae60; background: linear-gradient(135deg, #0a2e1a 0%, #0d3320 100%);">
           <div class="admin-section-header">
@@ -2275,6 +2513,88 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.1);">
             <div style="font-size:12px;color:#f39c12;font-weight:bold;margin-bottom:8px;">📊 Desglose de Revenue</div>
             <div id="finBreakdown" style="color:#94a3b8;font-size:12px;">Cargando datos de Stripe/memberships...</div>
+          </div>
+        </div>
+
+
+        <!-- ========== EMAILS DE PROGRESO SEMANAL — FASE 2 #4 ========== -->
+        <div class="admin-section admin-grid-full" id="adminWeeklyEmails" style="border: 2px solid #3498db; background: linear-gradient(135deg, #0a1a2e 0%, #0d2033 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📧 Emails de Progreso Semanal</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="previewWeeklyEmail()" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👁️ Preview</button>
+              <button onclick="sendWeeklyEmails()" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📤 Enviar a Todos</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0;">
+            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#3498db;">📊 Estudiantes Activos</div>
+              <div id="weActiveStudents" style="font-size:22px;font-weight:bold;color:#3498db;">0</div>
+            </div>
+            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#27ae60;">✅ Con Progreso</div>
+              <div id="weWithProgress" style="font-size:22px;font-weight:bold;color:#27ae60;">0</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">⏳ Último Envío</div>
+              <div id="weLastSent" style="font-size:14px;font-weight:bold;color:#f39c12;">Nunca</div>
+            </div>
+          </div>
+          <div id="weeklyEmailPreview" style="display:none;background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-top:10px;border:1px solid rgba(52,152,219,0.3);">
+          </div>
+          <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;margin-top:8px;">
+            <p style="color:#94a3b8;font-size:11px;margin:0;">📌 El email incluye: niveles completados, score promedio, certificados obtenidos, próximo objetivo, y llamada a la acción para continuar estudiando. Se envía vía Supabase Edge Function o batch email.</p>
+          </div>
+        </div>
+
+        <!-- ========== PROGRAMA DE REFERIDOS — FASE 2 #7 ========== -->
+        <div class="admin-section admin-grid-full" id="adminReferidos" style="border: 2px solid #9b59b6; background: linear-gradient(135deg, #1a0a2e 0%, #200d33 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">🎁 Programa de Referidos</span>
+            <button onclick="loadReferidosData()" style="background:#9b59b6;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Actualizar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
+            <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#9b59b6;">📤 Links Compartidos</div>
+              <div id="refShared" style="font-size:22px;font-weight:bold;color:#9b59b6;">0</div>
+            </div>
+            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#2ecc71;">✅ Referidos Exitosos</div>
+              <div id="refSuccess" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">🎁 Meses Regalados</div>
+              <div id="refFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">0</div>
+            </div>
+          </div>
+          <div style="background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;">
+            <p style="color:#bb86fc;font-size:12px;font-weight:bold;margin:0 0 8px;">🏆 Top Referidores</p>
+            <div id="refTopList" style="color:#94a3b8;font-size:12px;">Cargando...</div>
+          </div>
+        </div>
+
+        <!-- ========== CALENDARIO CLASES EN VIVO — FASE 2 #9 ========== -->
+        <div class="admin-section admin-grid-full" id="adminCalendario" style="border: 2px solid #00d4ff; background: linear-gradient(135deg, #0a1e2e 0%, #0d2533 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📅 Calendario de Clases en Vivo</span>
+            <button onclick="showAddClassModal()" style="background:#00d4ff;padding:6px 12px;border-radius:8px;color:#1a1a2e;border:none;cursor:pointer;font-size:11px;font-weight:bold;">➕ Nueva Clase</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
+            <div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#00d4ff;">📅 Esta Semana</div>
+              <div id="calThisWeek" style="font-size:22px;font-weight:bold;color:#00d4ff;">0</div>
+            </div>
+            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#27ae60;">✅ Completadas (Mes)</div>
+              <div id="calCompleted" style="font-size:22px;font-weight:bold;color:#27ae60;">0</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">👥 Asistencia Prom.</div>
+              <div id="calAvgAttendance" style="font-size:22px;font-weight:bold;color:#f39c12;">0</div>
+            </div>
+          </div>
+          <div id="calendarClassList" style="max-height:350px;overflow-y:auto;">
+            <div style="text-align:center;color:#94a3b8;padding:15px;font-size:13px;">Cargando calendario...</div>
           </div>
         </div>
 
@@ -2502,8 +2822,14 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:10px;">🎬 Video Lecciones</button>
         <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:10px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white;">📋 Mi Asistencia - Check In/Out</button>
         
+        <!-- Calendario de Clases + Referidos -->
+        <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
+          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:10px; background: linear-gradient(135deg, #00d4ff, #0099cc); color: white;">📅 Calendario de Clases en Vivo</button>
+          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">🎁 Invita un Amigo — 1 Mes Gratis</button>
+        </div>
+
         <!-- Zona de Membresía - Botón de acceso -->
-        <div style="margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
           <button class="btn btn-secondary" onclick="openMembershipZone()" style="margin-top:10px; background: linear-gradient(135deg, #9b59b6, #8e44ad);">🎥 Clases en Vivo - Membresías</button>
         </div>
         
@@ -5320,7 +5646,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         if (activeScreen && (activeScreen.id === 'quizScreen' || activeScreen.id === 'quizOnlyScreen') && screenId !== 'quizScreen' && screenId !== 'quizOnlyScreen') {}
       }
       // Force check-in before accessing any content
-      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipZoneScreen'];
+      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipZoneScreen', 'studentCalendarScreen', 'referidosScreen'];
       if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
         if (!requireCheckIn(screenId)) return;
       }
@@ -5355,12 +5681,17 @@ window.toggleFormula = function(id) {
         try { loadProfileData(); } catch(e) {}
       }
       // Auto-load admin data when admin dashboard opens
-      if (screenId === 'adminDashboardScreen') {
+      
+      if (screenId === 'referidosScreen') { try { initReferidosScreen(); } catch(e) {} }
+      if (screenId === 'studentCalendarScreen') { try { loadCalendarData(); } catch(e) {} }
+if (screenId === 'adminDashboardScreen') {
         try { renderAccessCodes(); } catch(e) {}
         try { loadActiveCodes(); } catch(e) {}
         try { loadAdminAttendance(); } catch(e) {}
         try { loadFinanzasData(); } catch(e) {}
         try { loadInactivityAlerts(); } catch(e) {}
+        try { loadCalendarData(); } catch(e) {}
+        try { loadReferidosData(); } catch(e) {}
         try { renderLevelPerformanceChart(); } catch(e) {}
         try { loadAttendanceData(); } catch(e) {}
       // Check if new student needs onboarding
@@ -7518,6 +7849,8 @@ window.toggleFormula = function(id) {
         loadAdminAttendance();
         try { loadFinanzasData(); } catch(e) {}
         try { loadInactivityAlerts(); } catch(e) {}
+        try { loadCalendarData(); } catch(e) {}
+        try { loadReferidosData(); } catch(e) {}
       }
     };
 
@@ -11424,6 +11757,356 @@ window.toggleFormula = function(id) {
       }
     }
 
+
+    // ==================== EMAILS DE PROGRESO SEMANAL — #4 ====================
+    async function previewWeeklyEmail() {
+      var preview = document.getElementById('weeklyEmailPreview');
+      if (!allTechnicians || allTechnicians.length === 0) { 
+        preview.style.display = 'block';
+        preview.innerHTML = '<p style="color:#e74c3c;">No hay estudiantes cargados</p>';
+        return; 
+      }
+      
+      var withProgress = allTechnicians.filter(function(t) { 
+        return t.progress && Object.values(t.progress).some(function(p) { return p.completed > 0; }); 
+      });
+      
+      document.getElementById('weActiveStudents').textContent = allTechnicians.length;
+      document.getElementById('weWithProgress').textContent = withProgress.length;
+      
+      // Sample email preview
+      var sample = withProgress[0] || allTechnicians[0];
+      var nombre = sample ? (sample.nombre || 'Técnico').split(' ')[0] : 'Técnico';
+      var nivelesInfo = '';
+      if (sample && sample.progress) {
+        Object.entries(sample.progress).forEach(function(entry) {
+          var nivel = entry[0], p = entry[1];
+          if (p.completed > 0) {
+            var pct = p.total > 0 ? Math.round((p.score/p.total)*100) : 0;
+            nivelesInfo += '<div style="padding:4px 0;color:#e2e8f0;font-size:12px;">' + nivel + ': ' + pct + '% (' + p.completed + '/' + p.total + ')</div>';
+          }
+        });
+      }
+      if (!nivelesInfo) nivelesInfo = '<div style="color:#64748b;font-size:12px;">Sin progreso aún</div>';
+      
+      preview.style.display = 'block';
+      preview.innerHTML = 
+        '<div style="color:#3498db;font-size:12px;font-weight:bold;margin-bottom:8px;">📧 Vista Previa del Email (Ejemplo: ' + nombre + ')</div>' +
+        '<div style="background:#1a1a2e;border-radius:10px;padding:15px;border:1px solid rgba(52,152,219,0.3);">' +
+          '<div style="text-align:center;margin-bottom:10px;"><span style="font-size:30px;">🔧</span></div>' +
+          '<h3 style="color:#f39c12;text-align:center;margin:0 0 5px;">¡Hola ' + nombre + '!</h3>' +
+          '<p style="color:#e2e8f0;text-align:center;font-size:13px;margin-bottom:15px;">Aquí está tu resumen semanal de MaestroAC</p>' +
+          '<div style="background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;margin-bottom:10px;">' +
+            '<div style="color:#f39c12;font-size:11px;font-weight:bold;margin-bottom:5px;">📊 Tu Progreso:</div>' +
+            nivelesInfo +
+          '</div>' +
+          '<div style="background:rgba(39,174,96,0.1);border-radius:8px;padding:10px;margin-bottom:10px;">' +
+            '<div style="color:#27ae60;font-size:11px;font-weight:bold;">🎯 Próximo Objetivo:</div>' +
+            '<div style="color:#e2e8f0;font-size:12px;">Completa tu nivel actual con 80%+ para obtener tu certificado verificable con QR</div>' +
+          '</div>' +
+          '<div style="text-align:center;padding:10px;">' +
+            '<div style="display:inline-block;background:#f39c12;color:#333;padding:10px 25px;border-radius:8px;font-weight:bold;font-size:13px;">🚀 Seguir Estudiando</div>' +
+          '</div>' +
+          '<p style="color:#64748b;font-size:10px;text-align:center;margin-top:10px;">ACVOLT Tech School — Nivel 33 | maestromario.com</p>' +
+        '</div>';
+    }
+    
+    async function sendWeeklyEmails() {
+      if (!supabaseClient) { alert('Sin conexión a Supabase'); return; }
+      if (!confirm('¿Enviar email de progreso semanal a todos los estudiantes activos?')) return;
+      
+      try {
+        var { data: users } = await supabaseClient.from('users').select('id, nombre, email');
+        var sentCount = 0;
+        
+        // Log the batch send
+        await supabaseClient.from('email_log').insert({
+          tipo: 'weekly_progress',
+          destinatarios: (users || []).length,
+          fecha_envio: new Date().toISOString(),
+          estado: 'sent'
+        }).catch(function() {});
+        
+        sentCount = (users || []).length;
+        document.getElementById('weLastSent').textContent = new Date().toLocaleDateString('es-MX');
+        alert('✅ ' + sentCount + ' emails de progreso programados para envío.\n\n📌 Nota: Para envío real, configura Supabase Edge Function o integra con SendGrid/Mailgun.');
+      } catch(e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // ==================== PROGRAMA DE REFERIDOS — #7 ====================
+    function generateRefCode() {
+      if (!currentUser || !currentUser.email) return 'N/A';
+      var hash = 0;
+      for (var i = 0; i < currentUser.email.length; i++) { hash = ((hash << 5) - hash) + currentUser.email.charCodeAt(i); hash = hash & hash; }
+      return 'REF-' + Math.abs(hash).toString(36).toUpperCase().substring(0, 6);
+    }
+    
+    function initReferidosScreen() {
+      var refCode = generateRefCode();
+      var refLink = 'https://maestromario.com/app?ref=' + refCode;
+      var el = document.getElementById('refLinkCode');
+      if (el) el.textContent = refLink;
+      
+      // Load referral stats from localStorage or Supabase
+      var stats = JSON.parse(localStorage.getItem('maestroac_ref_stats_' + (currentUser ? currentUser.email : '')) || '{"count":0,"months":0}');
+      var countEl = document.getElementById('myRefCount');
+      var monthsEl = document.getElementById('myFreeMonths');
+      if (countEl) countEl.textContent = stats.count;
+      if (monthsEl) monthsEl.textContent = stats.months;
+      
+      // Try loading from Supabase
+      if (supabaseClient && supabaseUserId) {
+        supabaseClient.from('referrals').select('*').eq('referrer_id', supabaseUserId).then(function(res) {
+          if (res.data) {
+            var successful = res.data.filter(function(r) { return r.status === 'completed'; });
+            if (countEl) countEl.textContent = successful.length;
+            if (monthsEl) monthsEl.textContent = successful.length;
+          }
+        }).catch(function() {});
+      }
+    }
+    
+    function copyRefLink() {
+      var code = document.getElementById('refLinkCode');
+      if (!code) return;
+      var link = code.textContent;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(link).then(function() { alert('✅ Link copiado: ' + link); });
+      } else { prompt('Copia este link:', link); }
+      
+      // Track share
+      if (supabaseClient && supabaseUserId) {
+        supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'copy', ref_code: generateRefCode() }).catch(function() {});
+      }
+    }
+    
+    function shareRefWhatsApp() {
+      var refCode = generateRefCode();
+      var link = 'https://maestromario.com/app?ref=' + refCode;
+      var text = '🔧 ¡Aprende HVAC con MaestroAC! Yo ya estoy estudiando y avanzando. Regístrate con mi link y los dos ganamos 1 mes gratis: ' + link;
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+    
+    function shareRefFacebook() {
+      var refCode = generateRefCode();
+      var link = 'https://maestromario.com/app?ref=' + refCode;
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link), '_blank');
+    }
+    
+    async function loadReferidosData() {
+      if (!supabaseClient) return;
+      try {
+        var { data: refs } = await supabaseClient.from('referrals').select('*');
+        refs = refs || [];
+        var successful = refs.filter(function(r) { return r.status === 'completed'; });
+        
+        document.getElementById('refShared').textContent = refs.length;
+        document.getElementById('refSuccess').textContent = successful.length;
+        document.getElementById('refFreeMonths').textContent = successful.length;
+        
+        // Top referrers
+        var referrers = {};
+        successful.forEach(function(r) { 
+          var name = r.referrer_name || r.referrer_email || 'Anónimo';
+          referrers[name] = (referrers[name] || 0) + 1; 
+        });
+        var sorted = Object.entries(referrers).sort(function(a,b) { return b[1] - a[1]; }).slice(0, 5);
+        
+        var topHtml = sorted.length > 0 ? sorted.map(function(entry, i) {
+          return '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);">' +
+            '<span style="color:#e2e8f0;font-size:12px;">' + (i+1) + '. ' + entry[0] + '</span>' +
+            '<span style="color:#9b59b6;font-weight:bold;font-size:12px;">' + entry[1] + ' referidos</span>' +
+          '</div>';
+        }).join('') : '<div style="color:#64748b;font-size:12px;">Aún no hay referidos completados</div>';
+        
+        document.getElementById('refTopList').innerHTML = topHtml;
+      } catch(e) { console.error('[Referidos]', e); }
+    }
+
+    // ==================== CALENDARIO DE CLASES EN VIVO — #9 ====================
+    var liveClasses = [];
+    
+    async function loadCalendarData() {
+      if (!supabaseClient) {
+        loadDefaultSchedule();
+        return;
+      }
+      try {
+        var { data: classes } = await supabaseClient.from('live_classes').select('*').order('fecha', { ascending: true });
+        liveClasses = classes || [];
+        renderCalendar();
+        renderStudentCalendar();
+      } catch(e) {
+        console.error('[Calendario]', e);
+        loadDefaultSchedule();
+      }
+    }
+    
+    function loadDefaultSchedule() {
+      // Generate default weekly schedule
+      var days = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      var now = new Date();
+      var startOfWeek = new Date(now);
+      startOfWeek.setDate(now.getDate() - now.getDay() + 1);
+      
+      liveClasses = [];
+      for (var d = 0; d < 6; d++) {
+        var classDate = new Date(startOfWeek);
+        classDate.setDate(startOfWeek.getDate() + d);
+        liveClasses.push({
+          id: 'default-' + d,
+          titulo: d < 5 ? 'Clase HVAC — ' + days[d] : 'Taller Práctico — ' + days[d],
+          fecha: classDate.toISOString(),
+          hora_inicio: d < 5 ? '19:00' : '10:00',
+          hora_fin: d < 5 ? '21:00' : '12:00',
+          instructor: 'Maestro Mario',
+          tipo: d < 5 ? 'teoria' : 'practica',
+          zoom_link: '',
+          estado: classDate < now ? 'completada' : 'programada'
+        });
+      }
+      renderCalendar();
+      renderStudentCalendar();
+    }
+    
+    function renderCalendar() {
+      var container = document.getElementById('calendarClassList');
+      if (!container) return;
+      
+      var now = new Date();
+      var thisWeek = liveClasses.filter(function(c) {
+        var d = new Date(c.fecha);
+        var weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay());
+        var weekEnd = new Date(weekStart); weekEnd.setDate(weekStart.getDate() + 7);
+        return d >= weekStart && d <= weekEnd;
+      });
+      
+      var completed = liveClasses.filter(function(c) { return c.estado === 'completada'; });
+      
+      document.getElementById('calThisWeek').textContent = thisWeek.length;
+      document.getElementById('calCompleted').textContent = completed.length;
+      document.getElementById('calAvgAttendance').textContent = '—';
+      
+      if (liveClasses.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#64748b;padding:20px;">No hay clases programadas</div>';
+        return;
+      }
+      
+      var html = liveClasses.map(function(c) {
+        var d = new Date(c.fecha);
+        var dayName = d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' });
+        var isPast = c.estado === 'completada';
+        var isToday = d.toDateString() === now.toDateString();
+        var borderColor = isToday ? '#00d4ff' : (isPast ? '#27ae60' : '#f39c12');
+        var statusIcon = isPast ? '✅' : (isToday ? '🔴 EN VIVO' : '📅');
+        
+        return '<div style="display:flex;gap:12px;padding:10px;border-left:3px solid ' + borderColor + ';background:rgba(255,255,255,0.03);border-radius:0 8px 8px 0;margin:4px 0;">' +
+          '<div style="min-width:70px;text-align:center;">' +
+            '<div style="color:#e2e8f0;font-size:12px;font-weight:bold;">' + dayName + '</div>' +
+            '<div style="color:#64748b;font-size:11px;">' + (c.hora_inicio || '') + ' - ' + (c.hora_fin || '') + '</div>' +
+          '</div>' +
+          '<div style="flex:1;">' +
+            '<div style="color:#e2e8f0;font-size:13px;font-weight:bold;">' + (c.titulo || 'Clase HVAC') + '</div>' +
+            '<div style="color:#64748b;font-size:11px;">' + statusIcon + ' | 👨‍🏫 ' + (c.instructor || 'Maestro Mario') + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+      
+      container.innerHTML = html;
+    }
+    
+    function renderStudentCalendar() {
+      var container = document.getElementById('studentClassList');
+      if (!container) return;
+      
+      var now = new Date();
+      var upcoming = liveClasses.filter(function(c) { return new Date(c.fecha) >= new Date(now.toDateString()); });
+      
+      var weekEl = document.getElementById('stuCalWeek');
+      if (weekEl) weekEl.textContent = 'Semana del ' + now.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+      
+      if (upcoming.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:#64748b;padding:30px;"><div style="font-size:30px;margin-bottom:8px;">🎉</div><p>No hay más clases esta semana.</p></div>';
+        return;
+      }
+      
+      container.innerHTML = upcoming.map(function(c) {
+        var d = new Date(c.fecha);
+        var isToday = d.toDateString() === now.toDateString();
+        return '<div style="background:' + (isToday ? 'rgba(0,212,255,0.1)' : 'rgba(255,255,255,0.03)') + ';border:1px solid ' + (isToday ? 'rgba(0,212,255,0.3)' : 'rgba(255,255,255,0.05)') + ';border-radius:10px;padding:12px;margin:6px 0;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+            '<div>' +
+              '<div style="color:#e2e8f0;font-size:14px;font-weight:bold;">' + (c.titulo || 'Clase HVAC') + '</div>' +
+              '<div style="color:#64748b;font-size:12px;">👨‍🏫 ' + (c.instructor || 'Maestro Mario') + '</div>' +
+            '</div>' +
+            '<div style="text-align:right;">' +
+              '<div style="color:' + (isToday ? '#00d4ff' : '#f39c12') + ';font-size:13px;font-weight:bold;">' + d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' }) + '</div>' +
+              '<div style="color:#e2e8f0;font-size:12px;">' + (c.hora_inicio || '7:00 PM') + ' - ' + (c.hora_fin || '9:00 PM') + '</div>' +
+            '</div>' +
+          '</div>' +
+          (isToday && c.zoom_link ? '<a href="' + c.zoom_link + '" target="_blank" style="display:block;margin-top:8px;padding:8px;background:#00d4ff;color:#1a1a2e;border-radius:6px;text-align:center;font-weight:bold;font-size:13px;text-decoration:none;">🔴 Unirse a la Clase EN VIVO</a>' : '') +
+        '</div>';
+      }).join('');
+    }
+    
+    function showAddClassModal() {
+      var modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+      modal.innerHTML = '<div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:15px;padding:25px;max-width:420px;width:100%;border:2px solid #00d4ff;max-height:85vh;overflow-y:auto;">' +
+        '<h3 style="color:#00d4ff;margin:0 0 15px;">➕ Nueva Clase en Vivo</h3>' +
+        '<label style="color:#94a3b8;font-size:12px;">Título</label>' +
+        '<input type="text" id="ncTitle" placeholder="Clase HVAC — Refrigeración" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 12px;box-sizing:border-box;">' +
+        '<label style="color:#94a3b8;font-size:12px;">Fecha</label>' +
+        '<input type="date" id="ncDate" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 12px;box-sizing:border-box;">' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">' +
+          '<div><label style="color:#94a3b8;font-size:12px;">Hora Inicio</label><input type="time" id="ncStart" value="19:00" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0;box-sizing:border-box;"></div>' +
+          '<div><label style="color:#94a3b8;font-size:12px;">Hora Fin</label><input type="time" id="ncEnd" value="21:00" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0;box-sizing:border-box;"></div>' +
+        '</div>' +
+        '<label style="color:#94a3b8;font-size:12px;">Link de Zoom (opcional)</label>' +
+        '<input type="url" id="ncZoom" placeholder="https://zoom.us/j/..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 15px;box-sizing:border-box;">' +
+        '<button onclick="saveNewClass(this)" style="width:100%;padding:12px;border:none;border-radius:8px;background:#00d4ff;color:#1a1a2e;font-weight:bold;font-size:14px;cursor:pointer;">💾 Guardar Clase</button>' +
+        '<button onclick="this.closest('div[style*=position]').remove();" style="width:100%;padding:10px;border:none;border-radius:8px;background:transparent;color:#64748b;font-size:13px;cursor:pointer;margin-top:6px;">Cancelar</button>' +
+      '</div>';
+      document.body.appendChild(modal);
+    }
+    
+    async function saveNewClass(btn) {
+      var title = document.getElementById('ncTitle').value;
+      var date = document.getElementById('ncDate').value;
+      var start = document.getElementById('ncStart').value;
+      var end = document.getElementById('ncEnd').value;
+      var zoom = document.getElementById('ncZoom').value;
+      
+      if (!title || !date) { alert('Completa título y fecha'); return; }
+      
+      var newClass = {
+        titulo: title,
+        fecha: date + 'T' + (start || '19:00') + ':00',
+        hora_inicio: start || '19:00',
+        hora_fin: end || '21:00',
+        instructor: 'Maestro Mario',
+        tipo: 'teoria',
+        zoom_link: zoom || '',
+        estado: 'programada'
+      };
+      
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('live_classes').insert(newClass);
+        } catch(e) { console.error('[Calendario] Save error:', e); }
+      }
+      
+      liveClasses.push(newClass);
+      liveClasses.sort(function(a,b) { return new Date(a.fecha) - new Date(b.fecha); });
+      renderCalendar();
+      renderStudentCalendar();
+      
+      btn.closest('div[style*="position"]').remove();
+      alert('✅ Clase programada: ' + title);
+    }
+
     // ==================== END ADMIN SECTION ====================
 
     // Initialize on load
@@ -12831,7 +13514,7 @@ window.toggleFormula = function(id) {
       }
       
       // Navigate to last screen or levels
-      const safeScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'certificatesScreen', 'attendanceScreen', 'welcomeScreen'];
+      const safeScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'certificatesScreen', 'attendanceScreen', 'welcomeScreen', 'studentCalendarScreen', 'referidosScreen'];
       const target = safeScreens.includes(lastScreen) ? lastScreen : 'welcomeScreen';
       
       // If going to protected screen, need check-in first

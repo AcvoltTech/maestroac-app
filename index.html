@@ -180,6 +180,16 @@
     .cert-congrats-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.92); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; animation: fadeIn 0.3s; }
     @keyframes confettiFall { 0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
     .confetti-piece { position: fixed; width: 10px; height: 10px; top: -10px; animation: confettiFall 3s ease-in forwards; z-index: 10000; }
+
+    /* Onboarding Styles */
+    .onboarding-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 9998; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .onboarding-card { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: 20px; padding: 30px; max-width: 420px; width: 100%; text-align: center; border: 2px solid #f39c12; max-height: 90vh; overflow-y: auto; }
+    .onboarding-step { display: none; }
+    .onboarding-step.active { display: block; }
+    .onboarding-dots { display: flex; justify-content: center; gap: 8px; margin: 20px 0 15px; }
+    .onboarding-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.3s; }
+    .onboarding-dot.active { background: #f39c12; transform: scale(1.3); }
+    .onboarding-dot.completed { background: #27ae60; }
     .certificates-header { text-align: center; padding: 20px 0; }
     .certificate-card { background: #ffffff; border-radius: 15px; padding: 25px; margin: 15px 0; border: 2px solid rgba(255,215,0,0.3); position: relative; overflow: hidden; }
     .certificate-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #f39c12, #ffd700, #f39c12); }
@@ -2210,6 +2220,92 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             </div>
           </div>
         </div>
+
+
+        <!-- ========== FINANZAS DASHBOARD - AUDITORÍA #3 ========== -->
+        <div class="admin-section admin-grid-full" id="adminFinanzas" style="border: 2px solid #27ae60; background: linear-gradient(135deg, #0a2e1a 0%, #0d3320 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">💰 Finanzas — Métricas de Revenue</span>
+            <button onclick="loadFinanzasData()" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Actualizar</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:15px 0;">
+            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#27ae60;font-weight:bold;">MRR (Ingreso Mensual)</div>
+              <div id="finMRR" style="font-size:28px;font-weight:bold;color:#2ecc71;margin:5px 0;">$0</div>
+              <div style="font-size:10px;color:#64748b;">Membresías activas × precio</div>
+            </div>
+            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#3498db;font-weight:bold;">Estudiantes Pagando</div>
+              <div id="finPaying" style="font-size:28px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
+              <div id="finPayingPct" style="font-size:10px;color:#64748b;">0% del total</div>
+            </div>
+            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Churn Rate (Mensual)</div>
+              <div id="finChurn" style="font-size:28px;font-weight:bold;color:#e74c3c;margin:5px 0;">0%</div>
+              <div style="font-size:10px;color:#64748b;">Cancelaciones / Total</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#f39c12;font-weight:bold;">LTV Promedio</div>
+              <div id="finLTV" style="font-size:28px;font-weight:bold;color:#f39c12;margin:5px 0;">$0</div>
+              <div style="font-size:10px;color:#64748b;">Valor promedio por estudiante</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:15px;">
+            <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#9b59b6;font-weight:bold;">Revenue Acumulado</div>
+              <div id="finTotal" style="font-size:24px;font-weight:bold;color:#9b59b6;margin:5px 0;">$0</div>
+              <div style="font-size:10px;color:#64748b;">Histórico total</div>
+            </div>
+            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#2ecc71;font-weight:bold;">Membresías Activas</div>
+              <div id="finActive" style="font-size:24px;font-weight:bold;color:#2ecc71;margin:5px 0;">0</div>
+              <div style="font-size:10px;color:#64748b;">Status: active</div>
+            </div>
+            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Cancelaciones (30 días)</div>
+              <div id="finCanceled" style="font-size:24px;font-weight:bold;color:#e74c3c;margin:5px 0;">0</div>
+              <div style="font-size:10px;color:#64748b;">Membresías canceladas</div>
+            </div>
+            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:15px;text-align:center;">
+              <div style="font-size:11px;color:#3498db;font-weight:bold;">Gratis / Trial</div>
+              <div id="finFree" style="font-size:24px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
+              <div style="font-size:10px;color:#64748b;">Sin membresía pagada</div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:12px;color:#f39c12;font-weight:bold;margin-bottom:8px;">📊 Desglose de Revenue</div>
+            <div id="finBreakdown" style="color:#94a3b8;font-size:12px;">Cargando datos de Stripe/memberships...</div>
+          </div>
+        </div>
+
+        <!-- ========== ALERTAS DE INACTIVIDAD - AUDITORÍA #4 ========== -->
+        <div class="admin-section admin-grid-full" id="adminInactivityAlerts" style="border: 2px solid #e67e22; background: linear-gradient(135deg, #2e1a0a 0%, #332010 100%);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">⚠️ Alertas de Inactividad (7+ días)</span>
+            <div style="display:flex;gap:6px;">
+              <button onclick="loadInactivityAlerts()" style="background:#e67e22;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Escanear</button>
+              <button onclick="createInactivityTickets()" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🎫 Crear Tickets</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;">
+            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#e74c3c;">🔴 Crítico (14+ días)</div>
+              <div id="inactCritical" style="font-size:24px;font-weight:bold;color:#e74c3c;">0</div>
+            </div>
+            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#f39c12;">🟡 Alerta (7-13 días)</div>
+              <div id="inactWarning" style="font-size:24px;font-weight:bold;color:#f39c12;">0</div>
+            </div>
+            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:10px;color:#27ae60;">🟢 Activos</div>
+              <div id="inactActive" style="font-size:24px;font-weight:bold;color:#27ae60;">0</div>
+            </div>
+          </div>
+          <div id="inactivityList" style="max-height:300px;overflow-y:auto;">
+            <div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;">Haz clic en "Escanear" para detectar estudiantes inactivos</div>
+          </div>
+        </div>
+
 
       </div>
     </div>
@@ -5263,8 +5359,12 @@ window.toggleFormula = function(id) {
         try { renderAccessCodes(); } catch(e) {}
         try { loadActiveCodes(); } catch(e) {}
         try { loadAdminAttendance(); } catch(e) {}
+        try { loadFinanzasData(); } catch(e) {}
+        try { loadInactivityAlerts(); } catch(e) {}
         try { renderLevelPerformanceChart(); } catch(e) {}
         try { loadAttendanceData(); } catch(e) {}
+      // Check if new student needs onboarding
+      try { checkShowOnboarding(); } catch(e) {}
         try { loadAdminStudentActivity(); } catch(e) {}
         try { loadAdminExamRequests(); } catch(e) {}
         try { loadAdminInbox(); } catch(e) {}
@@ -7416,6 +7516,8 @@ window.toggleFormula = function(id) {
       if (screenId === 'adminDashboardScreen') {
         renderAdminDashboard();
         loadAdminAttendance();
+        try { loadFinanzasData(); } catch(e) {}
+        try { loadInactivityAlerts(); } catch(e) {}
       }
     };
 
@@ -11050,6 +11152,277 @@ window.toggleFormula = function(id) {
     setInterval(function() {
       if (document.getElementById('adminDashboardScreen').classList.contains('active')) { loadAdminAttendance(); }
     }, 30000);
+
+
+    // ==================== FINANZAS DASHBOARD — AUDITORÍA #3 ====================
+    async function loadFinanzasData() {
+      if (!supabaseClient) { document.getElementById('finBreakdown').textContent = '⚠️ Sin conexión a Supabase'; return; }
+      try {
+        // Get membership data
+        var { data: memberships } = await supabaseClient.from('memberships').select('*');
+        memberships = memberships || [];
+        
+        var totalUsers = allTechnicians ? allTechnicians.length : 0;
+        var now = new Date();
+        var thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        
+        // Calculate metrics
+        var activeMemberships = memberships.filter(function(m) { return m.status === 'active' || m.status === 'activa'; });
+        var canceledRecent = memberships.filter(function(m) { 
+          return (m.status === 'canceled' || m.status === 'cancelada' || m.status === 'cancelled') && 
+                 m.updated_at && new Date(m.updated_at) >= thirtyDaysAgo; 
+        });
+        var payingCount = activeMemberships.length;
+        var canceledCount = canceledRecent.length;
+        
+        // Estimate price per membership (try to get from data, default $49)
+        var avgPrice = 49;
+        if (activeMemberships.length > 0 && activeMemberships[0].price) {
+          avgPrice = activeMemberships[0].price;
+        }
+        
+        var mrr = payingCount * avgPrice;
+        var churnRate = payingCount > 0 ? ((canceledCount / (payingCount + canceledCount)) * 100).toFixed(1) : 0;
+        var ltv = churnRate > 0 ? Math.round(avgPrice / (parseFloat(churnRate) / 100)) : avgPrice * 12;
+        var totalRevenue = memberships.filter(function(m) { return m.status === 'active' || m.status === 'activa' || m.status === 'completed'; }).length * avgPrice;
+        var freeUsers = Math.max(0, totalUsers - payingCount);
+        
+        // Update UI
+        document.getElementById('finMRR').textContent = '$' + mrr.toLocaleString();
+        document.getElementById('finPaying').textContent = payingCount;
+        document.getElementById('finPayingPct').textContent = (totalUsers > 0 ? Math.round((payingCount/totalUsers)*100) : 0) + '% del total (' + totalUsers + ')';
+        document.getElementById('finChurn').textContent = churnRate + '%';
+        document.getElementById('finLTV').textContent = '$' + ltv.toLocaleString();
+        document.getElementById('finTotal').textContent = '$' + totalRevenue.toLocaleString();
+        document.getElementById('finActive').textContent = payingCount;
+        document.getElementById('finCanceled').textContent = canceledCount;
+        document.getElementById('finFree').textContent = freeUsers;
+        
+        // Breakdown
+        var breakdown = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+        breakdown += '<div style="color:#2ecc71;">✅ Pagando: <strong>' + payingCount + '</strong></div>';
+        breakdown += '<div style="color:#e74c3c;">❌ Cancelados (30d): <strong>' + canceledCount + '</strong></div>';
+        breakdown += '<div style="color:#3498db;">📊 Conversión: <strong>' + (totalUsers > 0 ? Math.round((payingCount/totalUsers)*100) : 0) + '%</strong></div>';
+        breakdown += '<div style="color:#f39c12;">💰 Precio/mes: <strong>$' + avgPrice + '</strong></div>';
+        breakdown += '</div>';
+        if (churnRate > 5) {
+          breakdown += '<div style="margin-top:10px;padding:8px;background:rgba(231,76,60,0.2);border-radius:8px;color:#e74c3c;font-size:11px;">⚠️ Churn alto (' + churnRate + '%). Considera activar alertas de inactividad para retener estudiantes.</div>';
+        }
+        document.getElementById('finBreakdown').innerHTML = breakdown;
+        
+        console.log('[Finanzas] MRR: $' + mrr + ' | Paying: ' + payingCount + ' | Churn: ' + churnRate + '%');
+      } catch(e) { 
+        console.error('[Finanzas] Error:', e);
+        document.getElementById('finBreakdown').innerHTML = '<span style="color:#e74c3c;">Error cargando datos: ' + e.message + '</span>';
+      }
+    }
+
+    // ==================== ALERTAS DE INACTIVIDAD — AUDITORÍA #4 ====================
+    var inactiveStudentsList = [];
+    
+    async function loadInactivityAlerts() {
+      if (!supabaseClient) return;
+      var container = document.getElementById('inactivityList');
+      container.innerHTML = '<div style="text-align:center;color:#f39c12;padding:15px;">⏳ Escaneando actividad de estudiantes...</div>';
+      
+      try {
+        var { data: users } = await supabaseClient.from('users').select('id, nombre, email, ultimo_acceso, fecha_registro');
+        users = users || [];
+        
+        var now = new Date();
+        var sevenDays = 7 * 24 * 60 * 60 * 1000;
+        var fourteenDays = 14 * 24 * 60 * 60 * 1000;
+        
+        var critical = []; // 14+ days
+        var warning = []; // 7-13 days
+        var activeCount = 0;
+        
+        users.forEach(function(u) {
+          var lastActive = u.ultimo_acceso ? new Date(u.ultimo_acceso) : (u.fecha_registro ? new Date(u.fecha_registro) : null);
+          if (!lastActive) return;
+          
+          var daysSince = Math.floor((now.getTime() - lastActive.getTime()) / (24*60*60*1000));
+          
+          if (daysSince >= 14) {
+            critical.push({ id: u.id, nombre: u.nombre || u.email || 'Sin nombre', email: u.email, days: daysSince, lastActive: lastActive });
+          } else if (daysSince >= 7) {
+            warning.push({ id: u.id, nombre: u.nombre || u.email || 'Sin nombre', email: u.email, days: daysSince, lastActive: lastActive });
+          } else {
+            activeCount++;
+          }
+        });
+        
+        inactiveStudentsList = critical.concat(warning);
+        
+        // Sort by days inactive (most inactive first)
+        critical.sort(function(a,b) { return b.days - a.days; });
+        warning.sort(function(a,b) { return b.days - a.days; });
+        
+        document.getElementById('inactCritical').textContent = critical.length;
+        document.getElementById('inactWarning').textContent = warning.length;
+        document.getElementById('inactActive').textContent = activeCount;
+        
+        if (critical.length === 0 && warning.length === 0) {
+          container.innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:40px;">🎉</div><p style="color:#27ae60;font-size:14px;">¡Todos los estudiantes están activos!</p></div>';
+          return;
+        }
+        
+        var html = '';
+        
+        if (critical.length > 0) {
+          html += '<div style="color:#e74c3c;font-size:12px;font-weight:bold;padding:8px 0;">🔴 CRÍTICO — ' + critical.length + ' estudiantes (14+ días sin actividad)</div>';
+          critical.forEach(function(s) {
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(231,76,60,0.08);border-radius:6px;margin:3px 0;">' +
+              '<div><strong style="color:#e2e8f0;font-size:12px;">' + s.nombre + '</strong><br><span style="color:#64748b;font-size:10px;">' + (s.email || '') + '</span></div>' +
+              '<div style="text-align:right;"><span style="color:#e74c3c;font-weight:bold;font-size:14px;">' + s.days + ' días</span><br><span style="color:#64748b;font-size:9px;">' + s.lastActive.toLocaleDateString('es-MX') + '</span></div>' +
+            '</div>';
+          });
+        }
+        
+        if (warning.length > 0) {
+          html += '<div style="color:#f39c12;font-size:12px;font-weight:bold;padding:8px 0;margin-top:8px;">🟡 ALERTA — ' + warning.length + ' estudiantes (7-13 días sin actividad)</div>';
+          warning.forEach(function(s) {
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(243,156,18,0.06);border-radius:6px;margin:3px 0;">' +
+              '<div><strong style="color:#e2e8f0;font-size:12px;">' + s.nombre + '</strong><br><span style="color:#64748b;font-size:10px;">' + (s.email || '') + '</span></div>' +
+              '<div style="text-align:right;"><span style="color:#f39c12;font-weight:bold;font-size:14px;">' + s.days + ' días</span><br><span style="color:#64748b;font-size:9px;">' + s.lastActive.toLocaleDateString('es-MX') + '</span></div>' +
+            '</div>';
+          });
+        }
+        
+        container.innerHTML = html;
+        console.log('[Inactividad] Crítico: ' + critical.length + ' | Alerta: ' + warning.length + ' | Activos: ' + activeCount);
+      } catch(e) {
+        console.error('[Inactividad] Error:', e);
+        container.innerHTML = '<div style="color:#e74c3c;padding:15px;text-align:center;">Error: ' + e.message + '</div>';
+      }
+    }
+    
+    async function createInactivityTickets() {
+      if (!supabaseClient || inactiveStudentsList.length === 0) {
+        alert('No hay estudiantes inactivos detectados. Primero haz clic en "Escanear".');
+        return;
+      }
+      
+      if (!confirm('¿Crear ' + inactiveStudentsList.length + ' tickets de Student Success para estudiantes inactivos?')) return;
+      
+      var created = 0;
+      for (var i = 0; i < inactiveStudentsList.length; i++) {
+        var s = inactiveStudentsList[i];
+        try {
+          var severity = s.days >= 14 ? 'CRÍTICO' : 'ALERTA';
+          await supabaseClient.from('student_success_tickets').insert({
+            student_name: s.nombre,
+            student_email: s.email || '',
+            estado: 'abierto',
+            descripcion: '⚠️ [' + severity + '] Estudiante inactivo por ' + s.days + ' días. Última actividad: ' + s.lastActive.toLocaleDateString('es-MX') + '. Contactar ANTES de que cancele.',
+            fecha_limite: new Date(Date.now() + (s.days >= 14 ? 2 : 5) * 24*60*60*1000).toISOString(),
+            email_enviado_estudiante: false
+          });
+          created++;
+        } catch(e) { console.error('[Ticket] Error para ' + s.nombre + ':', e); }
+      }
+      
+      alert('✅ ' + created + ' tickets creados en Student Success');
+      inactiveStudentsList = [];
+      loadInactivityAlerts();
+    }
+
+    // ==================== ONBOARDING NUEVOS ESTUDIANTES — AUDITORÍA #5 ====================
+    function checkShowOnboarding() {
+      if (!currentUser) return;
+      var onboardingDone = localStorage.getItem('maestroac_onboarding_done_' + (currentUser.email || ''));
+      if (onboardingDone) return;
+      
+      // Check if user has any progress
+      var hasProgress = false;
+      if (progress) {
+        Object.values(progress).forEach(function(p) { if (p.completed > 0) hasProgress = true; });
+      }
+      if (hasProgress) {
+        localStorage.setItem('maestroac_onboarding_done_' + (currentUser.email || ''), 'true');
+        return;
+      }
+      
+      // Show onboarding
+      setTimeout(function() { showOnboarding(); }, 800);
+    }
+    
+    function showOnboarding() {
+      var userName = currentUser ? currentUser.nombre.split(' ')[0] : 'Técnico';
+      var overlay = document.createElement('div');
+      overlay.className = 'onboarding-overlay';
+      overlay.id = 'onboardingOverlay';
+      overlay.innerHTML = 
+        '<div class="onboarding-card">' +
+          '<div class="onboarding-dots">' +
+            '<div class="onboarding-dot active" id="obDot1"></div>' +
+            '<div class="onboarding-dot" id="obDot2"></div>' +
+            '<div class="onboarding-dot" id="obDot3"></div>' +
+          '</div>' +
+          
+          '<div class="onboarding-step active" id="obStep1">' +
+            '<div style="font-size:60px;margin-bottom:10px;">👋</div>' +
+            '<h2 style="color:#f39c12;margin-bottom:8px;">¡Bienvenido ' + userName + '!</h2>' +
+            '<p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin-bottom:20px;">Soy <strong style="color:#f39c12;">Maestro Mario</strong> y esta app te va a llevar de técnico nuevo a <strong style="color:#FFD700;">técnico certificado</strong> paso a paso.</p>' +
+            '<div style="background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.3);border-radius:12px;padding:15px;margin-bottom:20px;">' +
+              '<p style="color:#f39c12;font-size:13px;font-weight:bold;">🎯 Tu camino tiene 5 niveles:</p>' +
+              '<p style="color:#94a3b8;font-size:12px;margin-top:5px;">🔧 Principiante → 📊 Intermedio → ⚡ Avanzado → 🏆 Elite → 💎 Platino</p>' +
+            '</div>' +
+            '<button onclick="onboardingNext(2)" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#f39c12,#e67e22);color:white;">Siguiente →</button>' +
+          '</div>' +
+          
+          '<div class="onboarding-step" id="obStep2">' +
+            '<div style="font-size:60px;margin-bottom:10px;">📝</div>' +
+            '<h2 style="color:#3498db;margin-bottom:8px;">Paso 1: Completa Tu Perfil</h2>' +
+            '<p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin-bottom:20px;">Un perfil completo nos ayuda a darte la mejor experiencia. Necesitamos tu nombre, teléfono y ciudad.</p>' +
+            '<div style="background:rgba(52,152,219,0.1);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:15px;margin-bottom:20px;">' +
+              '<p style="color:#3498db;font-size:13px;">✅ Nombre completo</p>' +
+              '<p style="color:#3498db;font-size:13px;">✅ Teléfono</p>' +
+              '<p style="color:#3498db;font-size:13px;">✅ Ciudad y Estado</p>' +
+            '</div>' +
+            '<button onclick="onboardingNext(3)" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">Siguiente →</button>' +
+            '<button onclick="onboardingNext(1)" style="width:100%;padding:10px;border:none;border-radius:12px;font-size:13px;cursor:pointer;background:transparent;color:#64748b;margin-top:8px;">← Atrás</button>' +
+          '</div>' +
+          
+          '<div class="onboarding-step" id="obStep3">' +
+            '<div style="font-size:60px;margin-bottom:10px;">🚀</div>' +
+            '<h2 style="color:#27ae60;margin-bottom:8px;">Paso 2: ¡Tu Primera Lección!</h2>' +
+            '<p style="color:#e2e8f0;font-size:14px;line-height:1.6;margin-bottom:20px;">Empieza con el <strong style="color:#f39c12;">Nivel Principiante</strong>. Toma tu primer quiz y demuestra lo que sabes. ¡Necesitas <strong style="color:#2ecc71;">80%</strong> para certificarte!</p>' +
+            '<div style="background:rgba(39,174,96,0.1);border:1px solid rgba(39,174,96,0.3);border-radius:12px;padding:15px;margin-bottom:20px;">' +
+              '<p style="color:#27ae60;font-size:13px;font-weight:bold;">🏅 Tu primer objetivo:</p>' +
+              '<p style="color:#e2e8f0;font-size:14px;margin-top:5px;">Completar el quiz de <strong>Nivel Principiante</strong> con 80%+ y ganar tu primer certificado verificable con código QR.</p>' +
+            '</div>' +
+            '<button onclick="finishOnboarding(true)" style="width:100%;padding:15px;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;">🔧 ¡Empezar Ahora!</button>' +
+            '<button onclick="finishOnboarding(false)" style="width:100%;padding:10px;border:none;border-radius:12px;font-size:13px;cursor:pointer;background:transparent;color:#64748b;margin-top:8px;">Explorar primero</button>' +
+            '<button onclick="onboardingNext(2)" style="width:100%;padding:10px;border:none;border-radius:12px;font-size:13px;cursor:pointer;background:transparent;color:#64748b;">← Atrás</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+    }
+    
+    function onboardingNext(step) {
+      for (var i = 1; i <= 3; i++) {
+        var s = document.getElementById('obStep' + i);
+        var d = document.getElementById('obDot' + i);
+        if (s) s.classList.remove('active');
+        if (d) { d.classList.remove('active'); if (i < step) d.classList.add('completed'); else d.classList.remove('completed'); }
+      }
+      var target = document.getElementById('obStep' + step);
+      var dot = document.getElementById('obDot' + step);
+      if (target) target.classList.add('active');
+      if (dot) dot.classList.add('active');
+    }
+    
+    function finishOnboarding(goToQuiz) {
+      var overlay = document.getElementById('onboardingOverlay');
+      if (overlay) overlay.remove();
+      if (currentUser && currentUser.email) {
+        localStorage.setItem('maestroac_onboarding_done_' + currentUser.email, 'true');
+      }
+      if (goToQuiz) {
+        showScreen('levelsScreen');
+      }
+    }
 
     // ==================== END ADMIN SECTION ====================
 

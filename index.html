@@ -458,10 +458,10 @@
     .admin-stat-value { font-size: 32px; font-weight: bold; color: #f39c12; }
     .admin-stat-label { font-size: 12px; color: #64748b; margin-top: 5px; }
     .admin-section { background: #f8fafc; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-    .admin-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .admin-section-title { font-size: 15px; font-weight: 600; color: #e2e8f0; letter-spacing:0.3px; }
-    .admin-nav-btn { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;transition:all 0.2s; }
-    .admin-nav-btn:hover { background:rgba(243,156,18,0.15);color:#f39c12;border-color:rgba(243,156,18,0.3); }
+    .admin-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; color: #1e293b; }
+    .admin-section-title { font-size: 15px; font-weight: 700; color: #1e293b; letter-spacing:0.3px; }
+    .admin-nav-btn { background:#ffffff;border:1px solid #e2e8f0;color:#64748b;padding:6px 12px;border-radius:8px;font-size:10px;cursor:pointer;transition:all 0.2s;font-weight:500; }
+    .admin-nav-btn:hover { background:#f39c12;color:#ffffff;border-color:#f39c12;box-shadow:0 2px 8px rgba(243,156,18,0.3); }
     /* Admin 2-column layout for wide screens */
     .admin-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .admin-grid-full { grid-column: 1 / -1; }
@@ -487,9 +487,9 @@
     .technician-meta { display: flex; gap: 15px; flex-wrap: wrap; font-size: 12px; color: #64748b; }
     .technician-meta-item { display: flex; align-items: center; gap: 5px; }
     .admin-filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
-    .admin-filter-input { padding: 10px 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #1e293b; font-size: 14px; flex: 1; min-width: 200px; }
+    .admin-filter-input { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; background: #ffffff; color: #1e293b; font-size: 14px; flex: 1; min-width: 200px; }
     .admin-filter-input::placeholder { color: #94a3b8; }
-    .admin-filter-select { padding: 10px 15px; border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #1e293b; font-size: 14px; cursor: pointer; }
+    .admin-filter-select { padding: 10px 15px; border: 1px solid #d1d5db; border-radius: 8px; background: #ffffff; color: #1e293b; font-size: 14px; cursor: pointer; }
     .admin-filter-select option { background: #ffffff; color: #1e293b; }
     /* Admin Profile Detail */
     .admin-profile-card { background: #ffffff; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
@@ -626,9 +626,23 @@ body { background: linear-gradient(180deg, #f0f4ff 0%, #faf8ff 50%, #f0f4ff 100%
 .certificate-card { box-shadow: 0 4px 20px rgba(255,215,0,0.15) !important; border-radius: 20px !important; }
 .certificate-earned-badge { background: linear-gradient(135deg, #10b981, #059669) !important; box-shadow: 0 2px 8px rgba(16,185,129,0.3) !important; }
 .profile-avatar { box-shadow: 0 8px 30px rgba(99,102,241,0.2) !important; border: 4px solid #e0e7ff !important; }
-.admin-stat-card { border: 2px solid #eef2ff !important; border-radius: 16px !important; box-shadow: 0 2px 10px rgba(99,102,241,0.06) !important; transition: all 0.3s !important; }
+.admin-stat-card { 
+      background: #ffffff !important; 
+      border: 1px solid #e2e8f0 !important; 
+      border-radius: 12px !important; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important; 
+      transition: all 0.2s !important;
+      color: #1e293b !important;
+    }
+    .admin-stat-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; }
 .admin-stat-card:hover { transform: translateY(-3px) !important; box-shadow: 0 8px 25px rgba(99,102,241,0.15) !important; border-color: #6366f1 !important; }
-.admin-section { border: 2px solid #eef2ff !important; border-radius: 20px !important; box-shadow: 0 2px 12px rgba(99,102,241,0.06) !important; }
+.admin-section { 
+      background: #ffffff !important; 
+      border: 1px solid #e2e8f0 !important; 
+      border-radius: 16px !important; 
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04) !important;
+      padding: 20px !important;
+    }
 .technician-card { border-left: 4px solid #6366f1 !important; transition: all 0.3s !important; }
 .technician-card:hover { box-shadow: 0 4px 16px rgba(99,102,241,0.12) !important; transform: translateX(5px) !important; }
 .admin-lock-toggle.locked { background: linear-gradient(135deg, #ef4444, #dc2626) !important; box-shadow: 0 2px 8px rgba(239,68,68,0.3) !important; }
@@ -785,7 +799,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
     .type-presencial { background: #e8f5e9; color: #2e7d32; }
     .type-zoom { background: #e3f2fd; color: #1565c0; }
     .admin-attendance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin: 15px 0; }
-    .admin-att-card { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 12px; padding: 15px; border-left: 4px solid #f39c12; }
+    .admin-att-card { background: #ffffff; border-radius: 12px; padding: 15px; border-left: 4px solid #f39c12; border:1px solid #e2e8f0; }
     .admin-att-card h4 { margin: 0 0 5px 0; color: #f39c12; font-size: 13px; }
     .admin-att-stat { font-size: 28px; font-weight: bold; color: white; }
     .admin-att-label { font-size: 12px; color: #ccc; }
@@ -1435,19 +1449,19 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
           <!-- Pago escalado -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px;">
-            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:24px;">1️⃣</div>
               <div style="color:#2ecc71;font-size:18px;font-weight:bold;">$20</div>
               <div style="color:#94a3b8;font-size:10px;">Por 1 referido</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:24px;">5️⃣</div>
               <div style="color:#f39c12;font-size:18px;font-weight:bold;">$100</div>
               <div style="color:#94a3b8;font-size:10px;">Por 5 referidos</div>
             </div>
           </div>
-          <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:10px;text-align:center;margin-bottom:15px;">
-            <div style="color:#bb86fc;font-size:12px;">💳 Pago por <strong>Zelle o Transferencia Bancaria</strong></div>
+          <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:10px;text-align:center;margin-bottom:15px;">
+            <div style="color:#7c3aed;font-size:12px;">💳 Pago por <strong>Zelle o Transferencia Bancaria</strong></div>
           </div>
 
           <!-- Link de referido -->
@@ -1465,15 +1479,15 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
           <!-- Stats -->
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:15px;">
-            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:10px;padding:10px;text-align:center;">
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;text-align:center;">
               <div style="font-size:10px;color:#3498db;">📤 Registrados</div>
               <div id="myRefCount" style="font-size:22px;font-weight:bold;color:#3498db;">0</div>
             </div>
-            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:10px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px;text-align:center;">
               <div style="font-size:10px;color:#2ecc71;">✅ Activos</div>
               <div id="myRefActive" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:10px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;text-align:center;">
               <div style="font-size:10px;color:#f39c12;">💰 Ganado</div>
               <div id="myFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">$0</div>
             </div>
@@ -1780,7 +1794,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
         
         <!-- ============ NAVEGACIÓN RÁPIDA ADMIN ============ -->
-        <div style="background:rgba(15,23,42,0.8);border-radius:10px;padding:8px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;border:1px solid rgba(255,255,255,0.06);">
+        <div style="background:#ffffff;border-radius:12px;padding:10px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <button onclick="document.getElementById('adminTecnicos').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">👥 Técnicos</button>
           <button onclick="document.getElementById('adminAsistencia').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📋 Asistencia</button>
           <button onclick="document.getElementById('adminStudentSuccess').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">🎫 Success</button>
@@ -1793,7 +1807,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
 <!-- ============ BANDEJA DE ENTRADA DEL ADMINISTRADOR ============ -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);margin-bottom:15px;">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <h3 style="color: #e74c3c; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
               📥 Bandeja de Entrada
@@ -1949,7 +1963,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
         
         <!-- ===== CREAR USUARIOS SECTION ===== -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #27ae60; font-size: 1.3em; margin-bottom: 15px;">👤 Crear Nuevo Usuario</h3>
             <p style="color: #888; font-size: 13px; margin-bottom: 15px;">Crea una cuenta para un estudiante y le llegara un correo con sus credenciales automaticamente.</p>
             
@@ -1988,7 +2002,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- Centro de Mando Section -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #f39c12; font-size: 1.3em; margin-bottom: 15px;">🎯 Centro de Mando</h3>
             
             <!-- Generar Código Manual -->
@@ -2110,7 +2124,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: DIAGNOSTICO DE ESTUDIANTES ============ -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #e74c3c; font-size: 1.3em; margin-bottom: 15px;">🔍 Diagnóstico de Estudiantes</h3>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
                 <button onclick="runStudentDiagnostic()" style="padding: 10px 20px; background: #e74c3c; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🔍 ANALIZAR ESTUDIANTES</button>
@@ -2141,7 +2155,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: SUBIR LIBROS / PDFs ============ -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #3498db; font-size: 1.3em; margin-bottom: 15px;">📚 Libros de Trabajo / Material</h3>
             <div style="background: rgba(52,152,219,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #3498db; margin-bottom: 10px;">📤 Subir Nuevo Material</h4>
@@ -2187,7 +2201,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: ASIGNAR EXAMENES ============ -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #9b59b6; font-size: 1.3em; margin-bottom: 15px;">📝 Asignar Exámenes</h3>
             <div style="background: rgba(155,89,182,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #9b59b6; margin-bottom: 10px;">➕ Nuevo Examen</h4>
@@ -2213,7 +2227,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: RECORDS DE PAGOS / TAXES ============ -->
-        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
             <h3 style="color: #2ecc71; font-size: 1.3em; margin-bottom: 15px;">💳 Records de Pagos / Taxes</h3>
             <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #2ecc71; margin-bottom: 10px;">➕ Registrar Pago Manual</h4>
@@ -2253,7 +2267,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== STUDENT SUCCESS - CRM & SURVEY SECTION ========== -->
-        <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">🎫 Student Success</span>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -2358,7 +2372,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
                 <input type="text" id="ssFormAyudaNombre" placeholder="Nombre del vendedor/persona (opcional)" style="width:100%;padding:8px;border-radius:6px;border:1px solid #334155;background:#0f172a;color:white;font-size:13px;margin-top:6px;box-sizing:border-box;">
               </div>
 
-              <div style="background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:15px;margin-bottom:12px;">
+              <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:15px;margin-bottom:12px;">
                 <h4 style="color:#9b59b6;margin:0 0 10px;">3️⃣ Comentarios sobre la escuela</h4>
                 <label style="color:#94a3b8;font-size:11px;">Opinión general de la escuela:</label>
                 <div style="display:flex;gap:4px;margin:6px 0;">
@@ -2497,10 +2511,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== LANDING PAGE MANAGER — FASE 2 #8 ========== -->
-        <div class="admin-section admin-grid-full" id="adminLandingPage" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminLandingPage" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">📖 Landing Page & Testimonios</span>
-            <button onclick="showScreen('landingPageScreen')" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">👁️</button>
+            <button onclick="showScreen('landingPageScreen')" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">👁️</button>
           </div>
           <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:12px;margin-top:8px;">
             <p style="color:#2ecc71;font-size:12px;font-weight:bold;margin:0 0 8px;">📊 Landing Page Status</p>
@@ -2515,51 +2529,51 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== FINANZAS DASHBOARD - AUDITORÍA #3 ========== -->
-        <div class="admin-section admin-grid-full" id="adminFinanzas" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminFinanzas" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">💰 Finanzas — Métricas de Revenue</span>
-            <button onclick="loadFinanzasData()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
-            <button onclick="generatePDFReport()" style="background:rgba(243,156,18,0.12);padding:5px 10px;border-radius:6px;color:#f39c12;border:1px solid rgba(243,156,18,0.2);cursor:pointer;font-size:10px;">📄 Reporte PDF</button>
+            <button onclick="loadFinanzasData()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
+            <button onclick="generatePDFReport()" style="background:#fffbeb;padding:5px 10px;border-radius:6px;color:#d97706;border:1px solid #fde68a;cursor:pointer;font-size:10px;">📄 Reporte PDF</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:15px 0;">
-            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#27ae60;font-weight:bold;">MRR (Ingreso Mensual)</div>
               <div id="finMRR" style="font-size:28px;font-weight:bold;color:#2ecc71;margin:5px 0;">$0</div>
               <div style="font-size:10px;color:#64748b;">Membresías activas × precio</div>
             </div>
-            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#3498db;font-weight:bold;">Estudiantes Pagando</div>
               <div id="finPaying" style="font-size:28px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
               <div id="finPayingPct" style="font-size:10px;color:#64748b;">0% del total</div>
             </div>
-            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Churn Rate (Mensual)</div>
               <div id="finChurn" style="font-size:28px;font-weight:bold;color:#e74c3c;margin:5px 0;">0%</div>
               <div style="font-size:10px;color:#64748b;">Cancelaciones / Total</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#f39c12;font-weight:bold;">LTV Promedio</div>
               <div id="finLTV" style="font-size:28px;font-weight:bold;color:#f39c12;margin:5px 0;">$0</div>
               <div style="font-size:10px;color:#64748b;">Valor promedio por estudiante</div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:15px;">
-            <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#9b59b6;font-weight:bold;">Revenue Acumulado</div>
               <div id="finTotal" style="font-size:24px;font-weight:bold;color:#9b59b6;margin:5px 0;">$0</div>
               <div style="font-size:10px;color:#64748b;">Histórico total</div>
             </div>
-            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#2ecc71;font-weight:bold;">Membresías Activas</div>
               <div id="finActive" style="font-size:24px;font-weight:bold;color:#2ecc71;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Status: active</div>
             </div>
-            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Cancelaciones (30 días)</div>
               <div id="finCanceled" style="font-size:24px;font-weight:bold;color:#e74c3c;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Membresías canceladas</div>
             </div>
-            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:15px;text-align:center;">
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
               <div style="font-size:11px;color:#3498db;font-weight:bold;">Gratis / Trial</div>
               <div id="finFree" style="font-size:24px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
               <div style="font-size:10px;color:#64748b;">Sin membresía pagada</div>
@@ -2573,24 +2587,24 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== EMAILS DE PROGRESO SEMANAL — FASE 2 #4 ========== -->
-        <div class="admin-section admin-grid-full" id="adminWeeklyEmails" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminWeeklyEmails" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">📧 Emails de Progreso Semanal</span>
             <div style="display:flex;gap:6px;">
-              <button onclick="previewWeeklyEmail()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">👁️</button>
-              <button onclick="sendWeeklyEmails()" style="background:rgba(39,174,96,0.12);padding:5px 10px;border-radius:6px;color:#2ecc71;border:1px solid rgba(39,174,96,0.2);cursor:pointer;font-size:10px;">📤 Enviar</button>
+              <button onclick="previewWeeklyEmail()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">👁️</button>
+              <button onclick="sendWeeklyEmails()" style="background:#dcfce7;padding:5px 10px;border-radius:6px;color:#16a34a;border:1px solid #bbf7d0;cursor:pointer;font-size:10px;">📤 Enviar</button>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0;">
-            <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#3498db;">📊 Estudiantes Activos</div>
               <div id="weActiveStudents" style="font-size:22px;font-weight:bold;color:#3498db;">0</div>
             </div>
-            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#27ae60;">✅ Con Progreso</div>
               <div id="weWithProgress" style="font-size:22px;font-weight:bold;color:#27ae60;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#f39c12;">⏳ Último Envío</div>
               <div id="weLastSent" style="font-size:14px;font-weight:bold;color:#f39c12;">Nunca</div>
             </div>
@@ -2603,35 +2617,35 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== PROGRAMA DE REFERIDOS — FASE 2 #7 ========== -->
-        <div class="admin-section admin-grid-full" id="adminReferidos" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminReferidos" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">💰 Programa de Embajadores</span>
-            <button onclick="loadReferidosData()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+            <button onclick="loadReferidosData()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
-            <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#9b59b6;">📤 Links Compartidos</div>
               <div id="refShared" style="font-size:22px;font-weight:bold;color:#9b59b6;">0</div>
             </div>
-            <div style="background:rgba(46,204,113,0.15);border:1px solid rgba(46,204,113,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#2ecc71;">✅ Membresías Activas</div>
               <div id="refSuccess" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#f39c12;">💰 Pagos Pendientes</div>
               <div id="refFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">0</div>
             </div>
           </div>
-          <div style="background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;">
-            <p style="color:#bb86fc;font-size:12px;font-weight:bold;margin:0 0 8px;">🏆 Top Embajadores</p>
+          <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:12px;">
+            <p style="color:#7c3aed;font-size:12px;font-weight:bold;margin:0 0 8px;">🏆 Top Embajadores</p>
             <div id="refTopList" style="color:#94a3b8;font-size:12px;">Cargando...</div>
           </div>
           
           <!-- W-9 REVIEW PANEL -->
-          <div style="margin-top:12px;background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:12px;">
+          <div style="margin-top:12px;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:0;">📋 Formularios W-9 Pendientes</p>
-              <button onclick="loadW9Reviews()" style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+              <button onclick="loadW9Reviews()" style="background:#f1f5f9;padding:4px 8px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
             </div>
             <div id="w9ReviewList" style="max-height:250px;overflow-y:auto;">
               <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
@@ -2639,10 +2653,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
           
           <!-- PAYMENT TRACKER -->
-          <div style="margin-top:12px;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;">
+          <div style="margin-top:12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <p style="color:#27ae60;font-size:12px;font-weight:bold;margin:0;">💳 Pagos a Embajadores</p>
-              <button onclick="loadAmbassadorPayments()" style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+              <button onclick="loadAmbassadorPayments()" style="background:#f1f5f9;padding:4px 8px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
             </div>
             <div id="ambassadorPaymentList" style="max-height:250px;overflow-y:auto;">
               <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
@@ -2651,21 +2665,21 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== CALENDARIO CLASES EN VIVO — FASE 2 #9 ========== -->
-        <div class="admin-section admin-grid-full" id="adminCalendario" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminCalendario" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">📅 Calendario de Clases en Vivo</span>
-            <button onclick="showAddClassModal()" style="background:rgba(0,212,255,0.1);padding:5px 10px;border-radius:6px;color:#00d4ff;border:1px solid rgba(0,212,255,0.2);cursor:pointer;font-size:10px;">➕ Nueva</button>
+            <button onclick="showAddClassModal()" style="background:#ecfeff;padding:5px 10px;border-radius:6px;color:#0891b2;border:1px solid #a5f3fc;cursor:pointer;font-size:10px;">➕ Nueva</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
             <div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#00d4ff;">📅 Esta Semana</div>
               <div id="calThisWeek" style="font-size:22px;font-weight:bold;color:#00d4ff;">0</div>
             </div>
-            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#27ae60;">✅ Completadas (Mes)</div>
               <div id="calCompleted" style="font-size:22px;font-weight:bold;color:#27ae60;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#f39c12;">👥 Asistencia Prom.</div>
               <div id="calAvgAttendance" style="font-size:22px;font-weight:bold;color:#f39c12;">0</div>
             </div>
@@ -2677,65 +2691,65 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== ANALYTICS AVANZADOS — FASE 3 #15 ========== -->
-        <div class="admin-section admin-grid-full" id="adminAnalytics" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminAnalytics" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">📊 Analytics Avanzados</span>
-            <button onclick="loadAnalytics()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+            <button onclick="loadAnalytics()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:12px 0;">
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:9px;color:#64748b;">🔥 DAU (Hoy)</div>
-              <div id="anDAU" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#64748b;font-weight:500;">🔥 DAU (Hoy)</div>
+              <div id="anDAU" style="font-size:20px;font-weight:bold;color:#1e293b;">—</div>
             </div>
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:9px;color:#64748b;">📊 WAU (7d)</div>
-              <div id="anWAU" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+              <div id="anWAU" style="font-size:20px;font-weight:bold;color:#1e293b;">—</div>
             </div>
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:9px;color:#64748b;">📈 Completion</div>
-              <div id="anCompRate" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+              <div id="anCompRate" style="font-size:20px;font-weight:bold;color:#1e293b;">—</div>
             </div>
-            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:9px;color:#64748b;">🎯 Avg Score</div>
-              <div id="anAvgScore" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+              <div id="anAvgScore" style="font-size:20px;font-weight:bold;color:#1e293b;">—</div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;">
-              <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">Distribución por Nivel</p>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+              <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">Distribución por Nivel</p>
               <div id="anLevelChart" style="display:flex;gap:4px;align-items:flex-end;height:100px;"></div>
               <div id="anLevelLabels" style="display:flex;gap:4px;justify-content:space-around;margin-top:4px;"></div>
             </div>
-            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;">
-              <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">Embudo de Retención</p>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+              <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">Embudo de Retención</p>
               <div id="anFunnel"></div>
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;margin-top:8px;">
-            <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">🏆 Top 10 Estudiantes</p>
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-top:8px;">
+            <p style="color:#475569;font-size:11px;font-weight:600;margin:0 0 8px;">🏆 Top 10 Estudiantes</p>
             <div id="anTopStudents" style="max-height:200px;overflow-y:auto;color:#64748b;font-size:12px;">Haz clic 🔄 para cargar</div>
           </div>
         </div>
 
         <!-- ========== ALERTAS DE INACTIVIDAD - AUDITORÍA #4 ========== -->
-        <div class="admin-section admin-grid-full" id="adminInactivityAlerts" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+        <div class="admin-section admin-grid-full" id="adminInactivityAlerts" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
             <span class="admin-section-title">⚠️ Alertas de Inactividad (7+ días)</span>
             <div style="display:flex;gap:6px;">
-              <button onclick="loadInactivityAlerts()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+              <button onclick="loadInactivityAlerts()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
               <button onclick="createInactivityTickets()" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🎫 Crear Tickets</button>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0;">
-            <div style="background:rgba(231,76,60,0.15);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#e74c3c;">🔴 Crítico (14+ días)</div>
               <div id="inactCritical" style="font-size:24px;font-weight:bold;color:#e74c3c;">0</div>
             </div>
-            <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#f39c12;">🟡 Alerta (7-13 días)</div>
               <div id="inactWarning" style="font-size:24px;font-weight:bold;color:#f39c12;">0</div>
             </div>
-            <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;text-align:center;">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
               <div style="font-size:10px;color:#27ae60;">🟢 Activos</div>
               <div id="inactActive" style="font-size:24px;font-weight:bold;color:#27ae60;">0</div>
             </div>
@@ -6677,7 +6691,7 @@ if (screenId === 'adminDashboardScreen') {
           </div>
 
           <!-- User Info Summary -->
-          <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.3);border-radius:12px;padding:12px;margin-bottom:15px;text-align:left;">
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;margin-bottom:15px;text-align:left;">
             <p style="color:#3498db;font-size:13px;font-weight:bold;margin-bottom:8px;">📋 Tu Información</p>
             <p style="color:#e2e8f0;font-size:12px;line-height:1.8;margin:0;">
               👤 <strong>${userName}</strong><br>
@@ -12382,8 +12396,8 @@ if (screenId === 'adminDashboardScreen') {
         '<label style="color:#94a3b8;font-size:11px;">Ciudad, Estado, ZIP *</label>' +
         '<input type="text" id="w9CityState" placeholder="San Bernardino, CA 92401" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0 10px;box-sizing:border-box;font-size:14px;">' +
         
-        '<div style="margin:10px 0;padding:10px;background:rgba(155,89,182,0.1);border:1px solid rgba(155,89,182,0.3);border-radius:8px;">' +
-          '<label style="color:#bb86fc;font-size:11px;font-weight:bold;">💳 Método de Pago Preferido *</label>' +
+        '<div style="margin:10px 0;padding:10px;background:#faf5ff;border:1px solid #e9d5ff;border-radius:8px;">' +
+          '<label style="color:#7c3aed;font-size:11px;font-weight:bold;">💳 Método de Pago Preferido *</label>' +
           '<select id="w9PayMethod" style="width:100%;padding:10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:white;margin:4px 0;box-sizing:border-box;font-size:14px;">' +
             '<option value="">Selecciona...</option>' +
             '<option value="zelle">Zelle</option>' +
@@ -12469,7 +12483,7 @@ if (screenId === 'adminDashboardScreen') {
           // Update W-9 status display
           var statusBox = document.getElementById('w9StatusBox');
           if (statusBox) {
-            statusBox.innerHTML = '<div style="padding:10px;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:8px;text-align:center;">' +
+            statusBox.innerHTML = '<div style="padding:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;text-align:center;">' +
               '<span style="color:#2ecc71;font-size:13px;font-weight:bold;">✅ W-9 Enviado — Pendiente de Revisión</span></div>';
           }
         } catch(e) {
@@ -12487,10 +12501,10 @@ if (screenId === 'adminDashboardScreen') {
         var statusBox = document.getElementById('w9StatusBox');
         if (data && statusBox) {
           if (data.status === 'approved') {
-            statusBox.innerHTML = '<div style="padding:10px;background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:8px;text-align:center;">' +
+            statusBox.innerHTML = '<div style="padding:10px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;text-align:center;">' +
               '<span style="color:#2ecc71;font-size:13px;font-weight:bold;">✅ W-9 Aprobado — Embajador Activo</span></div>';
           } else if (data.status === 'pending_review') {
-            statusBox.innerHTML = '<div style="padding:10px;background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.3);border-radius:8px;text-align:center;">' +
+            statusBox.innerHTML = '<div style="padding:10px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;text-align:center;">' +
               '<span style="color:#f39c12;font-size:13px;font-weight:bold;">⏳ W-9 Enviado — Pendiente de Revisión</span></div>';
           }
         }
@@ -12525,7 +12539,7 @@ if (screenId === 'adminDashboardScreen') {
                 '<div style="color:#64748b;font-size:10px;">' + (w.user_email || '') + ' | ' + date + '</div>' +
                 '<div style="color:#94a3b8;font-size:10px;margin-top:3px;">📋 ' + (w.entity_type || '') + ' | SSN: ***' + (w.tax_id_last4 || '') + ' | 💳 ' + (w.payment_method || '') + ': ' + (w.payment_info || '') + '</div>' +
                 '<div style="color:#94a3b8;font-size:10px;">📍 ' + (w.address || '') + ', ' + (w.city_state_zip || '') + '</div>' +
-                '<div style="color:#bb86fc;font-size:10px;">🔗 Código: ' + (w.referral_code || '') + '</div>' +
+                '<div style="color:#7c3aed;font-size:10px;">🔗 Código: ' + (w.referral_code || '') + '</div>' +
               '</div>' +
               '<div style="text-align:right;min-width:80px;">' +
                 '<span style="color:' + statusColor + ';font-size:10px;font-weight:bold;">' + statusText + '</span>' +

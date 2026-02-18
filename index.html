@@ -11926,12 +11926,14 @@ if (screenId === 'adminDashboardScreen') {
         var sentCount = 0;
         
         // Log the batch send
-        await supabaseClient.from('email_log').insert({
-          tipo: 'weekly_progress',
-          destinatarios: (users || []).length,
-          fecha_envio: new Date().toISOString(),
-          estado: 'sent'
-        }).catch(function() {});
+        try {
+          await supabaseClient.from('email_log').insert({
+            tipo: 'weekly_progress',
+            destinatarios: (users || []).length,
+            fecha_envio: new Date().toISOString(),
+            estado: 'sent'
+          });
+        } catch(logErr) { console.log('[Email Log] Error:', logErr); }
         
         sentCount = (users || []).length;
         document.getElementById('weLastSent').textContent = new Date().toLocaleDateString('es-MX');
@@ -12011,7 +12013,7 @@ if (screenId === 'adminDashboardScreen') {
       
       // Track share
       if (supabaseClient && supabaseUserId) {
-        supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'copy', ref_code: generateRefCode() }).catch(function() {});
+        try { supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'copy', ref_code: generateRefCode() }); } catch(e) {}
       }
     }
     

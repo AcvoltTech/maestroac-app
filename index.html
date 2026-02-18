@@ -459,7 +459,9 @@
     .admin-stat-label { font-size: 12px; color: #64748b; margin-top: 5px; }
     .admin-section { background: #f8fafc; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
     .admin-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .admin-section-title { font-size: 18px; font-weight: bold; color: #f39c12; }
+    .admin-section-title { font-size: 15px; font-weight: 600; color: #e2e8f0; letter-spacing:0.3px; }
+    .admin-nav-btn { background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#94a3b8;padding:5px 10px;border-radius:6px;font-size:10px;cursor:pointer;transition:all 0.2s; }
+    .admin-nav-btn:hover { background:rgba(243,156,18,0.15);color:#f39c12;border-color:rgba(243,156,18,0.3); }
     /* Admin 2-column layout for wide screens */
     .admin-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .admin-grid-full { grid-column: 1 / -1; }
@@ -1778,20 +1780,20 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
         
         <!-- ============ NAVEGACIÓN RÁPIDA ADMIN ============ -->
-        <div style="background:rgba(0,0,0,0.3);border-radius:12px;padding:10px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;">
-          <button onclick="document.getElementById('adminTecnicos').scrollIntoView({behavior:'smooth'})" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.3);color:#3498db;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">👥 Técnicos</button>
-          <button onclick="document.getElementById('adminAsistencia').scrollIntoView({behavior:'smooth'})" style="background:rgba(39,174,96,0.2);border:1px solid rgba(39,174,96,0.3);color:#27ae60;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📋 Asistencia</button>
-          <button onclick="document.getElementById('adminStudentSuccess').scrollIntoView({behavior:'smooth'})" style="background:rgba(231,76,60,0.2);border:1px solid rgba(231,76,60,0.3);color:#e74c3c;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">🎫 Student Success</button>
-          <button onclick="document.getElementById('adminFinanzas').scrollIntoView({behavior:'smooth'})" style="background:rgba(39,174,96,0.2);border:1px solid rgba(39,174,96,0.3);color:#27ae60;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">💰 Finanzas</button>
-          <button onclick="document.getElementById('adminReferidos').scrollIntoView({behavior:'smooth'})" style="background:rgba(155,89,182,0.2);border:1px solid rgba(155,89,182,0.3);color:#9b59b6;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">💰 Embajadores</button>
-          <button onclick="document.getElementById('adminCalendario').scrollIntoView({behavior:'smooth'})" style="background:rgba(0,212,255,0.2);border:1px solid rgba(0,212,255,0.3);color:#00d4ff;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📅 Calendario</button>
-          <button onclick="document.getElementById('adminWeeklyEmails').scrollIntoView({behavior:'smooth'})" style="background:rgba(52,152,219,0.2);border:1px solid rgba(52,152,219,0.3);color:#3498db;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📧 Emails</button>
-          <button onclick="document.getElementById('adminInactivityAlerts').scrollIntoView({behavior:'smooth'})" style="background:rgba(230,126,34,0.2);border:1px solid rgba(230,126,34,0.3);color:#e67e22;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">⚠️ Inactividad</button>
-          <button onclick="document.getElementById('adminLandingPage').scrollIntoView({behavior:'smooth'})" style="background:rgba(46,204,113,0.2);border:1px solid rgba(46,204,113,0.3);color:#2ecc71;padding:6px 10px;border-radius:8px;font-size:10px;cursor:pointer;">📖 Landing</button>
+        <div style="background:rgba(15,23,42,0.8);border-radius:10px;padding:8px;margin-bottom:15px;display:flex;flex-wrap:wrap;gap:4px;justify-content:center;border:1px solid rgba(255,255,255,0.06);">
+          <button onclick="document.getElementById('adminTecnicos').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">👥 Técnicos</button>
+          <button onclick="document.getElementById('adminAsistencia').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📋 Asistencia</button>
+          <button onclick="document.getElementById('adminStudentSuccess').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">🎫 Success</button>
+          <button onclick="document.getElementById('adminFinanzas').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">💰 Finanzas</button>
+          <button onclick="document.getElementById('adminReferidos').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">🤝 Embajadores</button>
+          <button onclick="document.getElementById('adminCalendario').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📅 Clases</button>
+          <button onclick="document.getElementById('adminWeeklyEmails').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📧 Emails</button>
+          <button onclick="document.getElementById('adminAnalytics').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">📊 Analytics</button>
+          <button onclick="document.getElementById('adminInactivityAlerts').scrollIntoView({behavior:'smooth'})" class="admin-nav-btn">⚠️ Alertas</button>
         </div>
 
 <!-- ============ BANDEJA DE ENTRADA DEL ADMINISTRADOR ============ -->
-        <div class="admin-section admin-grid-full" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border: 2px solid #e74c3c; margin-bottom: 20px;">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);margin-bottom:15px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
             <h3 style="color: #e74c3c; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
               📥 Bandeja de Entrada
@@ -1947,7 +1949,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
         
         <!-- ===== CREAR USUARIOS SECTION ===== -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #27ae60; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #27ae60; font-size: 1.3em; margin-bottom: 15px;">👤 Crear Nuevo Usuario</h3>
             <p style="color: #888; font-size: 13px; margin-bottom: 15px;">Crea una cuenta para un estudiante y le llegara un correo con sus credenciales automaticamente.</p>
             
@@ -1986,7 +1988,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- Centro de Mando Section -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #e67e22; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #f39c12; font-size: 1.3em; margin-bottom: 15px;">🎯 Centro de Mando</h3>
             
             <!-- Generar Código Manual -->
@@ -2108,7 +2110,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: DIAGNOSTICO DE ESTUDIANTES ============ -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #e74c3c; font-size: 1.3em; margin-bottom: 15px;">🔍 Diagnóstico de Estudiantes</h3>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
                 <button onclick="runStudentDiagnostic()" style="padding: 10px 20px; background: #e74c3c; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">🔍 ANALIZAR ESTUDIANTES</button>
@@ -2139,7 +2141,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: SUBIR LIBROS / PDFs ============ -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #3498db; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #3498db; font-size: 1.3em; margin-bottom: 15px;">📚 Libros de Trabajo / Material</h3>
             <div style="background: rgba(52,152,219,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #3498db; margin-bottom: 10px;">📤 Subir Nuevo Material</h4>
@@ -2185,7 +2187,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: ASIGNAR EXAMENES ============ -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #9b59b6; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #9b59b6; font-size: 1.3em; margin-bottom: 15px;">📝 Asignar Exámenes</h3>
             <div style="background: rgba(155,89,182,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #9b59b6; margin-bottom: 10px;">➕ Nuevo Examen</h4>
@@ -2211,7 +2213,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ============ SECCION: RECORDS DE PAGOS / TAXES ============ -->
-        <div class="admin-section admin-grid-full" style="border: 2px solid #2ecc71; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
             <h3 style="color: #2ecc71; font-size: 1.3em; margin-bottom: 15px;">💳 Records de Pagos / Taxes</h3>
             <div style="background: rgba(46,204,113,0.1); border-radius: 12px; padding: 15px; margin-bottom: 15px;">
                 <h4 style="color: #2ecc71; margin-bottom: 10px;">➕ Registrar Pago Manual</h4>
@@ -2251,7 +2253,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== STUDENT SUCCESS - CRM & SURVEY SECTION ========== -->
-        <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="border: 2px solid #e74c3c; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div class="admin-section admin-grid-full" id="adminStudentSuccess" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">🎫 Student Success</span>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -2495,10 +2497,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== LANDING PAGE MANAGER — FASE 2 #8 ========== -->
-        <div class="admin-section admin-grid-full" id="adminLandingPage" style="border: 2px solid #2ecc71; background: linear-gradient(135deg, #0a2e1a 0%, #102820 100%);">
+        <div class="admin-section admin-grid-full" id="adminLandingPage" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">📖 Landing Page & Testimonios</span>
-            <button onclick="showScreen('landingPageScreen')" style="background:#2ecc71;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👁️ Preview</button>
+            <button onclick="showScreen('landingPageScreen')" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">👁️</button>
           </div>
           <div style="background:rgba(255,255,255,0.03);border-radius:10px;padding:12px;margin-top:8px;">
             <p style="color:#2ecc71;font-size:12px;font-weight:bold;margin:0 0 8px;">📊 Landing Page Status</p>
@@ -2513,10 +2515,11 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== FINANZAS DASHBOARD - AUDITORÍA #3 ========== -->
-        <div class="admin-section admin-grid-full" id="adminFinanzas" style="border: 2px solid #27ae60; background: linear-gradient(135deg, #0a2e1a 0%, #0d3320 100%);">
+        <div class="admin-section admin-grid-full" id="adminFinanzas" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">💰 Finanzas — Métricas de Revenue</span>
-            <button onclick="loadFinanzasData()" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Actualizar</button>
+            <button onclick="loadFinanzasData()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+            <button onclick="generatePDFReport()" style="background:rgba(243,156,18,0.12);padding:5px 10px;border-radius:6px;color:#f39c12;border:1px solid rgba(243,156,18,0.2);cursor:pointer;font-size:10px;">📄 Reporte PDF</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:15px 0;">
             <div style="background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.3);border-radius:12px;padding:15px;text-align:center;">
@@ -2570,12 +2573,12 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
 
         <!-- ========== EMAILS DE PROGRESO SEMANAL — FASE 2 #4 ========== -->
-        <div class="admin-section admin-grid-full" id="adminWeeklyEmails" style="border: 2px solid #3498db; background: linear-gradient(135deg, #0a1a2e 0%, #0d2033 100%);">
+        <div class="admin-section admin-grid-full" id="adminWeeklyEmails" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">📧 Emails de Progreso Semanal</span>
             <div style="display:flex;gap:6px;">
-              <button onclick="previewWeeklyEmail()" style="background:#3498db;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">👁️ Preview</button>
-              <button onclick="sendWeeklyEmails()" style="background:#27ae60;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">📤 Enviar a Todos</button>
+              <button onclick="previewWeeklyEmail()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">👁️</button>
+              <button onclick="sendWeeklyEmails()" style="background:rgba(39,174,96,0.12);padding:5px 10px;border-radius:6px;color:#2ecc71;border:1px solid rgba(39,174,96,0.2);cursor:pointer;font-size:10px;">📤 Enviar</button>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:12px 0;">
@@ -2600,10 +2603,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== PROGRAMA DE REFERIDOS — FASE 2 #7 ========== -->
-        <div class="admin-section admin-grid-full" id="adminReferidos" style="border: 2px solid #9b59b6; background: linear-gradient(135deg, #1a0a2e 0%, #200d33 100%);">
+        <div class="admin-section admin-grid-full" id="adminReferidos" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">💰 Programa de Embajadores</span>
-            <button onclick="loadReferidosData()" style="background:#9b59b6;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Actualizar</button>
+            <button onclick="loadReferidosData()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
             <div style="background:rgba(155,89,182,0.15);border:1px solid rgba(155,89,182,0.3);border-radius:10px;padding:12px;text-align:center;">
@@ -2628,7 +2631,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div style="margin-top:12px;background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <p style="color:#e74c3c;font-size:12px;font-weight:bold;margin:0;">📋 Formularios W-9 Pendientes</p>
-              <button onclick="loadW9Reviews()" style="background:#e74c3c;padding:4px 10px;border-radius:6px;color:white;border:none;cursor:pointer;font-size:10px;">🔄</button>
+              <button onclick="loadW9Reviews()" style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
             </div>
             <div id="w9ReviewList" style="max-height:250px;overflow-y:auto;">
               <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
@@ -2639,7 +2642,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div style="margin-top:12px;background:rgba(39,174,96,0.08);border:1px solid rgba(39,174,96,0.3);border-radius:10px;padding:12px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <p style="color:#27ae60;font-size:12px;font-weight:bold;margin:0;">💳 Pagos a Embajadores</p>
-              <button onclick="loadAmbassadorPayments()" style="background:#27ae60;padding:4px 10px;border-radius:6px;color:white;border:none;cursor:pointer;font-size:10px;">🔄</button>
+              <button onclick="loadAmbassadorPayments()" style="background:rgba(255,255,255,0.05);padding:4px 8px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
             </div>
             <div id="ambassadorPaymentList" style="max-height:250px;overflow-y:auto;">
               <div style="text-align:center;color:#64748b;padding:10px;font-size:12px;">Haz clic en 🔄 para cargar</div>
@@ -2648,10 +2651,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- ========== CALENDARIO CLASES EN VIVO — FASE 2 #9 ========== -->
-        <div class="admin-section admin-grid-full" id="adminCalendario" style="border: 2px solid #00d4ff; background: linear-gradient(135deg, #0a1e2e 0%, #0d2533 100%);">
+        <div class="admin-section admin-grid-full" id="adminCalendario" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">📅 Calendario de Clases en Vivo</span>
-            <button onclick="showAddClassModal()" style="background:#00d4ff;padding:6px 12px;border-radius:8px;color:#1a1a2e;border:none;cursor:pointer;font-size:11px;font-weight:bold;">➕ Nueva Clase</button>
+            <button onclick="showAddClassModal()" style="background:rgba(0,212,255,0.1);padding:5px 10px;border-radius:6px;color:#00d4ff;border:1px solid rgba(0,212,255,0.2);cursor:pointer;font-size:10px;">➕ Nueva</button>
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:12px 0;">
             <div style="background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:10px;padding:12px;text-align:center;">
@@ -2672,12 +2675,54 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
         </div>
 
+
+        <!-- ========== ANALYTICS AVANZADOS — FASE 3 #15 ========== -->
+        <div class="admin-section admin-grid-full" id="adminAnalytics" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
+          <div class="admin-section-header">
+            <span class="admin-section-title">📊 Analytics Avanzados</span>
+            <button onclick="loadAnalytics()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:12px 0;">
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#64748b;">🔥 DAU (Hoy)</div>
+              <div id="anDAU" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#64748b;">📊 WAU (7d)</div>
+              <div id="anWAU" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#64748b;">📈 Completion</div>
+              <div id="anCompRate" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;text-align:center;">
+              <div style="font-size:9px;color:#64748b;">🎯 Avg Score</div>
+              <div id="anAvgScore" style="font-size:20px;font-weight:bold;color:#e2e8f0;">—</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;">
+              <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">Distribución por Nivel</p>
+              <div id="anLevelChart" style="display:flex;gap:4px;align-items:flex-end;height:100px;"></div>
+              <div id="anLevelLabels" style="display:flex;gap:4px;justify-content:space-around;margin-top:4px;"></div>
+            </div>
+            <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;">
+              <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">Embudo de Retención</p>
+              <div id="anFunnel"></div>
+            </div>
+          </div>
+          <div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:12px;margin-top:8px;">
+            <p style="color:#94a3b8;font-size:11px;font-weight:600;margin:0 0 8px;">🏆 Top 10 Estudiantes</p>
+            <div id="anTopStudents" style="max-height:200px;overflow-y:auto;color:#64748b;font-size:12px;">Haz clic 🔄 para cargar</div>
+          </div>
+        </div>
+
         <!-- ========== ALERTAS DE INACTIVIDAD - AUDITORÍA #4 ========== -->
-        <div class="admin-section admin-grid-full" id="adminInactivityAlerts" style="border: 2px solid #e67e22; background: linear-gradient(135deg, #2e1a0a 0%, #332010 100%);">
+        <div class="admin-section admin-grid-full" id="adminInactivityAlerts" style="background:rgba(15,23,42,0.6);border:1px solid rgba(255,255,255,0.08);">
           <div class="admin-section-header">
             <span class="admin-section-title">⚠️ Alertas de Inactividad (7+ días)</span>
             <div style="display:flex;gap:6px;">
-              <button onclick="loadInactivityAlerts()" style="background:#e67e22;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🔄 Escanear</button>
+              <button onclick="loadInactivityAlerts()" style="background:rgba(255,255,255,0.05);padding:5px 10px;border-radius:6px;color:#94a3b8;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:10px;">🔄</button>
               <button onclick="createInactivityTickets()" style="background:#e74c3c;padding:6px 12px;border-radius:8px;color:white;border:none;cursor:pointer;font-size:11px;">🎫 Crear Tickets</button>
             </div>
           </div>
@@ -5796,6 +5841,7 @@ if (screenId === 'adminDashboardScreen') {
         try { loadReferidosData(); } catch(e) {}
         try { loadW9Reviews(); } catch(e) {}
         try { loadAmbassadorPayments(); } catch(e) {}
+        try { loadAnalytics(); } catch(e) {}
         try { renderLevelPerformanceChart(); } catch(e) {}
         try { loadAttendanceData(); } catch(e) {}
       // Check if new student needs onboarding
@@ -7957,6 +8003,7 @@ if (screenId === 'adminDashboardScreen') {
         try { loadReferidosData(); } catch(e) {}
         try { loadW9Reviews(); } catch(e) {}
         try { loadAmbassadorPayments(); } catch(e) {}
+        try { loadAnalytics(); } catch(e) {}
       }
     };
 
@@ -12588,6 +12635,215 @@ if (screenId === 'adminDashboardScreen') {
         loadAmbassadorPayments();
         loadReferidosData();
       } catch(e) { alert('Error: ' + e.message); }
+    }
+
+
+    // ==================== #15 ANALYTICS AVANZADOS ====================
+    async function loadAnalytics() {
+      if (!supabaseClient) return;
+      try {
+        var now = new Date();
+        var todayStr = now.toISOString().split('T')[0];
+        var weekAgo = new Date(now - 7*24*60*60*1000).toISOString();
+        
+        var { data: users } = await supabaseClient.from('users').select('ultimo_acceso, nombre, email');
+        users = users || [];
+        
+        var dau = users.filter(function(u) { return u.ultimo_acceso && u.ultimo_acceso.startsWith(todayStr); }).length;
+        var wau = users.filter(function(u) { return u.ultimo_acceso && u.ultimo_acceso >= weekAgo; }).length;
+        document.getElementById('anDAU').textContent = dau;
+        document.getElementById('anWAU').textContent = wau;
+        
+        // Use allTechnicians for progress data
+        var techs = allTechnicians || [];
+        var totalWithProgress = 0, totalCompleted = 0, totalScore = 0, scoreCount = 0;
+        var levelCounts = { principiante:0, intermedio:0, avanzado:0, elite:0, platino:0 };
+        var ranked = [];
+        
+        techs.forEach(function(t) {
+          if (!t.progress) return;
+          var hasProgress = false, completedAll = true, tScore = 0, tQ = 0;
+          Object.entries(t.progress).forEach(function(e) {
+            var nivel = e[0], p = e[1];
+            if (p.completed > 0) { hasProgress = true; totalScore += p.score; scoreCount += p.completed; tScore += p.score; tQ += p.completed; }
+            if (p.total > 0 && p.completed < p.total) completedAll = false;
+            if (p.completed > 0 && levelCounts.hasOwnProperty(nivel)) levelCounts[nivel]++;
+          });
+          if (hasProgress) totalWithProgress++;
+          if (completedAll && hasProgress) totalCompleted++;
+          if (tQ > 0) ranked.push({ name: t.nombre || t.email, score: tScore, quizzes: tQ, avg: Math.round(tScore/tQ*100) });
+        });
+        
+        document.getElementById('anCompRate').textContent = (techs.length > 0 ? Math.round(totalCompleted/techs.length*100) : 0) + '%';
+        document.getElementById('anAvgScore').textContent = (scoreCount > 0 ? Math.round(totalScore/scoreCount*100) : 0) + '%';
+        
+        // Level chart
+        var maxL = Math.max(...Object.values(levelCounts), 1);
+        var colors = {principiante:'#3498db',intermedio:'#27ae60',avanzado:'#f39c12',elite:'#e74c3c',platino:'#9b59b6'};
+        var labs = {principiante:'Princ',intermedio:'Inter',avanzado:'Avanz',elite:'Elite',platino:'Plat'};
+        var ch = '', lb = '';
+        Object.entries(levelCounts).forEach(function(e) {
+          var h = Math.max((e[1]/maxL)*90, 3);
+          ch += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;"><div style="font-size:9px;color:#94a3b8;">' + e[1] + '</div><div style="width:100%;height:' + h + 'px;background:' + (colors[e[0]]||'#64748b') + ';border-radius:3px 3px 0 0;opacity:0.7;"></div></div>';
+          lb += '<div style="flex:1;text-align:center;font-size:8px;color:#64748b;">' + (labs[e[0]]||e[0]) + '</div>';
+        });
+        document.getElementById('anLevelChart').innerHTML = ch;
+        document.getElementById('anLevelLabels').innerHTML = lb;
+        
+        // Funnel
+        var total = techs.length;
+        var funnel = [
+          {label:'Registrados',count:total,color:'#3498db'},
+          {label:'Con Progreso',count:totalWithProgress,color:'#27ae60'},
+          {label:'Activos 7d',count:wau,color:'#f39c12'},
+          {label:'Completaron',count:totalCompleted,color:'#9b59b6'}
+        ];
+        document.getElementById('anFunnel').innerHTML = funnel.map(function(s) {
+          var pct = total > 0 ? Math.round(s.count/total*100) : 0;
+          return '<div style="margin:3px 0;"><div style="display:flex;justify-content:space-between;font-size:9px;color:#94a3b8;margin-bottom:2px;"><span>' + s.label + '</span><span>' + s.count + ' (' + pct + '%)</span></div><div style="height:14px;background:rgba(255,255,255,0.03);border-radius:3px;overflow:hidden;"><div style="height:100%;width:' + Math.max(pct,5) + '%;background:' + s.color + ';opacity:0.6;border-radius:3px;"></div></div></div>';
+        }).join('');
+        
+        // Top 10
+        ranked.sort(function(a,b) { return b.avg - a.avg; });
+        document.getElementById('anTopStudents').innerHTML = ranked.slice(0,10).map(function(r,i) {
+          var medal = i === 0 ? '🥇' : (i === 1 ? '🥈' : (i === 2 ? '🥉' : (i+1) + '.'));
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);"><span style="color:#e2e8f0;font-size:12px;">' + medal + ' ' + r.name + '</span><span style="color:#f39c12;font-size:11px;font-weight:bold;">' + r.avg + '%</span></div>';
+        }).join('') || '<div style="text-align:center;color:#64748b;padding:10px;">Sin datos aún</div>';
+        
+      } catch(e) { console.error('[Analytics]', e); }
+    }
+
+    // ==================== #12 REPORTES PDF MENSUALES ====================
+    async function generatePDFReport() {
+      if (!allTechnicians) { alert('Carga los datos primero'); return; }
+      
+      var techs = allTechnicians || [];
+      var now = new Date();
+      var monthName = now.toLocaleDateString('es-MX', { month: 'long', year: 'numeric' });
+      
+      // Build HTML report
+      var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Reporte MaestroAC - ' + monthName + '</title>';
+      html += '<style>body{font-family:Arial,sans-serif;max-width:800px;margin:0 auto;padding:20px;color:#333;}';
+      html += 'h1{color:#1a1a2e;border-bottom:3px solid #f39c12;padding-bottom:10px;}';
+      html += 'h2{color:#2c3e50;margin-top:30px;}';
+      html += '.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:20px 0;}';
+      html += '.stat-card{background:#f8f9fa;border-radius:10px;padding:15px;text-align:center;border:1px solid #e2e8f0;}';
+      html += '.stat-card .num{font-size:28px;font-weight:bold;color:#1a1a2e;}';
+      html += '.stat-card .label{font-size:11px;color:#64748b;margin-top:4px;}';
+      html += 'table{width:100%;border-collapse:collapse;margin:15px 0;font-size:13px;}';
+      html += 'th{background:#1a1a2e;color:white;padding:8px 12px;text-align:left;}';
+      html += 'td{padding:6px 12px;border-bottom:1px solid #eee;}';
+      html += 'tr:nth-child(even){background:#f8f9fa;}';
+      html += '.footer{margin-top:40px;text-align:center;color:#94a3b8;font-size:11px;border-top:1px solid #eee;padding-top:15px;}';
+      html += '@media print{body{padding:0;}.no-print{display:none!important;}}';
+      html += '</style></head><body>';
+      
+      // Header
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div><h1>📊 Reporte Mensual MaestroAC</h1><p style="color:#64748b;">' + monthName.charAt(0).toUpperCase() + monthName.slice(1) + ' | ACVOLT Tech School</p></div>';
+      html += '<div style="text-align:right;"><strong style="color:#f39c12;font-size:18px;">Nivel 33</strong><br><span style="color:#94a3b8;font-size:11px;">Maestro Mario</span></div>';
+      html += '</div>';
+      
+      // Stats
+      var totalStudents = techs.length;
+      var withProgress = techs.filter(function(t) { return t.progress && Object.values(t.progress).some(function(p) { return p.completed > 0; }); }).length;
+      var totalQuizzes = 0, totalScore = 0;
+      techs.forEach(function(t) { if (t.progress) Object.values(t.progress).forEach(function(p) { totalQuizzes += p.completed; totalScore += p.score; }); });
+      var avgScore = totalQuizzes > 0 ? Math.round(totalScore/totalQuizzes*100) : 0;
+      
+      html += '<div class="stat-grid">';
+      html += '<div class="stat-card"><div class="num">' + totalStudents + '</div><div class="label">Estudiantes</div></div>';
+      html += '<div class="stat-card"><div class="num">' + withProgress + '</div><div class="label">Con Progreso</div></div>';
+      html += '<div class="stat-card"><div class="num">' + totalQuizzes + '</div><div class="label">Quizzes Tomados</div></div>';
+      html += '<div class="stat-card"><div class="num">' + avgScore + '%</div><div class="label">Score Promedio</div></div>';
+      html += '</div>';
+      
+      // Level distribution
+      html += '<h2>📚 Distribución por Nivel</h2>';
+      html += '<table><tr><th>Nivel</th><th>Estudiantes</th><th>% del Total</th></tr>';
+      var levels = {principiante:0,intermedio:0,avanzado:0,elite:0,platino:0};
+      techs.forEach(function(t) { if (t.progress) Object.entries(t.progress).forEach(function(e) { if (e[1].completed > 0 && levels.hasOwnProperty(e[0])) levels[e[0]]++; }); });
+      Object.entries(levels).forEach(function(e) {
+        var pct = totalStudents > 0 ? Math.round(e[1]/totalStudents*100) : 0;
+        html += '<tr><td style="text-transform:capitalize;">' + e[0] + '</td><td>' + e[1] + '</td><td>' + pct + '%</td></tr>';
+      });
+      html += '</table>';
+      
+      // Top 20 students
+      html += '<h2>🏆 Top 20 Estudiantes</h2>';
+      html += '<table><tr><th>#</th><th>Nombre</th><th>Email</th><th>Quizzes</th><th>Score Avg</th></tr>';
+      var ranked = [];
+      techs.forEach(function(t) {
+        if (!t.progress) return;
+        var tS = 0, tQ = 0;
+        Object.values(t.progress).forEach(function(p) { tS += p.score; tQ += p.completed; });
+        if (tQ > 0) ranked.push({name:t.nombre||'', email:t.email||'', score:tS, q:tQ, avg:Math.round(tS/tQ*100)});
+      });
+      ranked.sort(function(a,b) { return b.avg - a.avg; });
+      ranked.slice(0,20).forEach(function(r,i) {
+        html += '<tr><td>' + (i+1) + '</td><td>' + r.name + '</td><td>' + r.email + '</td><td>' + r.q + '</td><td><strong>' + r.avg + '%</strong></td></tr>';
+      });
+      html += '</table>';
+      
+      // Footer
+      html += '<div class="footer">Generado el ' + now.toLocaleDateString('es-MX', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}) + ' | MaestroAC App | ACVOLT Tech School | maestromario.com</div>';
+      
+      // Print button
+      html += '<div class="no-print" style="text-align:center;margin:30px 0;"><button onclick="window.print()" style="padding:12px 30px;background:#f39c12;color:#333;border:none;border-radius:8px;font-weight:bold;font-size:15px;cursor:pointer;">🖨️ Imprimir / Guardar como PDF</button></div>';
+      
+      html += '</body></html>';
+      
+      var win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+    }
+
+    // ==================== #14 HASH PASSWORDS ADMIN ====================
+    // SHA-256 hash function (browser-native)
+    async function hashPassword(password) {
+      var encoder = new TextEncoder();
+      var data = encoder.encode(password + '_maestroac_salt_2026');
+      var hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      var hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+    }
+    
+    // Override admin login to use hashed passwords
+    var _originalAdminLogin = (typeof handleAdminLogin === 'function') ? handleAdminLogin : null;
+    
+    async function handleAdminLoginSecure(email, password) {
+      if (!supabaseClient) { alert('Sin conexión'); return false; }
+      var hashedPwd = await hashPassword(password);
+      
+      // Try hashed password first
+      var { data: admin } = await supabaseClient.from('admin_staff')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .eq('password_hash', hashedPwd)
+        .single();
+      
+      if (admin) return admin;
+      
+      // Fallback: try plain text password (for migration)
+      var { data: adminPlain } = await supabaseClient.from('admin_staff')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .eq('password', password)
+        .single();
+      
+      if (adminPlain) {
+        // Auto-migrate: hash the password and save it
+        try {
+          await supabaseClient.from('admin_staff').update({ 
+            password_hash: hashedPwd,
+            password: '***HASHED***'
+          }).eq('id', adminPlain.id);
+          console.log('[Security] Password hashed for ' + email);
+        } catch(e) { console.log('[Hash] Migration error:', e); }
+        return adminPlain;
+      }
+      
+      return null;
     }
 
     // ==================== END ADMIN SECTION ====================

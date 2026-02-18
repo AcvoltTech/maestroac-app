@@ -11001,7 +11001,7 @@ window.toggleFormula = function(id) {
       };
       
       try {
-        const { data, error } = await supabase.from('access_code_requests').insert([request]);
+        const { data, error } = await supabaseClient.from('access_code_requests').insert([request]);
         if (error) throw error;
       } catch(e) {
         console.warn('Supabase save failed, using localStorage', e);
@@ -11040,7 +11040,7 @@ window.toggleFormula = function(id) {
         
         if (data && !error) {
           valid = true;
-          await supabase.from('access_code_requests').update({ status: 'redeemed', redeemed_at: new Date().toISOString() }).eq('id', data.id);
+          await supabaseClient.from('access_code_requests').update({ status: 'redeemed', redeemed_at: new Date().toISOString() }).eq('id', data.id);
         }
       } catch(e) {
         console.warn('Supabase check failed, checking localStorage', e);
@@ -11078,7 +11078,7 @@ window.toggleFormula = function(id) {
       let requests = [];
       
       try {
-        const { data, error } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        const { data, error } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
         if (data && !error) requests = data;
       } catch(e) {
         console.warn('Loading from localStorage');
@@ -11147,7 +11147,7 @@ window.toggleFormula = function(id) {
       }
       
       try {
-        const { data, error } = await supabase.from('access_code_requests').insert([{
+        const { data, error } = await supabaseClient.from('access_code_requests').insert([{
           student_name: name,
           student_email: email || null,
           student_phone: '',
@@ -11338,7 +11338,7 @@ window.toggleFormula = function(id) {
       
       const email = localStorage.getItem('tecnico_email') || '';
       try {
-        const { data, error } = await supabase.from('student_tasks')
+        const { data, error } = await supabaseClient.from('student_tasks')
           .select('*').eq('student_email', email).order('created_at', {ascending: false});
         
         if (error) throw error;
@@ -11375,7 +11375,7 @@ window.toggleFormula = function(id) {
       if (!taskId) { alert('Selecciona una tarea'); return; }
       
       try {
-        await supabase.from('student_tasks').update({
+        await supabaseClient.from('student_tasks').update({
           status: 'completada',
           completed_at: new Date().toISOString(),
           student_notes: notes
@@ -11490,7 +11490,7 @@ window.toggleFormula = function(id) {
       const statusEl = document.getElementById('taxFormStatus');
       
       try {
-        await supabase.from('tax_form_requests').insert([{
+        await supabaseClient.from('tax_form_requests').insert([{
           student_name: name,
           student_email: email,
           requested_at: new Date().toISOString(),
@@ -11997,7 +11997,7 @@ window.toggleFormula = function(id) {
       const name = localStorage.getItem('tecnico_name') || '';
       
       try {
-        await supabase.from('cert_renewal_requests').insert([{
+        await supabaseClient.from('cert_renewal_requests').insert([{
           student_name: name,
           student_email: email,
           cert_type: certType,
@@ -12085,7 +12085,7 @@ window.toggleFormula = function(id) {
     async function approveAccessCode(index) {
       let requests = [];
       try {
-        const { data } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        const { data } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
         if (data) requests = data;
       } catch(e) {}
       
@@ -12100,7 +12100,7 @@ window.toggleFormula = function(id) {
         requests[index].approved_at = new Date().toISOString();
         
         try {
-          await supabase.from('access_code_requests').update({ 
+          await supabaseClient.from('access_code_requests').update({ 
             status: 'approved', code: code, approved_at: new Date().toISOString() 
           }).eq('id', requests[index].id);
         } catch(e) {}
@@ -12114,7 +12114,7 @@ window.toggleFormula = function(id) {
     async function rejectAccessCode(index) {
       let requests = [];
       try {
-        const { data } = await supabase.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        const { data } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
         if (data) requests = data;
       } catch(e) {}
       
@@ -12126,7 +12126,7 @@ window.toggleFormula = function(id) {
         requests[index].status = 'rejected';
         
         try {
-          await supabase.from('access_code_requests').update({ status: 'rejected' }).eq('id', requests[index].id);
+          await supabaseClient.from('access_code_requests').update({ status: 'rejected' }).eq('id', requests[index].id);
         } catch(e) {}
         
         localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));

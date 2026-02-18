@@ -12008,7 +12008,7 @@ if (screenId === 'adminDashboardScreen') {
       try {
         var { data: existing } = await supabaseClient.from('student_success_tickets')
           .select('id').eq('student_email', email).eq('tipo', 'pago_fallido')
-          .ilike('detalles', '%' + stripeId + '%').limit(1);
+          .ilike('descripcion', '%' + stripeId + '%').limit(1);
         if (existing && existing.length > 0) {
           btn.textContent = '✓';
           btn.style.background = '#94a3b8';
@@ -12022,10 +12022,11 @@ if (screenId === 'adminDashboardScreen') {
           student_email: email,
           student_name: studentName || email,
           tipo: 'pago_fallido',
-          status: 'abierto',
+          estado: 'abierto',
           prioridad: 'alta',
-          detalles: '🚨 COBRO FALLIDO\n💰 $' + (amount/100).toFixed(2) + '\n❌ ' + failMsg + '\n🔗 ' + stripeId + '\n📞 Llamar para actualizar método de pago.',
-          source: 'stripe_import'
+          descripcion: 'COBRO FALLIDO $' + (amount/100).toFixed(2) + ' - ' + failMsg + ' - Stripe: ' + stripeId + ' - LLAMAR para actualizar metodo de pago.',
+          monto: amount/100,
+          email_enviado_estudiante: false
         });
         btn.textContent = '✅';
         btn.style.background = '#16a34a';
@@ -12067,7 +12068,7 @@ if (screenId === 'adminDashboardScreen') {
             .select('id')
             .eq('student_email', email)
             .eq('tipo', 'pago_fallido')
-            .ilike('detalles', '%' + fc.id + '%')
+            .ilike('descripcion', '%' + fc.id + '%')
             .limit(1);
           
           if (existing && existing.length > 0) {
@@ -12092,15 +12093,11 @@ if (screenId === 'adminDashboardScreen') {
             student_email: email,
             student_name: studentName || email,
             tipo: 'pago_fallido',
-            status: 'abierto',
+            estado: 'abierto',
             prioridad: 'alta',
-            detalles: '🚨 COBRO FALLIDO DE STRIPE\n' +
-              '💰 Monto: $' + amount + ' USD\n' +
-              '📅 Fecha: ' + fecha + '\n' +
-              '❌ Razón: ' + (fc.failure_message || 'Declined') + '\n' +
-              '🔗 Stripe ID: ' + fc.id + '\n' +
-              '📞 ACCIÓN: Llamar al estudiante para actualizar método de pago.',
-            source: 'stripe_import'
+            descripcion: 'COBRO FALLIDO $' + amount + ' USD - Fecha: ' + fecha + ' - Razon: ' + (fc.failure_message || 'Declined') + ' - Stripe: ' + fc.id + ' - LLAMAR para actualizar metodo de pago.',
+            monto: parseFloat(amount),
+            email_enviado_estudiante: false
           });
           
           if (insertErr) {

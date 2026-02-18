@@ -13722,86 +13722,191 @@ if(cb)cb();
 })();
 </script>
 
-<!-- SOPORTE MAESTRO MARIO - Chat Simple -->
+<!-- ACVOLT AI ASSISTANT - Asistente Unificado -->
 <style>
-#soporteBtn{position:fixed;bottom:20px;left:20px;z-index:900;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;border:none;border-radius:50%;width:44px;height:44px;font-size:18px;cursor:pointer;box-shadow:0 4px 15px rgba(37,99,235,0.4);display:flex;align-items:center;justify-content:center;transition:all 0.3s;padding:0}
-#soporteBtn:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(37,99,235,0.5)}
-#soporteChat{position:fixed;bottom:80px;left:20px;width:340px;max-height:500px;background:#0d1117;border:1px solid rgba(37,99,235,0.3);border-radius:16px;z-index:901;display:none;flex-direction:column;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
-#soporteChat.open{display:flex}
-.sc-header{background:linear-gradient(135deg,#2563eb,#1d4ed8);padding:14px 16px;display:flex;align-items:center;justify-content:space-between}
-.sc-header-title{color:white;font-size:14px;font-weight:bold;display:flex;align-items:center;gap:8px}
-.sc-close{background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;padding:4px 8px}
-.sc-close:hover{color:white}
-.sc-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;max-height:350px}
-.sc-msg{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.4;max-width:85%;animation:mMI .3s ease}
-.sc-msg.bot{background:#1a1a2e;color:#f1f3f7;border:1px solid rgba(37,99,235,0.2);align-self:flex-start;border-bottom-left-radius:4px}
-.sc-msg.user{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;align-self:flex-end;border-bottom-right-radius:4px}
-.sc-msg strong{color:#60a5fa}
-.sc-input-area{padding:10px 12px;border-top:1px solid rgba(37,99,235,0.2);display:flex;gap:8px}
-.sc-input{flex:1;background:#1c2130;border:1px solid rgba(37,99,235,0.3);border-radius:10px;padding:10px 12px;color:#f1f3f7;font-size:13px;outline:none}
-.sc-input:focus{border-color:#2563eb}
-.sc-send{width:38px;height:38px;border-radius:10px;border:none;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.sc-typing{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
-.sc-typing span{width:6px;height:6px;border-radius:50%;background:#60a5fa;animation:mTy 1.4s ease-in-out infinite}
-.sc-typing span:nth-child(2){animation-delay:.2s}
-.sc-typing span:nth-child(3){animation-delay:.4s}
-@media(max-width:600px){#soporteChat{left:10px;right:10px;width:auto;bottom:125px}#soporteBtn{bottom:75px;left:15px;width:42px;height:42px;font-size:18px}}
+#acvoltAI{position:fixed;bottom:75px;right:15px;z-index:960;display:none;flex-direction:column;align-items:flex-end;gap:8px;width:340px;animation:aiIn .4s ease}
+@keyframes aiIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+#acvoltAI .ai-panel{background:linear-gradient(135deg,#0d1117,#161b22);border:1.5px solid rgba(243,156,18,0.3);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;max-height:440px}
+#acvoltAI .ai-head{background:linear-gradient(135deg,#f39c12,#e67e22);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+#acvoltAI .ai-head-left{display:flex;align-items:center;gap:10px;color:white}
+#acvoltAI .ai-head-left .ai-avatar-sm{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px}
+#acvoltAI .ai-head-left div:last-child{line-height:1.3}
+#acvoltAI .ai-title{font-size:13px;font-weight:bold}
+#acvoltAI .ai-subtitle{font-size:10px;opacity:0.85}
+#acvoltAI .ai-close{background:none;border:none;color:rgba(255,255,255,0.7);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+#acvoltAI .ai-close:hover{color:white}
+.ai-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;max-height:280px;min-height:60px}
+.ai-m{padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5;max-width:88%;animation:aiIn .3s ease;word-wrap:break-word}
+.ai-m.b{background:rgba(243,156,18,0.08);color:#e2e8f0;border:1px solid rgba(243,156,18,0.15);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-m.u{background:linear-gradient(135deg,#f39c12,#e67e22);color:white;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-m strong{color:#f39c12}
+.ai-qk{display:flex;flex-wrap:wrap;gap:5px;padding:4px 12px 8px}
+.ai-qk button{background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.25);color:#f39c12;padding:6px 11px;border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.ai-qk button:hover{background:rgba(243,156,18,0.25)}
+.ai-inp{padding:10px 12px;border-top:1px solid rgba(243,156,18,0.15);display:flex;gap:8px;background:rgba(13,17,23,0.5)}
+.ai-inp input{flex:1;background:#1c2130;border:1px solid rgba(243,156,18,0.2);border-radius:12px;padding:10px 14px;color:#f1f3f7;font-size:13px;outline:none}
+.ai-inp input:focus{border-color:#f39c12}
+.ai-inp button{width:38px;height:38px;border-radius:12px;border:none;background:linear-gradient(135deg,#f39c12,#e67e22);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ai-dots{display:flex;gap:4px;padding:10px 14px;align-self:flex-start}
+.ai-dots span{width:5px;height:5px;border-radius:50%;background:#f39c12;animation:mTy 1.4s ease-in-out infinite}
+.ai-dots span:nth-child(2){animation-delay:.2s}
+.ai-dots span:nth-child(3){animation-delay:.4s}
+#acvoltBtn{position:fixed;bottom:20px;right:15px;z-index:961;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:2.5px solid rgba(243,156,18,0.6);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(243,156,18,0.4);transition:all .3s}
+#acvoltBtn:hover{transform:scale(1.1)}
+#acvoltBtn.speaking{animation:aiPulse 1.5s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{box-shadow:0 4px 20px rgba(243,156,18,0.4)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
+.ai-bdg{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:#e74c3c;border-radius:10px;color:white;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:bold;border:2px solid #0d1117;padding:0 4px}
+@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:75px}#acvoltBtn{bottom:15px;right:10px;width:48px;height:48px}}
 </style>
 
-<button id="soporteBtn" onclick="toggleSoporte()">💬</button>
-<div id="soporteChat">
-<div class="sc-header">
-<div class="sc-header-title">🛠️ Soporte MaestroAC</div>
-<button class="sc-close" onclick="toggleSoporte()">✕</button>
+<div id="acvoltBtn" onclick="window._acAI.toggle()">🤖<div class="ai-bdg" id="aiBdg">1</div></div>
+<div id="acvoltAI">
+<div class="ai-panel">
+<div class="ai-head">
+<div class="ai-head-left"><div class="ai-avatar-sm">🤖</div><div><div class="ai-title">Asistente ACVOLT</div><div class="ai-subtitle">Soporte · Guía · Student Success</div></div></div>
+<button class="ai-close" onclick="window._acAI.toggle()">✕</button>
 </div>
-<div class="sc-msgs" id="scMsgs"></div>
-<div class="sc-input-area">
-<input class="sc-input" id="scInput" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter')sendSoporte();">
-<button class="sc-send" onclick="sendSoporte()">➤</button>
+<div class="ai-msgs" id="aiMs"></div>
+<div class="ai-qk" id="aiQk"></div>
+<div class="ai-inp">
+<input type="text" id="aiIn" placeholder="Escribe tu pregunta..." onkeydown="if(event.key==='Enter')window._acAI.send()">
+<button onclick="window._acAI.send()">➤</button>
+</div>
 </div>
 </div>
 
 <script>
 (function(){
-var scOpen=false,scHist=[],scBusy=false;
-var SC_URL='https://htklsowiyjwsjnacnvnr.supabase.co/functions/v1/tutor-ia-chat';
-var SC_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
-var SC_SYS='Eres el asistente de soporte de la app MaestroAC de ACVOLT Tech School. Respondes en espa\u00f1ol, amable y directo. M\u00e1ximo 100 palabras. NUNCA digas "quiz", di "examen de pr\u00e1ctica". Conoces toda la app:\n\nPANTALLAS: Login, Registro, Bienvenida (men\u00fa principal), Niveles (progreso con categor\u00edas), Ex\u00e1menes de Pr\u00e1ctica, Secciones de Estudio, Video Lecciones, Mi Asistencia (Check-In/Out), Certificados, Perfil, Zona de Membres\u00eda.\n\nCHECK-IN: El estudiante debe ir a \"Mi Asistencia\" desde el men\u00fa principal. Selecciona tipo de clase (presencial, en l\u00ednea, laboratorio, campo). Presiona Check-In. El timer corre hasta 4 horas m\u00e1ximo. Para salir presiona Check-Out. Si cierra la app, la sesi\u00f3n se guarda y se puede cerrar la pr\u00f3xima vez.\n\nNIVELES: Hay categor\u00edas como Refrigeraci\u00f3n, Electricidad, Vac\u00edo, OSHA, etc. Cada categor\u00eda tiene un examen. Al pasar el examen se desbloquea el siguiente nivel. Se necesita 70% para aprobar.\n\nEXAMENES: 50 preguntas gratis de prueba. Usuarios de pago tienen acceso a 3,500+ preguntas divididas por categor\u00eda. Cada pregunta tiene 4 opciones. Al responder se muestra explicaci\u00f3n.\n\nVIDEO LECCIONES: Videos educativos organizados por tema.\n\nCERTIFICADOS: Se generan al completar niveles. Se pueden ver en \"Mis Certificados\".\n\nPERFIL: Muestra nombre, email, horas de estudio, progreso.\n\nPROBLEMAS COMUNES:\n- \"No puedo hacer login\" = Verifica email y contrase\u00f1a. Si olvidaste contrase\u00f1a, usa \"Forgot Password\".\n- \"No me deja tomar examen\" = Debes hacer Check-In primero en \"Mi Asistencia\".\n- \"La app me sac\u00f3\" = Puede ser por inactividad. Vuelve a entrar y haz Check-In.\n- \"No veo mis certificados\" = Ve a \"Mis Certificados\" desde el men\u00fa de Niveles.\n- \"El timer no funciona\" = Aseg\u00farate de haber hecho Check-In correctamente.\n\nSi no sabes la respuesta, di: \"Para este tema contacta directamente a ACVOLT Tech School.\"';
+var CURL='https://htklsowiyjwsjnacnvnr.supabase.co/functions/v1/tutor-ia-chat';
+var VURL='https://htklsowiyjwsjnacnvnr.supabase.co/functions/v1/tutor-ia-voice';
+var AK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh0a2xzb3dpeWp3c2puYWNudm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NjIwMjQsImV4cCI6MjA4NjAzODAyNH0.6A3F7MI4YJEMo98b4Zfzao9p_hMh2T0ha0dRJ4SUhv0';
+var open=false,hist=[],busy=false,aud=null,audUrl=null,greeted={},unread=0;
 
-window.toggleSoporte=function(){
-scOpen=!scOpen;
-document.getElementById('soporteChat').classList.toggle('open',scOpen);
-if(scOpen&&scHist.length===0){
-addSc('bot','\u00a1Hola! Soy el asistente de soporte de MaestroAC. \u00bfEn qu\u00e9 te puedo ayudar? Puedo ayudarte con:\n\n\u2022 C\u00f3mo hacer Check-In\n\u2022 C\u00f3mo tomar ex\u00e1menes\n\u2022 Problemas con tu cuenta\n\u2022 Certificados y niveles\n\u2022 Cualquier duda de la app');
+// === SYSTEM PROMPT ===
+var SYS='Eres el ASISTENTE OFICIAL de ACVOLT Tech School dentro de la app MaestroAC. Tu nombre es "Asistente ACVOLT". Creado por Maestro Mario Flores Corona.\n\n'
++'=== TU ROL ===\n'
++'Eres soporte completo: onboarding, student success, promotor de la escuela, y gu\u00eda de uso. Eres el empleado estrella de ACVOLT 24/7.\n\n'
++'=== REGLAS CR\u00cdTICAS ===\n'
++'1. SOLO respondes sobre: la app MaestroAC, ACVOLT Tech School, pagos, membres\u00edas, ex\u00e1menes, check-in, certificados, c\u00f3digos de acceso, y uso de la plataforma.\n'
++'2. NUNCA respondas preguntas t\u00e9cnicas de HVAC, refrigeraci\u00f3n, electricidad, presiones, refrigerantes, voltajes, o del campo. Para esas SIEMPRE di: "\u00a1Excelente pregunta! Esa respuesta la tiene el **AI Maestro Mario** \ud83c\udf93 Ah\u00ed vas a aprender con **videos personalizados**, explicaciones con voz de Maestro Mario, y cualquier pregunta t\u00e9cnica del campo la resuelves directo con la IA. \ud83d\udc49 Entra aqu\u00ed: **maestromario.com** y suscr\u00edbete por solo **$49/mes**. \u00a1Vale cada centavo para tu carrera!"\n'
++'3. NUNCA respondas preguntas personales, cultura general, chistes, noticias, deportes, clima, o CUALQUIER tema fuera de la app y escuela.\n'
++'4. Si insisten en preguntas fuera de tema, di: "Mi trabajo es ayudarte con la app y tu \u00e9xito como estudiante. Para dudas t\u00e9cnicas de HVAC, el **AI Maestro Mario** en **maestromario.com** tiene videos, voz, y responde TODO del campo por $49/mes. \u00a1Te lo recomiendo al 100%!"\n'
++'5. S\u00e9 proactivo: despu\u00e9s de responder, sugiere el siguiente paso o haz una pregunta.\n'
++'6. Responde en espa\u00f1ol, m\u00e1ximo 80 palabras. Directo, amable y motivador.\n'
++'7. NUNCA digas "quiz", di "examen de pr\u00e1ctica".\n'
++'8. Usa la frase de Maestro Mario cuando sea relevante: "Si no mides, est\u00e1s adivinando."\n\n'
++'=== APP COMPLETA ===\n\n'
++'CHECK-IN (Mi Asistencia):\n'
++'- OBLIGATORIO antes de estudiar\n'
++'- Men\u00fa \u2192 "Mi Asistencia" \u2192 Seleccionar tipo (Presencial/Zoom/Computadora/M\u00f3vil) \u2192 Bot\u00f3n verde CHECK-IN\n'
++'- M\u00e1x 4 hrs por sesi\u00f3n y por d\u00eda\n'
++'- Clase en vivo: Mar/Mi\u00e9 6-10 PM California (sin l\u00edmite inactividad)\n'
++'- Fuera de clase: auto check-out a 15 min sin actividad\n'
++'- Aviso a los 10 min: "\u00bfSigues estudiando?"\n\n'
++'5 NIVELES: Principiante (gratis 30 d\u00edas) \u2192 Intermedio \u2192 Avanzado \u2192 Elite \u2192 Platino\n'
++'- Desbloquear: completar nivel anterior al 100%, o membres\u00eda activa, o c\u00f3digo de acceso\n'
++'- 3,500+ preguntas con explicaciones\n\n'
++'PAGOS Y MEMBRES\u00cdAS:\n'
++'- Gratis: 30 d\u00edas, solo Principiante\n'
++'- $20 USD/mes: 5 niveles, 3,500+ preguntas\n'
++'- $200 USD/a\u00f1o: mejor valor, ahorra $40\n'
++'- AI Maestro Mario: $49 USD/mes en maestromario.com (tutor HVAC con voz, videos personalizados, responde cualquier pregunta del campo)\n'
++'- Despu\u00e9s de pagar: enviar comprobante por WhatsApp (909) 639-0448\n\n'
++'CERTIFICADOS: Se generan al completar nivel al 100%. Ver en "Mis Certificados".\n\n'
++'SOLICITAR C\u00d3DIGO: Bot\u00f3n "Solicitar C\u00f3digo" \u2192 Requiere perfil completo \u2192 Admin lo aprueba.\n\n'
++'PROBLEMAS COMUNES:\n'
++'- No puedo entrar \u2192 Verificar email/pass, revisar spam, Magic Link, o Forgot Password\n'
++'- No me deja examen \u2192 Hacer Check-In primero\n'
++'- Me sac\u00f3 \u2192 Inactividad 15 min fuera de clase. Volver a Check-In\n'
++'- No veo certificados \u2192 Completar nivel al 100%\n'
++'- 4 hrs completadas \u2192 Volver ma\u00f1ana\n\n'
++'CONTACTO: WhatsApp (909) 639-0448 | techschoolacvolt@gmail.com | ACVOLT Tech School, San Bernardino, CA';
+
+// === SCREEN GREETINGS ===
+var SD={
+loginScreen:{g:'\u00a1Bienvenido a MaestroAC! \ud83c\udf93 Soy tu asistente y voy a guiarte.\n\nSi ya tienes cuenta, ingresa correo y contrase\u00f1a arriba. Si eres nuevo, toca "REG\u00cdSTRATE GRATIS".\n\n\u00bfEn qu\u00e9 te ayudo?',q:['\u00bfC\u00f3mo me registro?','Olvid\u00e9 mi contrase\u00f1a','\u00bfQu\u00e9 es MaestroAC?','\u00bfEs gratis?'],c:'Est\u00e1 en LOGIN. Ay\u00fadalo a entrar o registrarse.'},
+registerScreen:{g:'\u00a1Vamos a crear tu cuenta! \ud83d\udcdd\n\nEscribe tu nombre completo, un correo v\u00e1lido, y una contrase\u00f1a de m\u00ednimo 6 caracteres. Acepta los t\u00e9rminos y toca CREAR CUENTA.\n\n\u00a1Tienes 30 d\u00edas gratis!',q:['\u00bfQu\u00e9 datos necesito?','\u00bfEs realmente gratis?','\u00bfQu\u00e9 incluye gratis?'],c:'Est\u00e1 REGISTR\u00c1NDOSE. Gu\u00edalo paso a paso.'},
+emailPendingScreen:{g:'\u00a1Ya casi! \ud83d\udce7 Revisa tu correo de confirmaci\u00f3n.\n\nBusca en bandeja de entrada, SPAM, o en Gmail "Promociones". Si no llega, puedes pedir reenv\u00edo.',q:['No encuentro el correo','Reenviar correo'],c:'Espera confirmaci\u00f3n de email.'},
+welcomeScreen:{g:'\u00a1Bienvenido a tu panel! \ud83c\udfe0\n\nPrimer paso: haz tu **Check-In** para registrar horas. Luego ve a Entrenamiento para practicar.\n\n\u00bfYa hiciste tu Check-In?',q:['\u00bfC\u00f3mo hago Check-In?','Ir a ex\u00e1menes','Ver perfil','\u00bfC\u00f3mo desbloqueo niveles?'],c:'En MEN\u00da PRINCIPAL. Dirigirlo a Check-In.'},
+attendanceScreen:{g:'\ud83d\udccb Aqu\u00ed registras tu asistencia.\n\n1. Selecciona tipo de clase\n2. Presiona CHECK-IN (bot\u00f3n verde)\n3. Estudia hasta 4 horas\n4. Presiona CHECK-OUT al terminar',q:['\u00bfCu\u00e1ntas horas puedo?','\u00bfQu\u00e9 pasa si salgo?','\u00bfPor qu\u00e9 me sac\u00f3?'],c:'En ASISTENCIA/CHECK-IN.'},
+levelsScreen:{g:'\ud83d\udcda Tus 5 niveles de entrenamiento.\n\nEmpieza por **Principiante** (gratis). Completa todas las preguntas al 100% para desbloquear el siguiente.\n\n\u00bfEn qu\u00e9 nivel est\u00e1s?',q:['\u00bfC\u00f3mo desbloqueo?','\u00bfCu\u00e1ntas preguntas?','Necesito c\u00f3digo','Ver membres\u00edas'],c:'En NIVELES/EX\u00c1MENES.'},
+miPerfilScreen:{g:'\ud83d\udc64 Tu perfil de t\u00e9cnico.\n\nAseg\u00farate de tener datos completos: nombre, tel\u00e9fono, ciudad y estado. Es necesario para solicitar c\u00f3digos y certificados.',q:['Editar datos','Solicitar c\u00f3digo','\u00bfPara qu\u00e9 sirve el perfil?'],c:'En PERFIL.'},
+membershipZoneScreen:{g:'\ud83c\udf93 Planes disponibles:\n\n\u2022 **$20/mes** \u2014 5 niveles, 3,500+ preguntas\n\u2022 **$200/a\u00f1o** \u2014 Mejor valor, ahorra $40\n\u2022 **AI Maestro Mario $49/mes** \u2014 Videos personalizados, tutor HVAC con voz, y responde TODAS tus dudas del campo en **maestromario.com**\n\n\u00bfCu\u00e1l te interesa?',q:['Plan mensual $20','Plan anual $200','AI Maestro Mario $49','\u00bfQu\u00e9 incluye cada plan?'],c:'En MEMBRES\u00cdAS. Promueve plan anual como mejor valor y AI Maestro Mario para dudas t\u00e9cnicas.'},
+certificatesScreen:{g:'\ud83c\udfc6 Tus certificados aparecen aqu\u00ed cuando completes un nivel al 100%.\n\n\u00bfYa completaste tu primer nivel?',q:['No veo certificados','\u00bfC\u00f3mo los obtengo?','Ir a niveles'],c:'En CERTIFICADOS.'}
+};
+
+// === CORE ===
+function addM(r,t){var c=document.getElementById('aiMs'),d=document.createElement('div');d.className='ai-m '+(r==='bot'?'b':'u');d.innerHTML=t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function showDots(){var c=document.getElementById('aiMs'),d=document.createElement('div');d.className='ai-dots';d.id='aiDt';d.innerHTML='<span></span><span></span><span></span>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function hideDots(){var e=document.getElementById('aiDt');if(e)e.remove();}
+function showQk(a){var c=document.getElementById('aiQk');if(!a||!a.length){c.innerHTML='';return;}c.innerHTML=a.map(function(b){return'<button onclick="document.getElementById(\'aiIn\').value=\''+b.replace(/'/g,"\\'")+'\';window._acAI.send();">'+b+'</button>';}).join('');}
+
+function speak(t){
+var btn=document.getElementById('acvoltBtn');
+if(!aud){aud=new Audio();aud.volume=0.8;var dummy=new Audio();dummy.src='data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA/+M4wAAAAAAAAAAAAEluZm8AAAAPAAAAAgAAAbAAqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAbD/2Q==';dummy.play().catch(function(){});}
+fetch(VURL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AK,'apikey':AK},body:JSON.stringify({text:t.replace(/\*\*/g,'').replace(/[🎓📝📧🏠📋📚👤🏆💎⚡📊🔧❄️🔑💳✅•\n]/g,' ').substring(0,500)})})
+.then(function(r){if(!r.ok)throw 0;return r.blob();})
+.then(function(b){if(b.size<100)return;if(audUrl)try{URL.revokeObjectURL(audUrl);}catch(e){}audUrl=URL.createObjectURL(b);aud.src=audUrl;btn.classList.add('speaking');aud.play().catch(function(){btn.classList.remove('speaking');});aud.onended=function(){btn.classList.remove('speaking');try{URL.revokeObjectURL(audUrl);}catch(e){}audUrl=null;};aud.onerror=function(){btn.classList.remove('speaking');};})
+.catch(function(){});
+}
+
+function greet(sid){if(greeted[sid])return;var d=SD[sid];if(!d)return;greeted[sid]=true;addM('bot',d.g);showQk(d.q);speak(d.g);}
+function updBdg(){var b=document.getElementById('aiBdg');if(unread>0&&!open){b.textContent=unread;b.style.display='flex';}else{b.style.display='none';unread=0;}}
+
+// === PUBLIC API ===
+window._acAI={
+toggle:function(){
+  open=!open;
+  document.getElementById('acvoltAI').style.display=open?'flex':'none';
+  if(open){unread=0;updBdg();document.getElementById('aiIn').focus();var a=document.querySelector('.screen.active');if(a)greet(a.id);}
+},
+send:function(){
+  var inp=document.getElementById('aiIn'),txt=inp.value.trim();
+  if(!txt||busy)return;busy=true;inp.value='';
+  addM('user',txt);showQk([]);
+  var a=document.querySelector('.screen.active');
+  var ctx=a&&SD[a.id]?SD[a.id].c:'Navegando la app.';
+  var uname='';try{var u=JSON.parse(localStorage.getItem('tecnico_user')||'{}');uname=u.nombre||'';}catch(e){}
+  hist.push({role:'user',content:txt});
+  if(hist.length>14)hist=hist.slice(-14);
+  showDots();
+  var full=SYS+'\n\nCONTEXTO ACTUAL: '+ctx+(uname?' Nombre del t\u00e9cnico: '+uname:'');
+  var ac=new AbortController();var tid=setTimeout(function(){ac.abort();},25000);
+  fetch(CURL,{method:'POST',signal:ac.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+AK,'apikey':AK},body:JSON.stringify({messages:hist,system:full,max_tokens:400})})
+  .then(function(r){clearTimeout(tid);return r.json();})
+  .then(function(d){hideDots();if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');hist.push({role:'assistant',content:rp});addM('bot',rp);speak(rp);var sd=a&&SD[a.id]?SD[a.id]:null;if(sd)showQk(sd.q);}else{addM('bot','Intenta de nuevo por favor.');}})
+  .catch(function(){hideDots();addM('bot','Error de conexi\u00f3n. Verifica tu internet.');})
+  .finally(function(){busy=false;});
+},
+notify:function(text,qk){
+  if(!open){unread++;updBdg();}
+  addM('bot',text);if(qk)showQk(qk);
+  speak(text);
 }
 };
 
-function addSc(role,text){
-var msgs=document.getElementById('scMsgs'),div=document.createElement('div');
-div.className='sc-msg '+role;
-div.innerHTML=text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
-msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+// === AUTO-OPEN on login/register after 4 seconds ===
+setTimeout(function(){
+  var a=document.querySelector('.screen.active');
+  if(a&&(a.id==='loginScreen'||a.id==='registerScreen')){
+    if(!open)window._acAI.toggle();
+  }
+},4000);
+
+// === HOOK showScreen to auto-greet ===
+var _origSS=window.showScreen;
+if(_origSS){
+  var _hookedSS=function(id){
+    _origSS(id);
+    if(open)setTimeout(function(){greet(id);},400);
+    else if(SD[id]&&!greeted[id]){unread++;updBdg();}
+  };
+  // Replace showScreen globally
+  window.showScreen=_hookedSS;
+  // Also check if it was overridden elsewhere
+  setTimeout(function(){if(window.showScreen!==_hookedSS){var other=window.showScreen;window.showScreen=function(id){other(id);if(open)setTimeout(function(){greet(id);},400);else if(SD[id]&&!greeted[id]){unread++;updBdg();}};}},3000);
 }
 
-function showScTyping(){
-var msgs=document.getElementById('scMsgs'),div=document.createElement('div');
-div.className='sc-typing';div.id='scTp';
-div.innerHTML='<span></span><span></span><span></span>';
-msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
-}
-function hideScTyping(){var el=document.getElementById('scTp');if(el)el.remove();}
-
-window.sendSoporte=function(){
-var inp=document.getElementById('scInput'),txt=inp.value.trim();
-if(!txt||scBusy)return;scBusy=true;
-addSc('user',txt);scHist.push({role:'user',content:txt});if(scHist.length>20)scHist=scHist.slice(-20);inp.value='';showScTyping();
-var sCtrl=new AbortController();var sTid=setTimeout(function(){sCtrl.abort();},30000);
-fetch(SC_URL,{method:'POST',signal:sCtrl.signal,headers:{'Content-Type':'application/json','Authorization':'Bearer '+SC_KEY,'apikey':SC_KEY},body:JSON.stringify({messages:scHist,system:SC_SYS,max_tokens:300})}).then(function(r){clearTimeout(sTid);return r.json();}).then(function(d){
-hideScTyping();
-if(d.content&&d.content.length>0){var rp=d.content.map(function(c){return c.text||'';}).join('\n');scHist.push({role:'assistant',content:rp});addSc('bot',rp);}
-else{addSc('bot','Hubo un problema, intenta de nuevo.');}
-}).catch(function(){hideScTyping();addSc('bot','Error de conexi\u00f3n.');}).finally(function(){scBusy=false;});
-};
 })();
 </script>
 

@@ -2529,61 +2529,245 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
         </div>
 
-        <!-- ========== FINANZAS DASHBOARD - AUDITORÍA #3 ========== -->
+        <!-- ========== 💰 MIS INGRESOS — STRIPE + SUPABASE — SESIÓN 5 ========== -->
         <div class="admin-section admin-grid-full" id="adminFinanzas" style="background:#ffffff;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
           <div class="admin-section-header">
-            <span class="admin-section-title">💰 Finanzas — Métricas de Revenue</span>
-            <button onclick="loadFinanzasData()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄</button>
-            <button onclick="generatePDFReport()" style="background:#fffbeb;padding:5px 10px;border-radius:6px;color:#d97706;border:1px solid #fde68a;cursor:pointer;font-size:10px;">📄 Reporte PDF</button>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:15px 0;">
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#27ae60;font-weight:bold;">MRR (Ingreso Mensual)</div>
-              <div id="finMRR" style="font-size:28px;font-weight:bold;color:#2ecc71;margin:5px 0;">$0</div>
-              <div style="font-size:10px;color:#64748b;">Membresías activas × precio</div>
-            </div>
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#2563eb;font-weight:bold;">Estudiantes Pagando</div>
-              <div id="finPaying" style="font-size:28px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
-              <div id="finPayingPct" style="font-size:10px;color:#64748b;">0% del total</div>
-            </div>
-            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#dc2626;font-weight:bold;">Churn Rate (Mensual)</div>
-              <div id="finChurn" style="font-size:28px;font-weight:bold;color:#e74c3c;margin:5px 0;">0%</div>
-              <div style="font-size:10px;color:#64748b;">Cancelaciones / Total</div>
-            </div>
-            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#f39c12;font-weight:bold;">LTV Promedio</div>
-              <div id="finLTV" style="font-size:28px;font-weight:bold;color:#f39c12;margin:5px 0;">$0</div>
-              <div style="font-size:10px;color:#64748b;">Valor promedio por estudiante</div>
+            <span class="admin-section-title">💰 Mis Ingresos — Stripe + Membresías</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button onclick="loadFinanzasStripe()" style="background:#635bff;padding:5px 12px;border-radius:6px;color:#fff;border:none;cursor:pointer;font-size:10px;font-weight:bold;">⚡ Cargar Stripe</button>
+              <button onclick="loadFinanzasData()" style="background:#f1f5f9;padding:5px 10px;border-radius:6px;color:#475569;border:1px solid #e2e8f0;cursor:pointer;font-size:10px;">🔄 Supabase</button>
+              <button onclick="generatePDFReport()" style="background:#fffbeb;padding:5px 10px;border-radius:6px;color:#d97706;border:1px solid #fde68a;cursor:pointer;font-size:10px;">📄 PDF</button>
             </div>
           </div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:15px;">
-            <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#9b59b6;font-weight:bold;">Revenue Acumulado</div>
-              <div id="finTotal" style="font-size:24px;font-weight:bold;color:#9b59b6;margin:5px 0;">$0</div>
-              <div style="font-size:10px;color:#64748b;">Histórico total</div>
+
+          <!-- STRIPE DATA SOURCE TABS -->
+          <div style="display:flex;gap:6px;margin:10px 0;flex-wrap:wrap;">
+            <button onclick="finShowTab('stripe')" id="finTabStripe" style="background:#635bff;color:white;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:bold;">💳 Stripe (Datos Reales)</button>
+            <button onclick="finShowTab('supabase')" id="finTabSupabase" style="background:#f1f5f9;color:#475569;padding:8px 16px;border-radius:8px;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;">🗄️ Supabase (Membresías)</button>
+            <button onclick="finShowTab('reconcile')" id="finTabReconcile" style="background:#f1f5f9;color:#475569;padding:8px 16px;border-radius:8px;border:1px solid #e2e8f0;cursor:pointer;font-size:12px;">🔄 Reconciliación</button>
+          </div>
+
+          <!-- ===== TAB: STRIPE REAL DATA ===== -->
+          <div id="finStripePanel">
+            <!-- Stripe Status Banner -->
+            <div id="stripeStatusBanner" style="background:linear-gradient(135deg,#635bff,#7c3aed);border-radius:12px;padding:15px;margin-bottom:15px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                <div>
+                  <div style="color:rgba(255,255,255,0.7);font-size:11px;">CONEXIÓN STRIPE</div>
+                  <div id="stripeConnStatus" style="color:white;font-size:16px;font-weight:bold;">⏳ Sin conectar — Configura tu API Key</div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="color:rgba(255,255,255,0.7);font-size:11px;">MERCHANT</div>
+                  <div style="color:white;font-size:13px;font-weight:bold;">Tech School AC Volt</div>
+                </div>
+              </div>
             </div>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#16a34a;font-weight:bold;">Membresías Activas</div>
-              <div id="finActive" style="font-size:24px;font-weight:bold;color:#2ecc71;margin:5px 0;">0</div>
-              <div style="font-size:10px;color:#64748b;">Status: active</div>
+
+            <!-- Stripe KPI Cards -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:15px;">
+              <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:18px;text-align:center;">
+                <div style="font-size:11px;color:#16a34a;font-weight:bold;">💰 MRR Real (Stripe)</div>
+                <div id="stripeMRR" style="font-size:32px;font-weight:900;color:#16a34a;margin:5px 0;">—</div>
+                <div style="font-size:10px;color:#64748b;">Ingresos recurrentes del mes</div>
+              </div>
+              <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:18px;text-align:center;">
+                <div style="font-size:11px;color:#2563eb;font-weight:bold;">📊 Suscripciones Activas</div>
+                <div id="stripeActiveSubs" style="font-size:32px;font-weight:900;color:#2563eb;margin:5px 0;">—</div>
+                <div style="font-size:10px;color:#64748b;">Pagando ahora mismo</div>
+              </div>
+              <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:18px;text-align:center;">
+                <div style="font-size:11px;color:#dc2626;font-weight:bold;">❌ Cobros Fallidos</div>
+                <div id="stripeFailedCharges" style="font-size:32px;font-weight:900;color:#dc2626;margin:5px 0;">—</div>
+                <div id="stripeFailedAmount" style="font-size:10px;color:#dc2626;">$0 perdido</div>
+              </div>
+              <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:12px;padding:18px;text-align:center;">
+                <div style="font-size:11px;color:#7c3aed;font-weight:bold;">🏦 Balance Disponible</div>
+                <div id="stripeBalance" style="font-size:32px;font-weight:900;color:#7c3aed;margin:5px 0;">—</div>
+                <div style="font-size:10px;color:#64748b;">Listo para transferir</div>
+              </div>
             </div>
-            <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#dc2626;font-weight:bold;">Cancelaciones (30 días)</div>
-              <div id="finCanceled" style="font-size:24px;font-weight:bold;color:#e74c3c;margin:5px 0;">0</div>
-              <div style="font-size:10px;color:#64748b;">Membresías canceladas</div>
+
+            <!-- Stripe Revenue Chart -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin-bottom:15px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+                <div style="font-size:14px;color:#1e293b;font-weight:bold;">📈 Revenue Mensual (Últimos 6 Meses)</div>
+                <div id="stripeRevenueTotal" style="font-size:14px;color:#16a34a;font-weight:bold;">Total: —</div>
+              </div>
+              <div id="stripeRevenueChart" style="display:flex;align-items:flex-end;gap:8px;height:160px;padding:10px 0;">
+                <div style="text-align:center;color:#94a3b8;width:100%;padding:40px;">⏳ Conecta Stripe para ver tu gráfica de ingresos</div>
+              </div>
+              <div id="stripeRevenueLabels" style="display:flex;gap:8px;margin-top:5px;"></div>
             </div>
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
-              <div style="font-size:11px;color:#2563eb;font-weight:bold;">Gratis / Trial</div>
-              <div id="finFree" style="font-size:24px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
-              <div style="font-size:10px;color:#64748b;">Sin membresía pagada</div>
+
+            <!-- Stripe Detailed Metrics -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px;">
+              <!-- Transacciones -->
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:15px;">
+                <div style="font-size:13px;color:#1e293b;font-weight:bold;margin-bottom:12px;">📋 Resumen de Transacciones</div>
+                <div id="stripeTransSummary" style="display:grid;gap:8px;">
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">Total transacciones</span>
+                    <span id="stripeTotalTrans" style="color:#1e293b;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">✅ Exitosas</span>
+                    <span id="stripeSuccessTrans" style="color:#16a34a;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">❌ Fallidas</span>
+                    <span id="stripeFailedTrans" style="color:#dc2626;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">↩️ Reembolsadas</span>
+                    <span id="stripeRefundTrans" style="color:#d97706;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                    <span style="color:#64748b;font-size:12px;">⚠️ Disputadas</span>
+                    <span id="stripeDisputeTrans" style="color:#e74c3c;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Suscripciones -->
+              <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:15px;">
+                <div style="font-size:13px;color:#1e293b;font-weight:bold;margin-bottom:12px;">🔄 Suscripciones</div>
+                <div id="stripeSubsSummary" style="display:grid;gap:8px;">
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">Precio mensual</span>
+                    <span id="stripeSubPrice" style="color:#1e293b;font-weight:bold;font-size:12px;">$111.00</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">✅ Activas</span>
+                    <span id="stripeSubsActive" style="color:#16a34a;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">⏸️ Pausadas</span>
+                    <span id="stripeSubsPaused" style="color:#d97706;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                    <span style="color:#64748b;font-size:12px;">❌ Canceladas (30d)</span>
+                    <span id="stripeSubsCanceled" style="color:#dc2626;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                    <span style="color:#64748b;font-size:12px;">📉 Churn Real</span>
+                    <span id="stripeChurnReal" style="color:#e74c3c;font-weight:bold;font-size:12px;">—</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Failed Payments Alert -->
+            <div id="stripeFailedAlert" style="display:none;background:#fef2f2;border:2px solid #fecaca;border-radius:12px;padding:15px;margin-bottom:15px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+                <span style="font-size:24px;">🚨</span>
+                <div>
+                  <div style="color:#dc2626;font-weight:bold;font-size:14px;">Cobros Fallidos — Requieren Atención</div>
+                  <div style="color:#64748b;font-size:11px;">Estos estudiantes tienen pagos que no pasaron. Contactar para actualizar método de pago.</div>
+                </div>
+              </div>
+              <div id="stripeFailedList" style="max-height:200px;overflow-y:auto;"></div>
+            </div>
+
+            <!-- Recent Charges -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:15px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div style="font-size:13px;color:#1e293b;font-weight:bold;">💳 Últimos Cobros de Stripe</div>
+                <div style="font-size:11px;color:#64748b;" id="stripeLastUpdate">Sin datos</div>
+              </div>
+              <div id="stripeRecentCharges" style="max-height:300px;overflow-y:auto;">
+                <div style="text-align:center;color:#94a3b8;padding:20px;font-size:13px;">
+                  ⚡ Presiona "Cargar Stripe" para ver tus cobros recientes<br>
+                  <span style="font-size:11px;">Requiere Edge Function <code>get-stripe-data</code> deployada en Supabase</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px;border:1px solid rgba(255,255,255,0.1);">
-            <div style="font-size:12px;color:#f39c12;font-weight:bold;margin-bottom:8px;">📊 Desglose de Revenue</div>
-            <div id="finBreakdown" style="color:#94a3b8;font-size:12px;">Cargando datos de Stripe/memberships...</div>
+
+          <!-- ===== TAB: SUPABASE MEMBERSHIPS (existing) ===== -->
+          <div id="finSupabasePanel" style="display:none;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:15px 0;">
+              <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#27ae60;font-weight:bold;">MRR (Ingreso Mensual)</div>
+                <div id="finMRR" style="font-size:28px;font-weight:bold;color:#2ecc71;margin:5px 0;">$0</div>
+                <div style="font-size:10px;color:#64748b;">Membresías activas × precio</div>
+              </div>
+              <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#2563eb;font-weight:bold;">Estudiantes Pagando</div>
+                <div id="finPaying" style="font-size:28px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
+                <div id="finPayingPct" style="font-size:10px;color:#64748b;">0% del total</div>
+              </div>
+              <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#dc2626;font-weight:bold;">Churn Rate (Mensual)</div>
+                <div id="finChurn" style="font-size:28px;font-weight:bold;color:#e74c3c;margin:5px 0;">0%</div>
+                <div style="font-size:10px;color:#64748b;">Cancelaciones / Total</div>
+              </div>
+              <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#f39c12;font-weight:bold;">LTV Promedio</div>
+                <div id="finLTV" style="font-size:28px;font-weight:bold;color:#f39c12;margin:5px 0;">$0</div>
+                <div style="font-size:10px;color:#64748b;">Valor promedio por estudiante</div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:15px;">
+              <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#9b59b6;font-weight:bold;">Revenue Acumulado</div>
+                <div id="finTotal" style="font-size:24px;font-weight:bold;color:#9b59b6;margin:5px 0;">$0</div>
+                <div style="font-size:10px;color:#64748b;">Histórico total</div>
+              </div>
+              <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#16a34a;font-weight:bold;">Membresías Activas</div>
+                <div id="finActive" style="font-size:24px;font-weight:bold;color:#2ecc71;margin:5px 0;">0</div>
+                <div style="font-size:10px;color:#64748b;">Status: active</div>
+              </div>
+              <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#dc2626;font-weight:bold;">Cancelaciones (30 días)</div>
+                <div id="finCanceled" style="font-size:24px;font-weight:bold;color:#e74c3c;margin:5px 0;">0</div>
+                <div style="font-size:10px;color:#64748b;">Membresías canceladas</div>
+              </div>
+              <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:15px;text-align:center;">
+                <div style="font-size:11px;color:#2563eb;font-weight:bold;">Gratis / Trial</div>
+                <div id="finFree" style="font-size:24px;font-weight:bold;color:#3498db;margin:5px 0;">0</div>
+                <div style="font-size:10px;color:#64748b;">Sin membresía pagada</div>
+              </div>
+            </div>
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+              <div style="font-size:12px;color:#f39c12;font-weight:bold;margin-bottom:8px;">📊 Desglose de Revenue</div>
+              <div id="finBreakdown" style="color:#94a3b8;font-size:12px;">Cargando datos de Stripe/memberships...</div>
+            </div>
           </div>
+
+          <!-- ===== TAB: RECONCILIATION ===== -->
+          <div id="finReconcilePanel" style="display:none;">
+            <div style="background:#fffbeb;border:2px solid #fde68a;border-radius:12px;padding:20px;margin-bottom:15px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                <span style="font-size:28px;">🔄</span>
+                <div>
+                  <div style="color:#92400e;font-weight:bold;font-size:15px;">Reconciliación Stripe ↔ Supabase</div>
+                  <div style="color:#a16207;font-size:12px;">Sincroniza suscripciones de Stripe con membresías en tu base de datos</div>
+                </div>
+              </div>
+              <div id="reconcileResults" style="margin-bottom:15px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:15px;">
+                  <div style="background:white;border-radius:10px;padding:15px;text-align:center;border:1px solid #e2e8f0;">
+                    <div style="font-size:11px;color:#635bff;font-weight:bold;">Stripe</div>
+                    <div id="reconStripeCount" style="font-size:28px;font-weight:bold;color:#635bff;">—</div>
+                    <div style="font-size:10px;color:#64748b;">Suscripciones activas</div>
+                  </div>
+                  <div style="background:white;border-radius:10px;padding:15px;text-align:center;border:1px solid #e2e8f0;">
+                    <div style="font-size:11px;color:#3ecf8e;font-weight:bold;">Supabase</div>
+                    <div id="reconSupaCount" style="font-size:28px;font-weight:bold;color:#3ecf8e;">—</div>
+                    <div style="font-size:10px;color:#64748b;">Membresías activas</div>
+                  </div>
+                  <div style="background:white;border-radius:10px;padding:15px;text-align:center;border:1px solid #e2e8f0;">
+                    <div style="font-size:11px;color:#e74c3c;font-weight:bold;">Diferencia</div>
+                    <div id="reconDiff" style="font-size:28px;font-weight:bold;color:#e74c3c;">—</div>
+                    <div style="font-size:10px;color:#64748b;">Faltan sincronizar</div>
+                  </div>
+                </div>
+              </div>
+              <button onclick="runReconciliation()" style="width:100%;background:linear-gradient(135deg,#635bff,#7c3aed);color:white;border:none;padding:14px;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer;">🔄 Ejecutar Reconciliación</button>
+              <div id="reconLog" style="margin-top:12px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:11px;color:#64748b;"></div>
+            </div>
+          </div>
+
         </div>
 
 
@@ -2613,7 +2797,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           <div id="weeklyEmailPreview" style="display:none;background:rgba(255,255,255,0.05);border-radius:10px;padding:15px;margin-top:10px;border:1px solid rgba(52,152,219,0.3);">
           </div>
           <div style="background:rgba(255,255,255,0.03);border-radius:8px;padding:10px;margin-top:8px;">
-            <p style="color:#475569;font-size:11px;margin:0;">📌 Cada estudiante recibe un email personalizado con sus niveles, score, certificados y próximo objetivo. Se envía via Resend desde noreply@maestromario.com</p>
+            <p style="color:#475569;font-size:11px;margin:0;">📌 Cada estudiante recibe un email personalizado con sus niveles, score, certificados y próximo objetivo. Se envía via Resend desde <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cca2a3bea9bca0b58ca1ada9bfb8bea3a1adbea5a3e2afa3a1">[email&#160;protected]</a></p>
           </div>
         </div>
 
@@ -3436,7 +3620,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
           <div id="scheduleStatusLine" style="text-align:center;padding:8px;border-radius:8px;font-size:13px;font-weight:bold;"></div>
         </div>
-        <script>
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
           (function updateScheduleStatus(){
             var el = document.getElementById('scheduleStatusLine');
             if(!el) return;
@@ -5937,6 +6121,7 @@ if (screenId === 'adminDashboardScreen') {
         try { loadActiveCodes(); } catch(e) {}
         try { loadAdminAttendance(); } catch(e) {}
         try { loadFinanzasData(); } catch(e) {}
+        try { loadFinanzasStripe(); } catch(e) {}
         try { loadInactivityAlerts(); } catch(e) {}
         try { loadCalendarData(); } catch(e) {}
         try { loadReferidosData(); } catch(e) {}
@@ -11812,6 +11997,302 @@ if (screenId === 'adminDashboardScreen') {
       }
     }
 
+    // ==================== STRIPE INTEGRATION — SESIÓN 5 ====================
+    
+    // Tab switching for Finanzas
+    function finShowTab(tab) {
+      document.getElementById('finStripePanel').style.display = tab === 'stripe' ? 'block' : 'none';
+      document.getElementById('finSupabasePanel').style.display = tab === 'supabase' ? 'block' : 'none';
+      document.getElementById('finReconcilePanel').style.display = tab === 'reconcile' ? 'block' : 'none';
+      // Update button styles
+      var tabs = {stripe:'finTabStripe', supabase:'finTabSupabase', reconcile:'finTabReconcile'};
+      Object.keys(tabs).forEach(function(k) {
+        var btn = document.getElementById(tabs[k]);
+        if (k === tab) {
+          btn.style.background = k === 'stripe' ? '#635bff' : '#3ecf8e';
+          btn.style.color = 'white';
+          btn.style.border = 'none';
+        } else {
+          btn.style.background = '#f1f5f9';
+          btn.style.color = '#475569';
+          btn.style.border = '1px solid #e2e8f0';
+        }
+      });
+      // Auto-load data
+      if (tab === 'supabase') loadFinanzasData();
+      if (tab === 'reconcile') loadReconcileData();
+    }
+    
+    // ---- STRIPE DATA via Edge Function ----
+    var stripeDataCache = null;
+    
+    async function loadFinanzasStripe() {
+      var statusEl = document.getElementById('stripeConnStatus');
+      statusEl.textContent = '⏳ Conectando con Stripe...';
+      
+      try {
+        var response = await fetch(SUPABASE_URL + '/functions/v1/get-stripe-data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          },
+          body: JSON.stringify({ action: 'dashboard' })
+        });
+        
+        if (!response.ok) {
+          var errText = await response.text();
+          throw new Error('HTTP ' + response.status + ': ' + errText);
+        }
+        
+        var data = await response.json();
+        stripeDataCache = data;
+        
+        // Update status
+        statusEl.innerHTML = '✅ Conectado — Datos actualizados ' + new Date().toLocaleTimeString('es-MX');
+        document.getElementById('stripeStatusBanner').style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
+        
+        // Update KPIs
+        renderStripeKPIs(data);
+        renderStripeChart(data);
+        renderStripeTransactions(data);
+        renderStripeSubscriptions(data);
+        renderStripeFailedCharges(data);
+        renderStripeRecentCharges(data);
+        
+        document.getElementById('stripeLastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
+        
+        console.log('[Stripe] Dashboard loaded:', data);
+        
+      } catch(e) {
+        console.error('[Stripe] Error:', e);
+        statusEl.innerHTML = '❌ Error: ' + e.message;
+        document.getElementById('stripeStatusBanner').style.background = 'linear-gradient(135deg,#dc2626,#b91c1c)';
+        
+        // Show helpful message
+        if (e.message.includes('404') || e.message.includes('not found')) {
+          statusEl.innerHTML += '<br><span style="font-size:11px;opacity:0.8;">La Edge Function get-stripe-data no está deployada. Ve las instrucciones abajo.</span>';
+          showStripeSetupInstructions();
+        } else if (e.message.includes('401') || e.message.includes('403')) {
+          statusEl.innerHTML += '<br><span style="font-size:11px;opacity:0.8;">Error de autenticación. Verifica tu STRIPE_SECRET_KEY en Supabase secrets.</span>';
+        }
+      }
+    }
+    
+    function renderStripeKPIs(data) {
+      if (data.mrr !== undefined) document.getElementById('stripeMRR').textContent = '$' + Number(data.mrr).toLocaleString();
+      if (data.active_subscriptions !== undefined) document.getElementById('stripeActiveSubs').textContent = data.active_subscriptions;
+      if (data.failed_charges !== undefined) {
+        document.getElementById('stripeFailedCharges').textContent = data.failed_charges;
+        if (data.failed_amount !== undefined) document.getElementById('stripeFailedAmount').textContent = '$' + Number(data.failed_amount).toLocaleString() + ' perdido';
+      }
+      if (data.balance !== undefined) document.getElementById('stripeBalance').textContent = '$' + Number(data.balance / 100).toLocaleString();
+    }
+    
+    function renderStripeChart(data) {
+      var chartEl = document.getElementById('stripeRevenueChart');
+      var labelsEl = document.getElementById('stripeRevenueLabels');
+      if (!data.monthly_revenue || !data.monthly_revenue.length) {
+        chartEl.innerHTML = '<div style="text-align:center;color:#94a3b8;width:100%;padding:40px;">Sin datos de revenue mensual</div>';
+        return;
+      }
+      var months = data.monthly_revenue;
+      var maxVal = Math.max.apply(null, months.map(function(m) { return m.amount; })) || 1;
+      var totalRev = months.reduce(function(s, m) { return s + m.amount; }, 0);
+      document.getElementById('stripeRevenueTotal').textContent = 'Total: $' + totalRev.toLocaleString();
+      
+      var chartHtml = '';
+      var labelsHtml = '';
+      months.forEach(function(m) {
+        var height = Math.max(5, Math.round((m.amount / maxVal) * 140));
+        var color = m.amount > 0 ? 'linear-gradient(to top,#16a34a,#4ade80)' : '#e2e8f0';
+        chartHtml += '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">';
+        chartHtml += '<div style="font-size:10px;color:#1e293b;font-weight:bold;margin-bottom:4px;">$' + m.amount.toLocaleString() + '</div>';
+        chartHtml += '<div style="width:100%;height:' + height + 'px;background:' + color + ';border-radius:6px 6px 0 0;transition:height 0.5s;"></div>';
+        chartHtml += '</div>';
+        labelsHtml += '<div style="flex:1;text-align:center;font-size:10px;color:#64748b;">' + m.month + '</div>';
+      });
+      chartEl.innerHTML = chartHtml;
+      labelsEl.innerHTML = labelsHtml;
+    }
+    
+    function renderStripeTransactions(data) {
+      if (data.total_transactions !== undefined) document.getElementById('stripeTotalTrans').textContent = data.total_transactions.toLocaleString();
+      if (data.successful_transactions !== undefined) document.getElementById('stripeSuccessTrans').textContent = data.successful_transactions.toLocaleString() + ' (' + (data.success_rate || 0) + '%)';
+      if (data.failed_transactions !== undefined) document.getElementById('stripeFailedTrans').textContent = data.failed_transactions.toLocaleString();
+      if (data.refunded_transactions !== undefined) document.getElementById('stripeRefundTrans').textContent = data.refunded_transactions.toLocaleString();
+      if (data.disputed_transactions !== undefined) document.getElementById('stripeDisputeTrans').textContent = data.disputed_transactions.toLocaleString();
+    }
+    
+    function renderStripeSubscriptions(data) {
+      if (data.active_subscriptions !== undefined) document.getElementById('stripeSubsActive').textContent = data.active_subscriptions;
+      if (data.paused_subscriptions !== undefined) document.getElementById('stripeSubsPaused').textContent = data.paused_subscriptions;
+      if (data.canceled_subscriptions !== undefined) document.getElementById('stripeSubsCanceled').textContent = data.canceled_subscriptions;
+      if (data.churn_rate !== undefined) document.getElementById('stripeChurnReal').textContent = data.churn_rate + '%';
+      if (data.subscription_price !== undefined) document.getElementById('stripeSubPrice').textContent = '$' + data.subscription_price;
+    }
+    
+    function renderStripeFailedCharges(data) {
+      var alertEl = document.getElementById('stripeFailedAlert');
+      var listEl = document.getElementById('stripeFailedList');
+      if (!data.failed_charges_list || !data.failed_charges_list.length) {
+        alertEl.style.display = 'none';
+        return;
+      }
+      alertEl.style.display = 'block';
+      var html = '';
+      data.failed_charges_list.forEach(function(fc) {
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:white;border-radius:8px;margin-bottom:6px;border:1px solid #fecaca;">';
+        html += '<div>';
+        html += '<div style="font-weight:bold;color:#1e293b;font-size:12px;">👤 ' + (fc.customer_email || fc.customer_name || 'Desconocido') + '</div>';
+        html += '<div style="color:#dc2626;font-size:11px;">$' + (fc.amount/100).toFixed(2) + ' — ' + (fc.failure_message || 'Declined') + '</div>';
+        html += '<div style="color:#94a3b8;font-size:10px;">' + new Date(fc.created * 1000).toLocaleDateString('es-MX') + '</div>';
+        html += '</div>';
+        html += '<button onclick="window.open(\'https://dashboard.stripe.com/payments/' + fc.id + '\',\'_blank\')" style="padding:5px 10px;background:#635bff;color:white;border:none;border-radius:6px;font-size:10px;cursor:pointer;">Ver en Stripe</button>';
+        html += '</div>';
+      });
+      listEl.innerHTML = html;
+    }
+    
+    function renderStripeRecentCharges(data) {
+      var container = document.getElementById('stripeRecentCharges');
+      if (!data.recent_charges || !data.recent_charges.length) {
+        container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px;">Sin cobros recientes</div>';
+        return;
+      }
+      var html = '';
+      data.recent_charges.forEach(function(ch) {
+        var statusColor = ch.status === 'succeeded' ? '#16a34a' : ch.status === 'failed' ? '#dc2626' : '#d97706';
+        var statusIcon = ch.status === 'succeeded' ? '✅' : ch.status === 'failed' ? '❌' : '⏳';
+        var amount = (ch.amount / 100).toFixed(2);
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:white;border-radius:8px;margin-bottom:6px;border:1px solid #e2e8f0;">';
+        html += '<div style="display:flex;align-items:center;gap:10px;">';
+        html += '<span style="font-size:18px;">' + statusIcon + '</span>';
+        html += '<div>';
+        html += '<div style="font-size:13px;font-weight:bold;color:#1e293b;">$' + amount + ' USD</div>';
+        html += '<div style="font-size:11px;color:#64748b;">' + (ch.customer_email || ch.description || 'Pago') + '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div style="text-align:right;">';
+        html += '<div style="font-size:11px;color:' + statusColor + ';font-weight:bold;">' + (ch.status === 'succeeded' ? 'Exitoso' : ch.status === 'failed' ? 'Fallido' : ch.status) + '</div>';
+        html += '<div style="font-size:10px;color:#94a3b8;">' + new Date(ch.created * 1000).toLocaleDateString('es-MX') + '</div>';
+        html += '</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+    }
+    
+    function showStripeSetupInstructions() {
+      var container = document.getElementById('stripeRecentCharges');
+      container.innerHTML = '<div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:15px;">' +
+        '<div style="color:#92400e;font-weight:bold;margin-bottom:10px;">📋 Para conectar Stripe, necesitas deployar esta Edge Function:</div>' +
+        '<div style="background:#fef3c7;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#78350f;margin-bottom:10px;">' +
+        '1. supabase functions new get-stripe-data<br>' +
+        '2. Agrega tu STRIPE_SECRET_KEY a Supabase secrets:<br>' +
+        '   <code>supabase secrets set STRIPE_SECRET_KEY=sk_live_xxx</code><br>' +
+        '3. supabase functions deploy get-stripe-data<br>' +
+        '</div>' +
+        '<div style="color:#a16207;font-size:12px;">📌 El código de la Edge Function se proporcionará al final de esta sesión.</div>' +
+        '</div>';
+    }
+    
+    // ---- RECONCILIATION ----
+    async function loadReconcileData() {
+      try {
+        // Get Supabase memberships
+        var { data: memberships } = await supabaseClient.from('memberships').select('*');
+        memberships = memberships || [];
+        var activeSupa = memberships.filter(function(m) { return m.status === 'active' || m.status === 'activa'; });
+        document.getElementById('reconSupaCount').textContent = activeSupa.length;
+        
+        // Get Stripe data if cached
+        if (stripeDataCache && stripeDataCache.active_subscriptions !== undefined) {
+          document.getElementById('reconStripeCount').textContent = stripeDataCache.active_subscriptions;
+          var diff = Math.abs(stripeDataCache.active_subscriptions - activeSupa.length);
+          document.getElementById('reconDiff').textContent = diff;
+          document.getElementById('reconDiff').style.color = diff === 0 ? '#16a34a' : '#dc2626';
+        } else {
+          document.getElementById('reconStripeCount').textContent = '?';
+          document.getElementById('reconDiff').textContent = '?';
+          document.getElementById('reconLog').innerHTML = '<div style="color:#d97706;">⚠️ Carga datos de Stripe primero (pestaña Stripe → Cargar Stripe)</div>';
+        }
+      } catch(e) {
+        console.error('[Reconcile]', e);
+      }
+    }
+    
+    async function runReconciliation() {
+      var logEl = document.getElementById('reconLog');
+      logEl.innerHTML = '<div style="color:#635bff;">🔄 Iniciando reconciliación...</div>';
+      
+      if (!stripeDataCache || !stripeDataCache.subscriptions_detail) {
+        logEl.innerHTML += '<div style="color:#dc2626;">❌ Primero carga datos de Stripe.</div>';
+        return;
+      }
+      
+      try {
+        var { data: memberships } = await supabaseClient.from('memberships').select('*');
+        memberships = memberships || [];
+        
+        var stripeSubs = stripeDataCache.subscriptions_detail || [];
+        var supaEmails = memberships.map(function(m) { return (m.email || '').toLowerCase(); });
+        var synced = 0;
+        var errors = 0;
+        
+        logEl.innerHTML += '<div>📋 Stripe suscripciones: ' + stripeSubs.length + '</div>';
+        logEl.innerHTML += '<div>📋 Supabase membresías: ' + memberships.length + '</div>';
+        
+        // Find Stripe subs NOT in Supabase
+        for (var i = 0; i < stripeSubs.length; i++) {
+          var sub = stripeSubs[i];
+          var email = (sub.customer_email || '').toLowerCase();
+          if (!email) continue;
+          
+          if (!supaEmails.includes(email) && sub.status === 'active') {
+            logEl.innerHTML += '<div style="color:#d97706;">➕ Falta en Supabase: ' + email + ' (Stripe: active)</div>';
+            
+            // Insert into memberships
+            try {
+              await supabaseClient.from('memberships').insert({
+                email: email,
+                status: 'active',
+                tipo: 'stripe_sync',
+                stripe_subscription_id: sub.id,
+                fecha_inicio: new Date(sub.current_period_start * 1000).toISOString(),
+                price: sub.plan_amount ? sub.plan_amount / 100 : 111
+              });
+              logEl.innerHTML += '<div style="color:#16a34a;">  ✅ Sincronizado: ' + email + '</div>';
+              synced++;
+            } catch(e) {
+              logEl.innerHTML += '<div style="color:#dc2626;">  ❌ Error: ' + e.message + '</div>';
+              errors++;
+            }
+          }
+        }
+        
+        // Find Supabase active memberships NOT in Stripe (possibly canceled)
+        var stripeEmails = stripeSubs.filter(function(s) { return s.status === 'active'; }).map(function(s) { return (s.customer_email || '').toLowerCase(); });
+        var activeSupaNotStripe = memberships.filter(function(m) {
+          return (m.status === 'active' || m.status === 'activa') && !stripeEmails.includes((m.email || '').toLowerCase());
+        });
+        
+        if (activeSupaNotStripe.length > 0) {
+          logEl.innerHTML += '<div style="color:#e74c3c;margin-top:8px;">⚠️ ' + activeSupaNotStripe.length + ' membresías activas en Supabase pero NO en Stripe:</div>';
+          activeSupaNotStripe.forEach(function(m) {
+            logEl.innerHTML += '<div style="color:#e74c3c;">  • ' + m.email + ' (posible cancelación)</div>';
+          });
+        }
+        
+        logEl.innerHTML += '<div style="color:#16a34a;margin-top:10px;font-weight:bold;">✅ Reconciliación completa. Sincronizados: ' + synced + ' | Errores: ' + errors + '</div>';
+        
+        // Reload counts
+        loadReconcileData();
+        
+      } catch(e) {
+        logEl.innerHTML += '<div style="color:#dc2626;">❌ Error: ' + e.message + '</div>';
+      }
+    }
+
     // ==================== ALERTAS DE INACTIVIDAD — AUDITORÍA #4 ====================
     var inactiveStudentsList = [];
     
@@ -16270,15 +16751,4 @@ if(_origSS){
     document.getElementById('welcomeBackOverlay').style.display = 'flex';
   }
 
-  window.closeWelcomeBack = function(){
-    document.getElementById('welcomeBackOverlay').style.display = 'none';
-    updateActivity();
-  };
-
-  requestNotifPermission();
-  setTimeout(showWelcomeBack, 2000);
-})();
-</script>
-
-</body>
-</html>
+  win

@@ -12015,16 +12015,18 @@ if (screenId === 'adminDashboardScreen') {
           return;
         }
         var studentName = '';
-        var { data: userData } = await supabaseClient.from('users').select('nombre').eq('email', email).limit(1);
-        if (userData && userData[0]) studentName = userData[0].nombre;
+        var studentPhone = '';
+        var { data: userData } = await supabaseClient.from('users').select('nombre, telefono').eq('email', email).limit(1);
+        if (userData && userData[0]) { studentName = userData[0].nombre || ''; studentPhone = userData[0].telefono || ''; }
         
         await supabaseClient.from('student_success_tickets').insert({
           student_email: email,
           student_name: studentName || email,
+          student_phone: studentPhone || '',
           tipo: 'pago_fallido',
           estado: 'abierto',
           prioridad: 'alta',
-          descripcion: 'COBRO FALLIDO $' + (amount/100).toFixed(2) + ' - ' + failMsg + ' - Stripe: ' + stripeId + ' - LLAMAR para actualizar metodo de pago.',
+          descripcion: 'COBRO FALLIDO $' + (amount/100).toFixed(2) + ' | ' + failMsg + ' | Stripe: ' + stripeId + ' | LLAMAR para actualizar metodo de pago.',
           monto: amount/100,
           email_enviado_estudiante: false
         });
@@ -12076,14 +12078,18 @@ if (screenId === 'adminDashboardScreen') {
             continue;
           }
           
-          // Get student name from users table
+          // Get student name and phone from users table
           var studentName = fc.customer_name || '';
-          if (!studentName && email) {
+          var studentPhone = '';
+          if (email) {
             var { data: userData } = await supabaseClient.from('users')
-              .select('nombre')
+              .select('nombre, telefono')
               .eq('email', email)
               .limit(1);
-            if (userData && userData[0]) studentName = userData[0].nombre;
+            if (userData && userData[0]) { 
+              studentName = studentName || userData[0].nombre || ''; 
+              studentPhone = userData[0].telefono || ''; 
+            }
           }
           
           var amount = (fc.amount / 100).toFixed(2);
@@ -12092,10 +12098,11 @@ if (screenId === 'adminDashboardScreen') {
           var { error: insertErr } = await supabaseClient.from('student_success_tickets').insert({
             student_email: email,
             student_name: studentName || email,
+            student_phone: studentPhone || '',
             tipo: 'pago_fallido',
             estado: 'abierto',
             prioridad: 'alta',
-            descripcion: 'COBRO FALLIDO $' + amount + ' USD - Fecha: ' + fecha + ' - Razon: ' + (fc.failure_message || 'Declined') + ' - Stripe: ' + fc.id + ' - LLAMAR para actualizar metodo de pago.',
+            descripcion: 'COBRO FALLIDO $' + amount + ' | Fecha: ' + fecha + ' | ' + (fc.failure_message || 'Declined') + ' | Stripe: ' + fc.id + ' | LLAMAR para actualizar metodo de pago.',
             monto: parseFloat(amount),
             email_enviado_estudiante: false
           });

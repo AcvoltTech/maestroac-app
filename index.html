@@ -3737,26 +3737,64 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
 
           <div class="profile-section">
-            <h3 style="color:#f39c12; margin-bottom:15px; font-size:18px;">📋 Datos Personales</h3>
-            <div class="profile-field">
-              <span class="profile-label">Nombre:</span>
-              <span class="profile-value" id="profileNombre">-</span>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
+              <h3 style="color:#f39c12; margin:0; font-size:18px;">📋 Datos Personales</h3>
+              <button id="btnEditProfile" onclick="toggleEditProfile()" style="background:linear-gradient(135deg,#3498db,#2980b9);color:white;border:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:bold;cursor:pointer;display:flex;align-items:center;gap:5px;">
+                ✏️ Editar
+              </button>
             </div>
-            <div class="profile-field">
-              <span class="profile-label">Email:</span>
-              <span class="profile-value" id="profileEmail">-</span>
+            <!-- View Mode -->
+            <div id="profileViewMode">
+              <div class="profile-field">
+                <span class="profile-label">Nombre:</span>
+                <span class="profile-value" id="profileNombre">-</span>
+              </div>
+              <div class="profile-field">
+                <span class="profile-label">Email:</span>
+                <span class="profile-value" id="profileEmail">-</span>
+              </div>
+              <div class="profile-field">
+                <span class="profile-label">Teléfono:</span>
+                <span class="profile-value" id="profileTelefono">-</span>
+              </div>
+              <div class="profile-field">
+                <span class="profile-label">Ciudad:</span>
+                <span class="profile-value" id="profileCiudad">-</span>
+              </div>
+              <div class="profile-field">
+                <span class="profile-label">Estado:</span>
+                <span class="profile-value" id="profileEstado">-</span>
+              </div>
             </div>
-            <div class="profile-field">
-              <span class="profile-label">Teléfono:</span>
-              <span class="profile-value" id="profileTelefono">-</span>
-            </div>
-            <div class="profile-field">
-              <span class="profile-label">Ciudad:</span>
-              <span class="profile-value" id="profileCiudad">-</span>
-            </div>
-            <div class="profile-field">
-              <span class="profile-label">Estado:</span>
-              <span class="profile-value" id="profileEstado">-</span>
+            <!-- Edit Mode -->
+            <div id="profileEditMode" style="display:none;">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div>
+                  <label style="color:#94a3b8;font-size:12px;font-weight:bold;display:block;margin-bottom:4px;">Nombre Completo *</label>
+                  <input type="text" id="editNombre" placeholder="Tu nombre completo" style="width:100%;padding:12px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:white;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:12px;font-weight:bold;display:block;margin-bottom:4px;">Email *</label>
+                  <input type="email" id="editEmail" placeholder="tu@email.com" style="width:100%;padding:12px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:white;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:12px;font-weight:bold;display:block;margin-bottom:4px;">Teléfono *</label>
+                  <input type="tel" id="editTelefono" placeholder="(123) 456-7890" style="width:100%;padding:12px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:white;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:12px;font-weight:bold;display:block;margin-bottom:4px;">Ciudad *</label>
+                  <input type="text" id="editCiudad" placeholder="Tu ciudad" style="width:100%;padding:12px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:white;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="color:#94a3b8;font-size:12px;font-weight:bold;display:block;margin-bottom:4px;">Estado *</label>
+                  <input type="text" id="editEstado" placeholder="Tu estado (ej: California)" style="width:100%;padding:12px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:white;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div id="editProfileMsg" style="display:none;padding:8px 12px;border-radius:8px;font-size:13px;text-align:center;"></div>
+                <div style="display:flex;gap:10px;margin-top:5px;">
+                  <button onclick="saveProfileEdits()" style="flex:1;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;font-size:14px;font-weight:bold;cursor:pointer;">✅ Guardar Cambios</button>
+                  <button onclick="cancelEditProfile()" style="flex:1;padding:12px;border-radius:10px;border:2px solid #475569;background:transparent;color:#94a3b8;font-size:14px;font-weight:bold;cursor:pointer;">❌ Cancelar</button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -7434,6 +7472,118 @@ if (screenId === 'adminDashboardScreen') {
     }
 
     // Calculate user's level based on completed quizzes (70% or higher)
+    // ===== EDIT PROFILE FUNCTIONS =====
+    function toggleEditProfile() {
+      var viewMode = document.getElementById('profileViewMode');
+      var editMode = document.getElementById('profileEditMode');
+      var btn = document.getElementById('btnEditProfile');
+      
+      if (editMode.style.display === 'none') {
+        // Switch to edit mode - populate fields
+        var user = currentUser || JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+        document.getElementById('editNombre').value = user.nombre || '';
+        document.getElementById('editEmail').value = user.email || '';
+        document.getElementById('editTelefono').value = user.telefono || '';
+        document.getElementById('editCiudad').value = user.ciudad || '';
+        document.getElementById('editEstado').value = user.estado || '';
+        viewMode.style.display = 'none';
+        editMode.style.display = 'block';
+        btn.innerHTML = '👁️ Ver';
+        btn.style.background = 'linear-gradient(135deg,#e67e22,#d35400)';
+        // Focus first empty required field
+        var fields = ['editNombre','editEmail','editTelefono','editCiudad','editEstado'];
+        for (var i = 0; i < fields.length; i++) {
+          if (!document.getElementById(fields[i]).value.trim()) {
+            document.getElementById(fields[i]).focus();
+            break;
+          }
+        }
+      } else {
+        cancelEditProfile();
+      }
+    }
+
+    function saveProfileEdits() {
+      var nombre = document.getElementById('editNombre').value.trim();
+      var email = document.getElementById('editEmail').value.trim();
+      var telefono = document.getElementById('editTelefono').value.trim();
+      var ciudad = document.getElementById('editCiudad').value.trim();
+      var estado = document.getElementById('editEstado').value.trim();
+      var msgDiv = document.getElementById('editProfileMsg');
+      
+      // Validate
+      var errors = [];
+      if (!nombre || nombre.length < 3) errors.push('Nombre (mínimo 3 caracteres)');
+      if (!email || !email.includes('@')) errors.push('Email válido');
+      if (!telefono || telefono.length < 7) errors.push('Teléfono (mínimo 7 dígitos)');
+      if (!ciudad || ciudad.length < 2) errors.push('Ciudad');
+      if (!estado || estado.length < 2) errors.push('Estado');
+      
+      if (errors.length > 0) {
+        msgDiv.style.display = 'block';
+        msgDiv.style.background = 'rgba(231,76,60,0.15)';
+        msgDiv.style.color = '#e74c3c';
+        msgDiv.innerHTML = '⚠️ Completa: <strong>' + errors.join(', ') + '</strong>';
+        return;
+      }
+      
+      // Update currentUser
+      if (!currentUser) currentUser = JSON.parse(localStorage.getItem('tecnico_user') || '{}');
+      currentUser.nombre = nombre;
+      currentUser.email = email;
+      currentUser.telefono = telefono;
+      currentUser.ciudad = ciudad;
+      currentUser.estado = estado;
+      
+      // Save to localStorage
+      localStorage.setItem('tecnico_user', JSON.stringify(currentUser));
+      localStorage.setItem('tecnico_user_backup', JSON.stringify(currentUser));
+      
+      // Update in Supabase
+      try {
+        supabaseRegisterUser(currentUser).then(function(id) {
+          if (id) console.log('[MaestroAC] Profile updated in Supabase:', id);
+        });
+      } catch(e) {
+        console.warn('Supabase update failed:', e);
+      }
+      
+      // Update greeting
+      document.getElementById('userGreeting').textContent = 'Hola, ' + currentUser.nombre.split(' ')[0];
+      
+      // Show success message
+      msgDiv.style.display = 'block';
+      msgDiv.style.background = 'rgba(39,174,96,0.15)';
+      msgDiv.style.color = '#27ae60';
+      msgDiv.innerHTML = '✅ ¡Perfil actualizado exitosamente!';
+      
+      // Switch back to view mode after a moment
+      setTimeout(function() {
+        cancelEditProfile();
+        renderProfile();
+        addNotification('profile_update', '✅ Perfil actualizado correctamente', '👤');
+        showNotifBell();
+      }, 1200);
+    }
+
+    function cancelEditProfile() {
+      document.getElementById('profileViewMode').style.display = 'block';
+      document.getElementById('profileEditMode').style.display = 'none';
+      document.getElementById('editProfileMsg').style.display = 'none';
+      var btn = document.getElementById('btnEditProfile');
+      btn.innerHTML = '✏️ Editar';
+      btn.style.background = 'linear-gradient(135deg,#3498db,#2980b9)';
+    }
+
+    // Open profile in edit mode directly (called from requestAccessCode)
+    function openProfileForEdit() {
+      showProfile('levelsScreen');
+      setTimeout(function() {
+        toggleEditProfile();
+      }, 300);
+    }
+    // ===== END EDIT PROFILE FUNCTIONS =====
+
     function getUserCompletedLevels() {
       const levelOrder = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
       const completedLevels = [];
@@ -13682,7 +13832,7 @@ if (screenId === 'adminDashboardScreen') {
       
       if (missing.length > 0) {
         msgDiv.style.color = '#e74c3c';
-        msgDiv.innerHTML = '\u26A0\uFE0F Completa tu perfil primero:<br><strong>' + missing.join(', ') + '</strong><br><small>Ve a "Mi Perfil" para actualizar tus datos</small>';
+        msgDiv.innerHTML = '\u26A0\uFE0F Completa tu perfil primero:<br><strong>' + missing.join(', ') + '</strong><br><button onclick="openProfileForEdit()" style="margin-top:10px;padding:10px 20px;border-radius:10px;border:none;background:linear-gradient(135deg,#3498db,#2980b9);color:white;font-size:14px;font-weight:bold;cursor:pointer;">👤 Ir a Completar Mi Perfil</button>';
         return;
       }
       

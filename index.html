@@ -2301,13 +2301,34 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
           <!-- TAB 1: Cobros Fallidos -->
           <div id="ssTicketsPanel">
-            <div style="display:flex;gap:6px;margin-bottom:10px;">
-              <button onclick="loadSSTickets('abierto')" style="background:rgba(231,76,60,0.2);border:1px solid #e74c3c;padding:5px 10px;border-radius:6px;color:#e74c3c;cursor:pointer;font-size:11px;">🔴 Abiertos</button>
-              <button onclick="loadSSTickets('en_proceso')" style="background:rgba(243,156,18,0.2);border:1px solid #f39c12;padding:5px 10px;border-radius:6px;color:#f39c12;cursor:pointer;font-size:11px;">🟡 En Proceso</button>
-              <button onclick="loadSSTickets('resuelto')" style="background:rgba(39,174,96,0.2);border:1px solid #27ae60;padding:5px 10px;border-radius:6px;color:#27ae60;cursor:pointer;font-size:11px;">🟢 Resueltos</button>
-              <button onclick="loadSSTickets()" style="background:rgba(52,152,219,0.2);border:1px solid #3498db;padding:5px 10px;border-radius:6px;color:#3498db;cursor:pointer;font-size:11px;">📋 Todos</button>
+            <!-- Status Filters -->
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <button onclick="ssFilterStatus('abierto')" id="ssBtnAbierto" style="background:rgba(231,76,60,0.2);border:1px solid #e74c3c;padding:5px 10px;border-radius:6px;color:#e74c3c;cursor:pointer;font-size:11px;">🔴 Abiertos</button>
+              <button onclick="ssFilterStatus('en_proceso')" id="ssBtnProceso" style="background:rgba(243,156,18,0.2);border:1px solid #f39c12;padding:5px 10px;border-radius:6px;color:#f39c12;cursor:pointer;font-size:11px;">🟡 En Proceso</button>
+              <button onclick="ssFilterStatus('resuelto')" id="ssBtnResuelto" style="background:rgba(39,174,96,0.2);border:1px solid #27ae60;padding:5px 10px;border-radius:6px;color:#27ae60;cursor:pointer;font-size:11px;">🟢 Resueltos</button>
+              <button onclick="ssFilterStatus(null)" id="ssBtnTodos" style="background:rgba(52,152,219,0.2);border:1px solid #3498db;padding:5px 10px;border-radius:6px;color:#3498db;cursor:pointer;font-size:11px;">📋 Todos</button>
             </div>
-            <div id="ssTicketsList" style="max-height:400px;overflow-y:auto;">
+            <!-- Time Period Filters -->
+            <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+              <span style="color:#94a3b8;font-size:11px;font-weight:bold;">📅 Periodo:</span>
+              <button onclick="ssFilterTime('today')" id="ssBtnToday" style="background:rgba(220,38,38,0.15);border:1px solid #dc2626;padding:5px 10px;border-radius:6px;color:#dc2626;cursor:pointer;font-size:11px;font-weight:bold;">🔥 Hoy</button>
+              <button onclick="ssFilterTime('week')" id="ssBtnWeek" style="background:rgba(234,88,12,0.15);border:1px solid #ea580c;padding:5px 10px;border-radius:6px;color:#ea580c;cursor:pointer;font-size:11px;">📆 Esta Semana</button>
+              <button onclick="ssFilterTime('month')" id="ssBtnMonth" style="background:rgba(202,138,4,0.15);border:1px solid #ca8a04;padding:5px 10px;border-radius:6px;color:#ca8a04;cursor:pointer;font-size:11px;">📅 Este Mes</button>
+              <button onclick="ssFilterTime('year')" id="ssBtnYear" style="background:rgba(37,99,235,0.15);border:1px solid #2563eb;padding:5px 10px;border-radius:6px;color:#2563eb;cursor:pointer;font-size:11px;">📊 Este Año</button>
+              <button onclick="ssFilterTime(null)" id="ssBtnAllTime" style="background:rgba(100,116,139,0.15);border:1px solid #64748b;padding:5px 10px;border-radius:6px;color:#64748b;cursor:pointer;font-size:11px;">🗄️ Todo</button>
+            </div>
+            <!-- Summary Bar -->
+            <div id="ssTimeSummary" style="display:none;background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid #334155;border-radius:10px;padding:10px 15px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                <span id="ssTimeSummaryText" style="color:#e2e8f0;font-size:12px;font-weight:bold;"></span>
+                <div style="display:flex;gap:12px;">
+                  <span id="ssTimeSummaryOpen" style="color:#dc2626;font-size:11px;">🔴 0 abiertos</span>
+                  <span id="ssTimeSummaryProcess" style="color:#f39c12;font-size:11px;">🟡 0 en proceso</span>
+                  <span id="ssTimeSummaryResolved" style="color:#27ae60;font-size:11px;">🟢 0 resueltos</span>
+                </div>
+              </div>
+            </div>
+            <div id="ssTicketsList" style="max-height:500px;overflow-y:auto;">
               <div style="text-align:center;color:#94a3b8;padding:20px;">Cargando tickets...</div>
             </div>
           </div>
@@ -9617,6 +9638,8 @@ if (screenId === 'adminDashboardScreen') {
       loadAdminStudentActivity();
       loadSSTickets();
       loadSSStats();
+      // Auto-set priority view: show open tickets sorted by date
+      setTimeout(function() { ssFilterTime('today'); ssFilterStatus('abierto'); }, 500);
     }
 
     // ========== STUDENT SUCCESS FUNCTIONS ==========
@@ -9671,44 +9694,204 @@ if (screenId === 'adminDashboardScreen') {
       } catch(e) { console.log('[SS] Stats error:', e); }
     }
 
-    async function loadSSTickets(filterEstado) {
+    // ===== STUDENT SUCCESS TIME FILTERS =====
+    var ssCurrentStatus = null;
+    var ssCurrentTime = null;
+
+    function ssFilterStatus(status) {
+      ssCurrentStatus = status;
+      loadSSTicketsFiltered();
+      // Highlight active button
+      ['ssBtnAbierto','ssBtnProceso','ssBtnResuelto','ssBtnTodos'].forEach(function(id) {
+        var btn = document.getElementById(id);
+        if (btn) btn.style.fontWeight = 'normal';
+      });
+      var activeId = status === 'abierto' ? 'ssBtnAbierto' : status === 'en_proceso' ? 'ssBtnProceso' : status === 'resuelto' ? 'ssBtnResuelto' : 'ssBtnTodos';
+      var activeBtn = document.getElementById(activeId);
+      if (activeBtn) activeBtn.style.fontWeight = 'bold';
+    }
+
+    function ssFilterTime(period) {
+      ssCurrentTime = period;
+      loadSSTicketsFiltered();
+      // Highlight active time button
+      ['ssBtnToday','ssBtnWeek','ssBtnMonth','ssBtnYear','ssBtnAllTime'].forEach(function(id) {
+        var btn = document.getElementById(id);
+        if (btn) { btn.style.fontWeight = 'normal'; btn.style.transform = 'scale(1)'; }
+      });
+      var activeId = period === 'today' ? 'ssBtnToday' : period === 'week' ? 'ssBtnWeek' : period === 'month' ? 'ssBtnMonth' : period === 'year' ? 'ssBtnYear' : 'ssBtnAllTime';
+      var activeBtn = document.getElementById(activeId);
+      if (activeBtn) { activeBtn.style.fontWeight = 'bold'; activeBtn.style.transform = 'scale(1.05)'; }
+    }
+
+    function ssGetTimeRange(period) {
+      var now = new Date();
+      var start = null;
+      var label = '';
+      if (period === 'today') {
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        label = '📅 Hoy — ' + now.toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
+      } else if (period === 'week') {
+        var dayOfWeek = now.getDay();
+        var diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday start
+        start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff);
+        label = '📆 Esta Semana — ' + start.toLocaleDateString('es-MX', {day:'numeric',month:'short'}) + ' al ' + now.toLocaleDateString('es-MX', {day:'numeric',month:'short'});
+      } else if (period === 'month') {
+        start = new Date(now.getFullYear(), now.getMonth(), 1);
+        label = '📅 ' + now.toLocaleDateString('es-MX', {month:'long', year:'numeric'});
+      } else if (period === 'year') {
+        start = new Date(now.getFullYear(), 0, 1);
+        label = '📊 Año ' + now.getFullYear();
+      }
+      return { start: start, label: label };
+    }
+
+    async function loadSSTicketsFiltered() {
       var container = document.getElementById('ssTicketsList');
+      var summaryBar = document.getElementById('ssTimeSummary');
       if (!container || !supabaseClient) return;
+      
       try {
         var query = supabaseClient.from('student_success_tickets').select('*').order('created_at', { ascending: false });
-        if (filterEstado) query = query.eq('estado', filterEstado);
+        if (ssCurrentStatus) query = query.eq('estado', ssCurrentStatus);
+        
+        // Apply time filter
+        if (ssCurrentTime) {
+          var range = ssGetTimeRange(ssCurrentTime);
+          if (range.start) {
+            query = query.gte('created_at', range.start.toISOString());
+          }
+        }
+        
         var { data: tickets } = await query;
         if (!tickets || tickets.length === 0) {
-          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;">🎉</div><p>No hay tickets' + (filterEstado ? ' con estado "' + filterEstado + '"' : '') + '</p></div>';
+          summaryBar.style.display = 'none';
+          container.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:30px;"><div style="font-size:36px;">🎉</div><p>No hay tickets' + (ssCurrentStatus ? ' con estado "' + ssCurrentStatus + '"' : '') + (ssCurrentTime ? ' en este periodo' : '') + '</p></div>';
           return;
         }
-        container.innerHTML = tickets.map(function(t) {
-          var ec = t.estado === 'abierto' ? '#e74c3c' : t.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
-          var ei = t.estado === 'abierto' ? '🔴' : t.estado === 'en_proceso' ? '🟡' : '🟢';
-          var dias = t.fecha_limite ? Math.max(0, Math.ceil((new Date(t.fecha_limite) - new Date()) / 86400000)) : '-';
-          var dc = dias <= 1 ? '#e74c3c' : dias <= 3 ? '#f39c12' : '#27ae60';
-          var fecha = new Date(t.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric'});
-          return '<div style="background:rgba(255,255,255,0.05);border-left:4px solid ' + ec + ';border-radius:8px;padding:10px;margin-bottom:6px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;">' +
-              '<div><strong style="color:#e2e8f0;font-size:13px;">👤 ' + (t.student_name || 'N/A') + '</strong> <span style="color:#64748b;font-size:11px;">' + (t.student_email || '') + '</span></div>' +
-              '<span style="background:' + ec + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;">' + ei + ' ' + t.estado + '</span>' +
-            '</div>' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">' +
-              '<span style="color:#64748b;font-size:11px;">📅 ' + fecha + ' | <span style="color:' + dc + ';">⏳ ' + dias + ' días</span> | ' + (t.email_enviado_estudiante ? '📧✅' : '📧❌') + '</span>' +
-              '<div style="display:flex;gap:4px;">' +
-                (t.estado === 'abierto' ? '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'en_proceso\')" style="background:#f39c12;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">En Proceso</button>' : '') +
-                (t.estado !== 'resuelto' ? '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">✅ Resolver</button>' : '') +
-              '</div>' +
-            '</div>' +
-            '<div style="display:flex;gap:6px;margin-top:6px;">' +
-              '<a href="mailto:' + (t.student_email || '') + '?subject=ACVOLT - Actualiza tu método de pago&body=Hola ' + encodeURIComponent(t.student_name || '') + '," style="background:#9b59b6;color:white;text-decoration:none;padding:3px 8px;border-radius:5px;font-size:10px;">📧 Email</a>' +
-              '<button onclick="ssLookupForTicket(\'' + (t.student_email || '') + '\')" style="background:#3498db;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">👁 Ver Info</button>' +
-            '</div>' +
-            '<div style="color:#475569;font-size:10px;margin-top:4px;">' + (t.descripcion || '') + '</div>' +
-          '</div>';
-        }).join('');
+        
+        // Show summary bar
+        if (ssCurrentTime) {
+          var range = ssGetTimeRange(ssCurrentTime);
+          var openC = tickets.filter(function(t){return t.estado==='abierto';}).length;
+          var procC = tickets.filter(function(t){return t.estado==='en_proceso';}).length;
+          var resC = tickets.filter(function(t){return t.estado==='resuelto';}).length;
+          summaryBar.style.display = 'block';
+          document.getElementById('ssTimeSummaryText').innerHTML = range.label + ' — <span style="color:#f39c12;">' + tickets.length + ' tickets</span>';
+          document.getElementById('ssTimeSummaryOpen').textContent = '🔴 ' + openC + ' abiertos';
+          document.getElementById('ssTimeSummaryProcess').textContent = '🟡 ' + procC + ' en proceso';
+          document.getElementById('ssTimeSummaryResolved').textContent = '🟢 ' + resC + ' resueltos';
+        } else {
+          summaryBar.style.display = 'none';
+        }
+        
+        // Group tickets by time period
+        var grouped = ssGroupTickets(tickets);
+        var html = '';
+        
+        grouped.forEach(function(group) {
+          // Group header
+          html += '<div style="background:linear-gradient(135deg,#1e3a5f,#1e293b);border-radius:10px;padding:8px 12px;margin:10px 0 6px 0;display:flex;justify-content:space-between;align-items:center;">';
+          html += '<span style="color:#38bdf8;font-size:12px;font-weight:bold;">' + group.label + '</span>';
+          html += '<div style="display:flex;gap:8px;">';
+          html += '<span style="background:rgba(220,38,38,0.2);color:#fca5a5;padding:2px 8px;border-radius:10px;font-size:10px;">' + group.openCount + ' abiertos</span>';
+          html += '<span style="color:#94a3b8;font-size:11px;">' + group.tickets.length + ' total</span>';
+          html += '</div></div>';
+          
+          // Tickets in this group
+          group.tickets.forEach(function(t) {
+            var ec = t.estado === 'abierto' ? '#e74c3c' : t.estado === 'en_proceso' ? '#f39c12' : '#27ae60';
+            var ei = t.estado === 'abierto' ? '🔴' : t.estado === 'en_proceso' ? '🟡' : '🟢';
+            var dias = t.fecha_limite ? Math.max(0, Math.ceil((new Date(t.fecha_limite) - new Date()) / 86400000)) : '-';
+            var dc = dias <= 1 ? '#e74c3c' : dias <= 3 ? '#f39c12' : '#27ae60';
+            var fecha = new Date(t.created_at).toLocaleDateString('es-MX', {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
+            // Priority badge based on age
+            var ageHours = (Date.now() - new Date(t.created_at).getTime()) / 3600000;
+            var urgencyBadge = '';
+            if (t.estado !== 'resuelto') {
+              if (ageHours < 24) urgencyBadge = '<span style="background:#dc2626;color:white;padding:1px 6px;border-radius:8px;font-size:9px;margin-left:4px;">🔥 URGENTE</span>';
+              else if (ageHours < 72) urgencyBadge = '<span style="background:#ea580c;color:white;padding:1px 6px;border-radius:8px;font-size:9px;margin-left:4px;">⚡ PRIORIDAD</span>';
+              else if (ageHours < 168) urgencyBadge = '<span style="background:#ca8a04;color:white;padding:1px 6px;border-radius:8px;font-size:9px;margin-left:4px;">📞 LLAMAR</span>';
+            }
+            
+            html += '<div style="background:rgba(255,255,255,0.03);border-left:4px solid ' + ec + ';border-radius:8px;padding:10px;margin-bottom:4px;">';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
+            html += '<div><strong style="color:#e2e8f0;font-size:13px;">👤 ' + (t.student_name || 'N/A') + '</strong>' + urgencyBadge + ' <span style="color:#64748b;font-size:11px;">' + (t.student_email || '') + '</span></div>';
+            html += '<span style="background:' + ec + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;">' + ei + ' ' + t.estado + '</span>';
+            html += '</div>';
+            html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">';
+            html += '<span style="color:#64748b;font-size:11px;">📅 ' + fecha + ' | <span style="color:' + dc + ';">⏳ ' + dias + ' días</span> | ' + (t.email_enviado_estudiante ? '📧✅' : '📧❌') + '</span>';
+            html += '<div style="display:flex;gap:4px;">';
+            if (t.estado === 'abierto') html += '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'en_proceso\')" style="background:#f39c12;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">En Proceso</button>';
+            if (t.estado !== 'resuelto') html += '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">✅ Resolver</button>';
+            html += '</div></div>';
+            html += '<div style="display:flex;gap:6px;margin-top:6px;">';
+            html += '<a href="mailto:' + (t.student_email || '') + '?subject=ACVOLT - Actualiza tu método de pago&body=Hola ' + encodeURIComponent(t.student_name || '') + '," style="background:#9b59b6;color:white;text-decoration:none;padding:3px 8px;border-radius:5px;font-size:10px;">📧 Email</a>';
+            html += '<button onclick="ssLookupForTicket(\'' + (t.student_email || '') + '\')" style="background:#3498db;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">👁 Ver Info</button>';
+            html += '</div>';
+            html += '<div style="color:#475569;font-size:10px;margin-top:4px;">' + (t.descripcion || '') + '</div>';
+            html += '</div>';
+          });
+        });
+        
+        container.innerHTML = html;
       } catch(e) { container.innerHTML = '<div style="color:#e74c3c;padding:10px;">Error: ' + e.message + '</div>'; }
     }
+
+    function ssGroupTickets(tickets) {
+      var now = new Date();
+      var todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      var yesterdayStart = new Date(todayStart.getTime() - 86400000);
+      var weekStart = new Date(todayStart);
+      var dayOfWeek = weekStart.getDay();
+      weekStart.setDate(weekStart.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+      var monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      var groups = {
+        today: { label: '🔥 HOY — ' + todayStart.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'}), tickets: [], openCount: 0 },
+        yesterday: { label: '📅 AYER — ' + yesterdayStart.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'}), tickets: [], openCount: 0 },
+        thisWeek: { label: '📆 ESTA SEMANA — ' + weekStart.toLocaleDateString('es-MX',{day:'numeric',month:'short'}) + ' al ' + todayStart.toLocaleDateString('es-MX',{day:'numeric',month:'short'}), tickets: [], openCount: 0 },
+        thisMonth: { label: '📅 ESTE MES — ' + now.toLocaleDateString('es-MX',{month:'long',year:'numeric'}), tickets: [], openCount: 0 },
+        older: { label: '🗄️ ANTERIORES', tickets: [], openCount: 0 }
+      };
+      
+      tickets.forEach(function(t) {
+        var d = new Date(t.created_at);
+        var isOpen = t.estado === 'abierto';
+        if (d >= todayStart) {
+          groups.today.tickets.push(t);
+          if (isOpen) groups.today.openCount++;
+        } else if (d >= yesterdayStart) {
+          groups.yesterday.tickets.push(t);
+          if (isOpen) groups.yesterday.openCount++;
+        } else if (d >= weekStart) {
+          groups.thisWeek.tickets.push(t);
+          if (isOpen) groups.thisWeek.openCount++;
+        } else if (d >= monthStart) {
+          groups.thisMonth.tickets.push(t);
+          if (isOpen) groups.thisMonth.openCount++;
+        } else {
+          groups.older.tickets.push(t);
+          if (isOpen) groups.older.openCount++;
+        }
+      });
+      
+      // Only return groups that have tickets
+      var result = [];
+      ['today','yesterday','thisWeek','thisMonth','older'].forEach(function(key) {
+        if (groups[key].tickets.length > 0) result.push(groups[key]);
+      });
+      return result;
+    }
+
+    // Keep original function as wrapper for backward compatibility
+    async function loadSSTickets(filterEstado) {
+      if (filterEstado) {
+        ssCurrentStatus = filterEstado;
+      }
+      await loadSSTicketsFiltered();
+    }
+    // ===== END STUDENT SUCCESS TIME FILTERS =====
 
     async function ssUpdateTicket(id, status) {
       if (!supabaseClient) return;
@@ -12190,6 +12373,94 @@ if (screenId === 'adminDashboardScreen') {
       }
     }
 
+    // ===== AUTO-IMPORT FAILED CHARGES TO STUDENT SUCCESS =====
+    async function autoImportFailedToSS() {
+      if (!stripeDataCache || !stripeDataCache.failed_charges_list || !stripeDataCache.failed_charges_list.length) return;
+      if (!supabaseClient) return;
+      
+      var failedList = stripeDataCache.failed_charges_list;
+      var imported = 0;
+      
+      for (var i = 0; i < failedList.length; i++) {
+        var fc = failedList[i];
+        var email = fc.customer_email || '';
+        if (!email) continue;
+        
+        try {
+          // Check if ticket already exists
+          var { data: existing } = await supabaseClient.from('student_success_tickets')
+            .select('id')
+            .eq('student_email', email)
+            .eq('tipo', 'pago_fallido')
+            .ilike('descripcion', '%' + fc.id + '%')
+            .limit(1);
+          
+          if (existing && existing.length > 0) continue;
+          
+          // Get student info
+          var studentName = fc.customer_name || '';
+          var studentPhone = '';
+          if (email) {
+            try {
+              var { data: userData } = await supabaseClient.from('users')
+                .select('nombre, telefono')
+                .eq('email', email)
+                .limit(1);
+              if (userData && userData[0]) {
+                studentName = studentName || userData[0].nombre || '';
+                studentPhone = userData[0].telefono || '';
+              }
+            } catch(e) {}
+          }
+          
+          var amount = (fc.amount / 100).toFixed(2);
+          var failDate = new Date(fc.created * 1000);
+          var fecha = failDate.toLocaleDateString('es-MX');
+          var ageHours = (Date.now() - failDate.getTime()) / 3600000;
+          
+          // Auto-assign priority based on age
+          var prioridad = 'alta';
+          var fechaLimite = new Date();
+          if (ageHours < 24) {
+            prioridad = 'critica';
+            fechaLimite.setDate(fechaLimite.getDate() + 1);
+          } else if (ageHours < 72) {
+            prioridad = 'alta';
+            fechaLimite.setDate(fechaLimite.getDate() + 2);
+          } else if (ageHours < 168) {
+            prioridad = 'media';
+            fechaLimite.setDate(fechaLimite.getDate() + 3);
+          } else {
+            prioridad = 'baja';
+            fechaLimite.setDate(fechaLimite.getDate() + 7);
+          }
+          
+          await supabaseClient.from('student_success_tickets').insert({
+            student_email: email,
+            student_name: studentName || email,
+            student_phone: studentPhone || '',
+            tipo: 'pago_fallido',
+            estado: 'abierto',
+            prioridad: prioridad,
+            descripcion: 'COBRO FALLIDO $' + amount + ' | Fecha: ' + fecha + ' | ' + (fc.failure_message || 'Declined') + ' | Stripe: ' + fc.id + ' | LLAMAR para actualizar metodo de pago.',
+            monto: parseFloat(amount),
+            fecha_limite: fechaLimite.toISOString(),
+            email_enviado_estudiante: false
+          });
+          imported++;
+        } catch(e) {
+          console.warn('[AutoImport] Skip:', email, e.message);
+        }
+      }
+      
+      if (imported > 0) {
+        console.log('[AutoImport] ' + imported + ' new failed charges imported to Student Success');
+        // Refresh Student Success view
+        try { loadSSTicketsFiltered(); loadSSStats(); } catch(e) {}
+      }
+    }
+    // ===== END AUTO-IMPORT =====
+
     async function importFailedToStudentSuccess() {
       var statusEl = document.getElementById('stripeImportStatus');
       statusEl.style.display = 'block';
@@ -12244,6 +12515,25 @@ if (screenId === 'adminDashboardScreen') {
           
           var amount = (fc.amount / 100).toFixed(2);
           var fecha = new Date(fc.created * 1000).toLocaleDateString('es-MX');
+          var failDate = new Date(fc.created * 1000);
+          var ageHours = (Date.now() - failDate.getTime()) / 3600000;
+          
+          // Auto-assign priority and deadline based on age
+          var prioridad = 'alta';
+          var fechaLimite = new Date();
+          if (ageHours < 24) {
+            prioridad = 'critica';
+            fechaLimite.setDate(fechaLimite.getDate() + 1);
+          } else if (ageHours < 72) {
+            prioridad = 'alta';
+            fechaLimite.setDate(fechaLimite.getDate() + 2);
+          } else if (ageHours < 168) {
+            prioridad = 'media';
+            fechaLimite.setDate(fechaLimite.getDate() + 3);
+          } else {
+            prioridad = 'baja';
+            fechaLimite.setDate(fechaLimite.getDate() + 7);
+          }
           
           var { error: insertErr } = await supabaseClient.from('student_success_tickets').insert({
             student_email: email,
@@ -12251,9 +12541,10 @@ if (screenId === 'adminDashboardScreen') {
             student_phone: studentPhone || '',
             tipo: 'pago_fallido',
             estado: 'abierto',
-            prioridad: 'alta',
+            prioridad: prioridad,
             descripcion: 'COBRO FALLIDO $' + amount + ' | Fecha: ' + fecha + ' | ' + (fc.failure_message || 'Declined') + ' | Stripe: ' + fc.id + ' | LLAMAR para actualizar metodo de pago.',
             monto: parseFloat(amount),
+            fecha_limite: fechaLimite.toISOString(),
             email_enviado_estudiante: false
           });
           
@@ -12349,6 +12640,11 @@ if (screenId === 'adminDashboardScreen') {
         renderStripeSubscriptions(data);
         renderStripeFailedCharges(data);
         renderStripeRecentCharges(data);
+        
+        // AUTO-IMPORT: Silently import failed charges to Student Success
+        if (data.failed_charges_list && data.failed_charges_list.length > 0) {
+          try { await autoImportFailedToSS(); } catch(e) { console.warn('[AutoImport]', e); }
+        }
         
         document.getElementById('stripeLastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-MX');
         

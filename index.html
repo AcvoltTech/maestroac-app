@@ -3353,7 +3353,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
       </div>
 
       <!-- Soporte -->
-      <div style="margin-top:20px;background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;"><h3 style="color:#1565C0;text-align:center;margin-bottom:12px;font-size:16px;">🛠️ Soporte Técnico</h3><p style="text-align:center;color:#64748b;font-size:13px;margin-bottom:12px;">¿Necesitas ayuda?</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;"><button onclick="window.open('https://wa.me/19096390448?text=Hola%20ACVOLT','_blank')" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">💬 WhatsApp</button><button onclick="window.location.href='mailto:techschoolacvolt@gmail.com'" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">📧 Email</button></div></div>
+      <div style="margin-top:20px;background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;"><h3 style="color:#1565C0;text-align:center;margin-bottom:12px;font-size:16px;">🛠️ Soporte Técnico</h3><p style="text-align:center;color:#64748b;font-size:13px;margin-bottom:12px;">¿Necesitas ayuda?</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;"><button onclick="window.open('https://wa.me/19096390448?text=Hola%20ACVOLT','_blank')" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">💬 WhatsApp</button><button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Soporte Técnico - ACVOLT','Hola, necesito ayuda con...','📧 Soporte Técnico')" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">📧 Email</button></div></div>
     </div>
 
     <!-- Certification Course Screen -->
@@ -5364,7 +5364,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
           
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
             <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
-            <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Maestro ACVOLT App&body=Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+            <button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Compra Maestro ACVOLT App','Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: '+(currentUser?currentUser.email:''),'📧 Confirmar Compra App');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
           </div>
 
           <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;margin-bottom:12px;">
@@ -7023,7 +7023,7 @@ if (screenId === 'adminDashboardScreen') {
           <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.4);border-radius:12px;padding:12px;margin-bottom:15px;">
             <p style="color:#f39c12;font-size:13px;font-weight:bold;margin-bottom:8px;">📋 PASO 2: Confirmar y Programar</p>
             <button onclick="window.open('https://wa.me/19096390448?text=${whatsappMsg}','_blank');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;margin-bottom:8px;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 Confirmar por WhatsApp</button>
-            <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=${subject}&body=${body}');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Confirmar por Correo</button>
+            <button onclick="openEmailComposer('Techschoolacvolt@gmail.com',decodeURIComponent('${subject}'),decodeURIComponent('${body}'),'📧 Confirmar Examen');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Confirmar por Correo</button>
           </div>
 
           <p style="color:#64748b;font-size:11px;margin-bottom:15px;">Una vez confirmado tu pago, te contactaremos para programar tu examen.</p>
@@ -8152,7 +8152,7 @@ if (screenId === 'adminDashboardScreen') {
             <p style="color:#94a3b8;font-size:12px;margin-bottom:10px;">Después de pagar, envía tu comprobante para activar:</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
               <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent('Hola, acabo de pagar $250 por los certificados de MaestroAC. Mi correo es: '+(currentUser?currentUser.email:''))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
-              <button onclick="window.open('mailto:techschoolacvolt@gmail.com?subject=Compra Certificados Maestro ACVOLT&body=Hola, acabo de pagar $250 por los certificados. Mi correo es: '+(currentUser?currentUser.email:''));" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+              <button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Compra Certificados Maestro ACVOLT','Hola, acabo de pagar $250 por los certificados. Mi correo es: '+(currentUser?currentUser.email:''),'📧 Confirmar Compra Certificados');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
             </div>
           </div>
 
@@ -9804,7 +9804,7 @@ if (screenId === 'adminDashboardScreen') {
             if (t.estado !== 'resuelto') html += '<button onclick="ssUpdateTicket(\'' + t.id + '\',\'resuelto\')" style="background:#27ae60;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">✅ Resolver</button>';
             html += '</div></div>';
             html += '<div style="display:flex;gap:6px;margin-top:6px;">';
-            html += '<a href="mailto:' + (t.student_email || '') + '?subject=ACVOLT - Actualiza tu método de pago&body=Hola ' + encodeURIComponent(t.student_name || '') + '," style="background:#9b59b6;color:white;text-decoration:none;padding:3px 8px;border-radius:5px;font-size:10px;">📧 Email</a>';
+            html += '<a href="javascript:void(0)" onclick="openEmailComposer(\'' + (t.student_email || '') + '\',\'ACVOLT - Actualiza tu método de pago\',\'Hola ' + (t.student_name || '') + ',\\nTe contactamos porque necesitamos que actualices tu método de pago.\\n\\nSaludos,\\nMaestro Mario\\nACVOLT Tech School\')" style="background:#9b59b6;color:white;text-decoration:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">📧 Email</a>';
             html += '<button onclick="ssLookupForTicket(\'' + (t.student_email || '') + '\')" style="background:#3498db;color:white;border:none;padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;">👁 Ver Info</button>';
             html += '</div>';
             html += '<div style="color:#475569;font-size:10px;margin-top:4px;">' + (t.descripcion || '') + '</div>';
@@ -9909,7 +9909,7 @@ if (screenId === 'adminDashboardScreen') {
           '<div style="display:flex;gap:8px;margin-top:12px;">' +
             (tel ? '<a href="tel:' + tel + '" style="flex:1;background:#27ae60;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📞 Llamar</a>' : '') +
             (tel ? '<a href="sms:' + tel + '" style="flex:1;background:#3498db;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">💬 SMS</a>' : '') +
-            '<a href="mailto:' + email + '?subject=ACVOLT - Actualiza tu pago&body=Hola ' + encodeURIComponent(nombre) + '," style="flex:1;background:#9b59b6;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📧 Email</a>' +
+            '<a href="javascript:void(0)" onclick="openEmailComposer(\'' + email + '\',\'ACVOLT - Actualiza tu pago\',\'Hola ' + (nombre || '') + ',\\nNecesitamos que actualices tu información de pago.\\n\\nSaludos,\\nMaestro Mario\\nACVOLT Tech School\')" style="flex:1;background:#9b59b6;color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;">📧 Email</a>' +
           '</div>' +
         '</div>';
         
@@ -9989,7 +9989,7 @@ if (screenId === 'adminDashboardScreen') {
             '<div style="display:flex;gap:8px;margin-top:12px;">' +
               (user.telefono ? '<a href="tel:' + user.telefono + '" style="flex:1;background:linear-gradient(135deg,#27ae60,#2ecc71);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📞 Llamar</a>' : '') +
               (user.telefono ? '<a href="sms:' + user.telefono + '" style="flex:1;background:linear-gradient(135deg,#3498db,#2980b9);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">💬 SMS</a>' : '') +
-              '<a href="mailto:' + email + '?subject=ACVOLT Tech School - Seguimiento&body=Hola ' + (user.nombre || '') + ',%0A%0A" style="flex:1;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;">📧 Email</a>' +
+              '<a href="javascript:void(0)" onclick="openEmailComposer(\'' + email + '\',\'ACVOLT Tech School - Seguimiento\',\'Hola ' + (user.nombre || '') + ',\\n\\n\')" style="flex:1;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:bold;cursor:pointer;">📧 Email</a>' +
             '</div>' +
           '</div>';
         } else {
@@ -10096,7 +10096,7 @@ if (screenId === 'adminDashboardScreen') {
             '<div style="display:flex;gap:6px;margin-top:8px;">' +
               (tel ? '<a href="tel:' + tel + '" style="background:#27ae60;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">📞 Llamar</a>' : '') +
               (tel ? '<a href="sms:' + tel + '" style="background:#3498db;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">💬 SMS</a>' : '') +
-              '<a href="mailto:' + s.student_email + '?subject=ACVOLT - Seguimiento&body=Hola ' + encodeURIComponent(nombre) + '," style="background:#9b59b6;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;">📧 Email</a>' +
+              '<a href="javascript:void(0)" onclick="openEmailComposer(\'' + s.student_email + '\',\'ACVOLT - Seguimiento\',\'Hola ' + (nombre || '') + ',\\n\\n\')" style="background:#9b59b6;color:white;text-decoration:none;padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer;">📧 Email</a>' +
             '</div>' +
           '</div>';
         }).join('');
@@ -15210,7 +15210,7 @@ if (screenId === 'adminDashboardScreen') {
     function contactStudent(email, name) {
       const subject = encodeURIComponent('ACVOLT Tech School - Seguimiento');
       const body = encodeURIComponent('Hola ' + name + ',\n\nGracias por tu solicitud. Te contactamos respecto a...\n\nSaludos,\nMaestro Mario\nACVOLT Tech School');
-      window.open('mailto:' + email + '?subject=' + subject + '&body=' + body, '_blank');
+      openEmailComposer(email, decodeURIComponent(subject), decodeURIComponent(body), '📧 Contactar Estudiante');
     }
 
     function markAllAsRead() {
@@ -15428,7 +15428,7 @@ if (screenId === 'adminDashboardScreen') {
             
             // Email button
             (email ? 
-              '<a href="mailto:' + email + '?subject=' + emailSubject + '&body=' + emailBody + '" target="_blank" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;text-decoration:none;padding:14px 20px;border-radius:12px;font-weight:bold;font-size:14px;">' +
+              '<a href="javascript:void(0)" onclick="openEmailComposer(\'' + email + '\',decodeURIComponent(\'' + emailSubject + '\'),decodeURIComponent(\'' + emailBody + '\'),\'📧 Enviar Código\')" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;text-decoration:none;padding:14px 20px;border-radius:12px;font-weight:bold;font-size:14px;cursor:pointer;">' +
                 '<span style="font-size:24px;">📧</span>' +
                 '<div><div>Enviar por Email</div><div style="font-size:11px;opacity:0.8;font-weight:normal;">' + email + '</div></div>' +
               '</a>' : 
@@ -16063,7 +16063,8 @@ if (screenId === 'adminDashboardScreen') {
       const bodyEncoded = encodeURIComponent(body);
       
       // Open mail client
-      window.open('mailto:?bcc=' + bccEmails + '&subject=' + subject + '&body=' + bodyEncoded, '_blank');
+      // Open in-app email modal for batch emails
+      openEmailComposer(bccEmails, decodeURIComponent(subject), decodeURIComponent(bodyEncoded), '📧 Email Masivo (' + emails.length + ' estudiantes)');
       
       // Also show a message with individual codes
       let codesMessage = '📧 Email abierto con ' + emails.length + ' destinatarios\n\n';
@@ -17406,6 +17407,161 @@ if(_origSS){
   updateCharsUI();
   checkStripeReturn();
 })();
+</script>
+
+<!-- ============================================ -->
+<!-- IN-APP EMAIL COMPOSE MODAL -->
+<!-- ============================================ -->
+<div id="appEmailModal" style="display:none;position:fixed;inset:0;z-index:99998;background:rgba(10,22,40,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:20px;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 25px 60px rgba(0,0,0,0.4);">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,#1565C0,#0D47A1);padding:20px 24px;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span style="font-size:28px;">📧</span>
+        <div>
+          <h3 style="color:white;margin:0;font-size:18px;" id="emailModalTitle">Enviar Email</h3>
+          <p style="color:rgba(255,255,255,0.7);margin:0;font-size:12px;">Desde: Techschoolacvolt@gmail.com</p>
+        </div>
+      </div>
+      <button onclick="closeEmailModal()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
+    </div>
+    <!-- Body -->
+    <div style="padding:24px;">
+      <div style="margin-bottom:16px;">
+        <label style="display:block;color:#64748b;font-size:12px;font-weight:600;margin-bottom:6px;">PARA:</label>
+        <input type="text" id="emailModalTo" readonly style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#f8fafc;color:#334155;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="display:block;color:#64748b;font-size:12px;font-weight:600;margin-bottom:6px;">ASUNTO:</label>
+        <input type="text" id="emailModalSubject" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;color:#334155;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;color:#64748b;font-size:12px;font-weight:600;margin-bottom:6px;">MENSAJE:</label>
+        <textarea id="emailModalBody" rows="8" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;color:#334155;resize:vertical;font-family:inherit;box-sizing:border-box;"></textarea>
+      </div>
+      <!-- Status message -->
+      <div id="emailModalStatus" style="display:none;padding:12px;border-radius:10px;margin-bottom:16px;text-align:center;font-size:13px;font-weight:600;"></div>
+      <!-- Action buttons -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button id="emailModalSendBtn" onclick="sendEmailFromModal()" style="flex:1;min-width:140px;background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          🚀 Enviar Email
+        </button>
+        <button onclick="openGmailFallback()" style="flex:1;min-width:140px;background:linear-gradient(135deg,#ea4335,#c5221f);color:white;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:bold;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+          📨 Abrir Gmail
+        </button>
+      </div>
+      <p style="text-align:center;color:#94a3b8;font-size:11px;margin-top:12px;">Si "Enviar Email" no funciona, usa "Abrir Gmail" como respaldo</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================
+// IN-APP EMAIL SYSTEM - Techschoolacvolt@gmail.com
+// ============================================
+var APP_EMAIL_FROM = 'Techschoolacvolt@gmail.com';
+var APP_EMAIL_SENDER_NAME = 'ACVOLT Tech School';
+
+// Open the in-app email compose modal
+function openEmailComposer(to, subject, body, title) {
+  document.getElementById('emailModalTo').value = to || '';
+  document.getElementById('emailModalSubject').value = subject || '';
+  document.getElementById('emailModalBody').value = body || '';
+  document.getElementById('emailModalTitle').textContent = title || 'Enviar Email';
+  document.getElementById('emailModalStatus').style.display = 'none';
+  document.getElementById('emailModalSendBtn').disabled = false;
+  document.getElementById('emailModalSendBtn').innerHTML = '🚀 Enviar Email';
+  document.getElementById('appEmailModal').style.display = 'flex';
+}
+
+// Close email modal
+function closeEmailModal() {
+  document.getElementById('appEmailModal').style.display = 'none';
+}
+
+// Send email via Supabase Edge Function
+async function sendEmailFromModal() {
+  var toEmail = document.getElementById('emailModalTo').value.trim();
+  var subject = document.getElementById('emailModalSubject').value.trim();
+  var body = document.getElementById('emailModalBody').value.trim();
+  var statusEl = document.getElementById('emailModalStatus');
+  var sendBtn = document.getElementById('emailModalSendBtn');
+
+  if (!toEmail || !subject || !body) {
+    statusEl.style.display = 'block';
+    statusEl.style.background = '#fef2f2';
+    statusEl.style.color = '#dc2626';
+    statusEl.textContent = '⚠️ Completa todos los campos';
+    return;
+  }
+
+  // Show sending state
+  sendBtn.disabled = true;
+  sendBtn.innerHTML = '⏳ Enviando...';
+  statusEl.style.display = 'block';
+  statusEl.style.background = '#eff6ff';
+  statusEl.style.color = '#2563eb';
+  statusEl.textContent = '📤 Enviando email...';
+
+  try {
+    // Try Supabase Edge Function first
+    var response = await fetch(SUPABASE_URL + '/functions/v1/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        to: toEmail,
+        subject: subject,
+        body: body,
+        from_name: APP_EMAIL_SENDER_NAME
+      })
+    });
+
+    if (response.ok) {
+      var result = await response.json();
+      statusEl.style.background = '#f0fdf4';
+      statusEl.style.color = '#16a34a';
+      statusEl.textContent = '✅ ¡Email enviado exitosamente!';
+      sendBtn.innerHTML = '✅ Enviado';
+      // Auto-close after 2 seconds
+      setTimeout(function() { closeEmailModal(); }, 2000);
+      return;
+    } else {
+      throw new Error('Edge Function responded with ' + response.status);
+    }
+  } catch (err) {
+    console.log('[Email] Edge Function not available, offering fallback:', err.message);
+    statusEl.style.background = '#fffbeb';
+    statusEl.style.color = '#d97706';
+    statusEl.textContent = '⚠️ Servicio de email no configurado. Usa "Abrir Gmail" para enviar.';
+    sendBtn.disabled = false;
+    sendBtn.innerHTML = '🚀 Reintentar';
+  }
+}
+
+// Gmail web fallback - opens Gmail compose in browser
+function openGmailFallback() {
+  var to = document.getElementById('emailModalTo').value.trim();
+  var subject = encodeURIComponent(document.getElementById('emailModalSubject').value.trim());
+  var body = encodeURIComponent(document.getElementById('emailModalBody').value.trim());
+  
+  // Gmail compose URL works in all browsers and PWAs
+  var gmailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + to + '&su=' + subject + '&body=' + body;
+  window.open(gmailUrl, '_blank');
+  
+  var statusEl = document.getElementById('emailModalStatus');
+  statusEl.style.display = 'block';
+  statusEl.style.background = '#f0fdf4';
+  statusEl.style.color = '#16a34a';
+  statusEl.textContent = '✅ Gmail abierto en nueva pestaña';
+}
+
+// Quick send email (for inline buttons that don't need the full modal)
+function quickSendEmail(to, subject, body) {
+  openEmailComposer(to, subject, body, 'Enviar Email a ' + to);
+}
 </script>
 
 <!-- WELCOME BACK OVERLAY -->

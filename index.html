@@ -12607,6 +12607,114 @@ if (screenId === 'adminDashboardScreen') {
     // ---- STRIPE DATA via Edge Function ----
     var stripeDataCache = null;
     
+    // Middleware: Convert raw Stripe API data to dashboard format
+    function processStripeRawData(raw) {
+      // If data already has 'mrr' key, it's already processed - return as-is
+      if (raw.mrr !== undefined && raw.active_subscriptions !== undefined) return raw;
+      
+      var processed = {};
+      
+      // ---- SUBSCRIPTIONS ----
+      var activeSubs = (raw.subscriptions && raw.subscriptions.active) ? raw.subscriptions.active : [];
+      var canceledSubs = (raw.subscriptions && raw.subscriptions.canceled) ? raw.subscriptions.canceled : [];
+      var pausedSubs = (raw.subscriptions && raw.subscriptions.paused) ? raw.subscriptions.paused : [];
+      
+      processed.active_subscriptions = activeSubs.length;
+      processed.canceled_subscriptions = canceledSubs.length;
+      processed.paused_subscriptions = pausedSubs.length;
+      
+      // Calculate MRR from active subs
+      var mrr = 0;
+      var subPrice = 0;
+      activeSubs.forEach(function(sub) {
+        try {
+          var item = sub.items && sub.items.data && sub.items.data[0];
+          if (item && item.price) {
+            var amount = item.price.unit_amount || 0; // in cents
+            var interval = item.price.recurring ? item.price.recurring.interval : 'month';
+            if (interval === 'year') amount = Math.round(amount / 12);
+            else if (interval === 'week') amount = Math.round(amount * 4.33);
+            mrr += amount;
+            if (!subPrice && amount > 0) subPrice = amount;
+          }
+        } catch(e) {}
+      });
+      processed.mrr = Math.round(mrr / 100); // convert cents to dollars
+      processed.subscription_price = (subPrice / 100).toFixed(2);
+      
+      // Churn rate (30 day)
+      var totalSubs = activeSubs.length + canceledSubs.length;
+      processed.churn_rate = totalSubs > 0 ? ((canceledSubs.length / totalSubs) * 100).toFixed(1) : '0';
+      
+      // ---- BALANCE ----
+      if (raw.balance && raw.balance.available && raw.balance.available[0]) {
+        processed.balance = raw.balance.available[0].amount || 0; // in cents, renderStripeKPIs divides by 100
+      } else if (typeof raw.balance === 'number') {
+        processed.balance = raw.balance;
+      } else {
+        processed.balance = 0;
+      }
+      
+      // ---- CHARGES ----
+      var charges = Array.isArray(raw.charges) ? raw.charges : [];
+      var successful = 0, failed = 0, refunded = 0, disputed = 0;
+      var failedAmount = 0;
+      var failedList = [];
+      var monthlyRev = {};
+      
+      charges.forEach(function(ch) {
+        var amount = ch.amount || 0;
+        if (ch.status === 'succeeded' && ch.paid) {
+          successful++;
+          // Monthly revenue
+          var d = new Date((ch.created || 0) * 1000);
+          var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+          if (!monthlyRev[key]) monthlyRev[key] = 0;
+          monthlyRev[key] += Math.round(amount / 100);
+        } else if (ch.status === 'failed' || (ch.failure_message && !ch.paid)) {
+          failed++;
+          failedAmount += amount;
+          failedList.push({
+            id: ch.id,
+            amount: amount,
+            customer_email: (ch.billing_details && ch.billing_details.email) || ch.receipt_email || '',
+            customer_name: (ch.billing_details && ch.billing_details.name) || '',
+            failure_message: ch.failure_message || 'Declined',
+            created: ch.created
+          });
+        }
+        if (ch.refunded) refunded++;
+        if (ch.disputed) disputed++;
+      });
+      
+      processed.total_transactions = charges.length;
+      processed.successful_transactions = successful;
+      processed.failed_transactions = failed;
+      processed.refunded_transactions = refunded;
+      processed.disputed_transactions = disputed;
+      processed.success_rate = charges.length > 0 ? ((successful / charges.length) * 100).toFixed(1) : '0';
+      processed.failed_charges = failed;
+      processed.failed_amount = Math.round(failedAmount / 100);
+      processed.failed_charges_list = failedList;
+      
+      // Monthly revenue (last 6 months)
+      var now = new Date();
+      var months = [];
+      for (var i = 5; i >= 0; i--) {
+        var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        var key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+        var monthNames = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        months.push({ month: monthNames[d.getMonth()], amount: monthlyRev[key] || 0 });
+      }
+      processed.monthly_revenue = months;
+      
+      // Customer phones
+      if (raw.customer_phones) processed.customer_phones = raw.customer_phones;
+      
+      console.log('[Stripe] Processed raw data:', { mrr: processed.mrr, active: processed.active_subscriptions, failed: processed.failed_charges, balance: processed.balance });
+      return processed;
+    }
+    
     async function loadFinanzasStripe() {
       var statusEl = document.getElementById('stripeConnStatus');
       statusEl.textContent = '⏳ Conectando con Stripe...';
@@ -12627,6 +12735,9 @@ if (screenId === 'adminDashboardScreen') {
         }
         
         var data = await response.json();
+        
+        // Process raw Stripe data into dashboard format
+        data = processStripeRawData(data);
         stripeDataCache = data;
         
         // Update status

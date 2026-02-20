@@ -842,6 +842,7 @@ div[style*="grid-template-columns: repeat(4, 1fr)"] {
 .notif-time { color: #64748b; font-size: 11px; margin-top: 3px; }
 .notif-empty { text-align: center; padding: 40px 20px; color: #64748b; }
 .notif-empty-icon { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+@keyframes bounceArrow { 0%,100%{transform:translateY(-50%);} 50%{transform:translateY(calc(-50% - 6px));} }
 </style>
 </head>
 <body>
@@ -1412,88 +1413,207 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
     <!-- ============================================ -->
     <div class="screen" id="referidosScreen">
       <div class="container">
-        <div class="header">
-          <h1>💰 Programa de Embajadores</h1>
-          <p class="subtitle">Gana dinero real por cada referido</p>
+        <!-- CSS Animations -->
+        <style>
+          @keyframes floatMoney { 0%,100%{transform:translateY(0) rotate(0deg);} 25%{transform:translateY(-15px) rotate(5deg);} 50%{transform:translateY(-8px) rotate(-3deg);} 75%{transform:translateY(-20px) rotate(3deg);} }
+          @keyframes pulseCash { 0%,100%{transform:scale(1);} 50%{transform:scale(1.15);} }
+          @keyframes shimmer { 0%{background-position:-200% center;} 100%{background-position:200% center;} }
+          @keyframes bounceArrow { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+          @keyframes rainMoney { 0%{transform:translateY(-100%) rotate(0deg);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+          @keyframes glowPulse { 0%,100%{box-shadow:0 0 10px rgba(243,156,18,0.3);} 50%{box-shadow:0 0 30px rgba(243,156,18,0.6),0 0 60px rgba(39,174,96,0.3);} }
+          @keyframes slideUp { 0%{transform:translateY(30px);opacity:0;} 100%{transform:translateY(0);opacity:1;} }
+          @keyframes countUp { 0%{transform:scale(0.5);opacity:0;} 50%{transform:scale(1.2);} 100%{transform:scale(1);opacity:1;} }
+          .amb-float { animation: floatMoney 3s ease-in-out infinite; display:inline-block; }
+          .amb-float-delay1 { animation-delay: 0.3s; }
+          .amb-float-delay2 { animation-delay: 0.6s; }
+          .amb-float-delay3 { animation-delay: 0.9s; }
+          .amb-pulse { animation: pulseCash 2s ease-in-out infinite; }
+          .amb-shimmer { background:linear-gradient(90deg,#f39c12 0%,#ffd700 25%,#f39c12 50%,#2ecc71 75%,#f39c12 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 3s linear infinite; }
+          .amb-bounce { animation: bounceArrow 1.5s ease-in-out infinite; }
+          .amb-glow { animation: glowPulse 2s ease-in-out infinite; }
+          .amb-slide { animation: slideUp 0.6s ease-out forwards; opacity:0; }
+          .amb-slide-d1 { animation-delay:0.1s; }
+          .amb-slide-d2 { animation-delay:0.2s; }
+          .amb-slide-d3 { animation-delay:0.3s; }
+          .amb-slide-d4 { animation-delay:0.4s; }
+          .amb-rain { position:absolute; animation: rainMoney linear infinite; pointer-events:none; font-size:20px; opacity:0.6; }
+          .amb-share-btn { padding:12px 18px; border:none; border-radius:12px; font-weight:bold; font-size:14px; cursor:pointer; transition:all 0.3s; display:flex; align-items:center; gap:8px; justify-content:center; }
+          .amb-share-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,0,0,0.2); }
+          .amb-share-btn:active { transform:scale(0.95); }
+          .amb-step { display:flex; align-items:center; gap:12px; padding:10px; border-radius:10px; margin-bottom:6px; transition:all 0.3s; }
+          .amb-step:hover { background:rgba(243,156,18,0.08); transform:translateX(5px); }
+        </style>
+
+        <!-- Money Rain Background -->
+        <div style="position:relative;overflow:hidden;pointer-events:none;height:0;">
+          <div class="amb-rain" style="left:5%;animation-duration:4s;animation-delay:0s;">💵</div>
+          <div class="amb-rain" style="left:20%;animation-duration:5s;animation-delay:1s;">💰</div>
+          <div class="amb-rain" style="left:40%;animation-duration:4.5s;animation-delay:0.5s;">🤑</div>
+          <div class="amb-rain" style="left:60%;animation-duration:5.5s;animation-delay:1.5s;">💲</div>
+          <div class="amb-rain" style="left:80%;animation-duration:4s;animation-delay:2s;">💵</div>
+          <div class="amb-rain" style="left:90%;animation-duration:5s;animation-delay:0.8s;">💰</div>
         </div>
 
-        <!-- Hero Card -->
-        <div class="card" style="padding:20px;background:linear-gradient(135deg,rgba(243,156,18,0.2),rgba(39,174,96,0.1));border:2px solid rgba(243,156,18,0.4);">
-          <div style="text-align:center;">
-            <div style="font-size:50px;margin-bottom:10px;">💰</div>
-            <h2 style="color:#f39c12;font-size:22px;margin-bottom:5px;">¡Refiere y Gana Dinero!</h2>
-            <p style="color:#e2e8f0;font-size:14px;margin-bottom:15px;">Gana <strong style="color:#2ecc71;">$20 por cada referido</strong> que active su membresía</p>
+        <!-- Hero Banner -->
+        <div class="amb-slide" style="background:linear-gradient(135deg,#0a1628 0%,#1a2a4a 50%,#0d1f3c 100%);border-radius:24px;padding:28px 20px;margin-bottom:18px;border:2px solid rgba(243,156,18,0.5);position:relative;overflow:hidden;">
+          <!-- Decorative glow -->
+          <div style="position:absolute;top:-50px;right:-50px;width:150px;height:150px;background:radial-gradient(circle,rgba(243,156,18,0.2),transparent);border-radius:50%;"></div>
+          <div style="position:absolute;bottom:-30px;left:-30px;width:100px;height:100px;background:radial-gradient(circle,rgba(39,174,96,0.15),transparent);border-radius:50%;"></div>
+          
+          <div style="text-align:center;position:relative;z-index:2;">
+            <div style="margin-bottom:8px;">
+              <span class="amb-float" style="font-size:40px;">💵</span>
+              <span class="amb-float amb-float-delay1" style="font-size:50px;">🤑</span>
+              <span class="amb-float amb-float-delay2" style="font-size:40px;">💵</span>
+            </div>
+            <h2 class="amb-shimmer" style="font-size:26px;margin:0 0 6px;font-weight:900;">¡GANA DINERO CON ACVOLT!</h2>
+            <p style="color:#e2e8f0;font-size:15px;margin:0 0 12px;">Conviértete en <strong style="color:#f39c12;">Embajador</strong> y gana dinero real</p>
+            
+            <!-- Animated arrow -->
+            <div class="amb-bounce" style="margin:8px 0;">
+              <span style="font-size:28px;">👇</span>
+            </div>
+            
+            <!-- Big money amount -->
+            <div class="amb-glow" style="background:linear-gradient(135deg,rgba(39,174,96,0.2),rgba(243,156,18,0.15));border:2px solid rgba(39,174,96,0.5);border-radius:16px;padding:16px;display:inline-block;margin-bottom:10px;">
+              <div class="amb-pulse" style="font-size:42px;font-weight:900;color:#2ecc71;letter-spacing:2px;">$20 <span style="font-size:16px;color:#94a3b8;font-weight:normal;">USD</span></div>
+              <div style="color:#e2e8f0;font-size:13px;">por cada referido que active membresía</div>
+            </div>
           </div>
+        </div>
 
-          <!-- Pago escalado -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:15px;">
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:24px;">1️⃣</div>
-              <div style="color:#2ecc71;font-size:18px;font-weight:bold;">$20</div>
-              <div style="color:#94a3b8;font-size:10px;">Por 1 referido</div>
-            </div>
-            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;text-align:center;">
-              <div style="font-size:24px;">5️⃣</div>
-              <div style="color:#f39c12;font-size:18px;font-weight:bold;">$100</div>
-              <div style="color:#94a3b8;font-size:10px;">Por 5 referidos</div>
-            </div>
+        <!-- Earnings Scale Cards -->
+        <div class="amb-slide amb-slide-d1" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px;">
+          <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:14px;padding:14px 8px;text-align:center;">
+            <div class="amb-float" style="font-size:28px;">1️⃣</div>
+            <div style="color:#16a34a;font-size:22px;font-weight:900;">$20</div>
+            <div style="color:#64748b;font-size:10px;">1 referido</div>
           </div>
-          <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:10px;padding:10px;text-align:center;margin-bottom:15px;">
-            <div style="color:#7c3aed;font-size:12px;">💳 Pago por <strong>Zelle o Transferencia Bancaria</strong></div>
+          <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #fcd34d;border-radius:14px;padding:14px 8px;text-align:center;">
+            <div class="amb-float amb-float-delay1" style="font-size:28px;">5️⃣</div>
+            <div style="color:#d97706;font-size:22px;font-weight:900;">$100</div>
+            <div style="color:#64748b;font-size:10px;">5 referidos</div>
           </div>
+          <div style="background:linear-gradient(135deg,#fdf2f8,#fce7f3);border:2px solid #f9a8d4;border-radius:14px;padding:14px 8px;text-align:center;">
+            <div class="amb-float amb-float-delay2" style="font-size:28px;">🔟</div>
+            <div style="color:#db2777;font-size:22px;font-weight:900;">$200</div>
+            <div style="color:#64748b;font-size:10px;">10 referidos</div>
+          </div>
+        </div>
 
-          <!-- Link de referido -->
-          <div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
-            <p style="color:#f39c12;font-size:12px;font-weight:bold;margin-bottom:8px;">Tu Link de Embajador:</p>
-            <div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px;margin-bottom:10px;">
-              <code id="refLinkCode" style="color:#2ecc71;font-size:13px;word-break:break-all;">Cargando...</code>
-            </div>
-            <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-              <button onclick="copyRefLink()" style="padding:10px 16px;border:none;border-radius:8px;background:#f39c12;color:#333;font-weight:bold;font-size:13px;cursor:pointer;">📋 Copiar Link</button>
-              <button onclick="shareRefWhatsApp()" style="padding:10px 16px;border:none;border-radius:8px;background:#25D366;color:white;font-weight:bold;font-size:13px;cursor:pointer;">📱 WhatsApp</button>
-              <button onclick="shareRefFacebook()" style="padding:10px 16px;border:none;border-radius:8px;background:#1877F2;color:white;font-weight:bold;font-size:13px;cursor:pointer;">📘 Facebook</button>
-            </div>
-          </div>
+        <!-- Payment Method -->
+        <div class="amb-slide amb-slide-d1" style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);border:2px solid #d8b4fe;border-radius:12px;padding:12px;text-align:center;margin-bottom:18px;">
+          <span style="font-size:18px;">💳</span> <span style="color:#7c3aed;font-size:13px;font-weight:bold;">Pago directo por <strong>Zelle</strong> o <strong>Transferencia Bancaria</strong></span>
+        </div>
 
-          <!-- Stats -->
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:15px;">
-            <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px;text-align:center;">
-              <div style="font-size:10px;color:#3498db;">📤 Registrados</div>
-              <div id="myRefCount" style="font-size:22px;font-weight:bold;color:#3498db;">0</div>
+        <!-- Share Section -->
+        <div class="amb-slide amb-slide-d2 amb-glow" style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:22px;margin-bottom:18px;border:2px solid rgba(243,156,18,0.4);">
+          <div style="text-align:center;margin-bottom:14px;">
+            <span style="font-size:24px;">🔗</span>
+            <span style="color:#f39c12;font-size:16px;font-weight:bold;"> Tu Link de Embajador</span>
+          </div>
+          
+          <div style="background:rgba(255,255,255,0.08);border:1px dashed rgba(243,156,18,0.5);border-radius:12px;padding:14px;text-align:center;margin-bottom:14px;">
+            <code id="refLinkCode" style="color:#2ecc71;font-size:13px;word-break:break-all;font-weight:bold;">Cargando...</code>
+          </div>
+          
+          <p style="text-align:center;color:#94a3b8;font-size:11px;margin-bottom:12px;">⚡ Comparte tu link y el mensaje se genera automáticamente</p>
+          
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <button onclick="copyRefLink()" class="amb-share-btn" style="background:linear-gradient(135deg,#f39c12,#e67e22);color:#1a1a2e;">📋 Copiar Mensaje</button>
+            <button onclick="shareRefWhatsApp()" class="amb-share-btn" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
+            <button onclick="shareRefFacebook()" class="amb-share-btn" style="background:linear-gradient(135deg,#1877F2,#0d5db8);color:white;">📘 Facebook</button>
+            <button onclick="shareRefSMS()" class="amb-share-btn" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;">💬 SMS</button>
+          </div>
+        </div>
+
+        <!-- Stats Dashboard -->
+        <div class="amb-slide amb-slide-d3" style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:18px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.1);">
+          <div style="text-align:center;margin-bottom:14px;">
+            <span style="font-size:18px;">📊</span>
+            <span style="color:#e2e8f0;font-size:15px;font-weight:bold;"> Tu Dashboard de Embajador</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+            <div style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(59,130,246,0.05));border:1px solid rgba(59,130,246,0.3);border-radius:14px;padding:14px 8px;text-align:center;">
+              <div style="font-size:22px;">📤</div>
+              <div id="myRefCount" style="font-size:28px;font-weight:900;color:#3b82f6;">0</div>
+              <div style="color:#94a3b8;font-size:10px;">Registrados</div>
             </div>
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px;text-align:center;">
-              <div style="font-size:10px;color:#2ecc71;">✅ Activos</div>
-              <div id="myRefActive" style="font-size:22px;font-weight:bold;color:#2ecc71;">0</div>
+            <div style="background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(34,197,94,0.05));border:1px solid rgba(34,197,94,0.3);border-radius:14px;padding:14px 8px;text-align:center;">
+              <div style="font-size:22px;">✅</div>
+              <div id="myRefActive" style="font-size:28px;font-weight:900;color:#22c55e;">0</div>
+              <div style="color:#94a3b8;font-size:10px;">Activos</div>
             </div>
-            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px;text-align:center;">
-              <div style="font-size:10px;color:#f39c12;">💰 Ganado</div>
-              <div id="myFreeMonths" style="font-size:22px;font-weight:bold;color:#f39c12;">$0</div>
+            <div style="background:linear-gradient(135deg,rgba(243,156,18,0.15),rgba(243,156,18,0.05));border:1px solid rgba(243,156,18,0.3);border-radius:14px;padding:14px 8px;text-align:center;">
+              <div style="font-size:22px;">🤑</div>
+              <div id="myFreeMonths" style="font-size:28px;font-weight:900;color:#f39c12;">$0</div>
+              <div style="color:#94a3b8;font-size:10px;">Ganado</div>
             </div>
           </div>
         </div>
 
         <!-- W-9 Requirement -->
-        <div class="card" style="padding:15px;margin-top:15px;border:2px solid rgba(231,76,60,0.3);background:linear-gradient(135deg,rgba(231,76,60,0.08),rgba(192,57,43,0.03));">
-          <h3 style="color:#e74c3c;font-size:14px;margin:0 0 10px;">📋 Requisito: Formulario W-9</h3>
-          <p style="color:#e2e8f0;font-size:13px;line-height:1.6;margin-bottom:12px;">Para poder recibir tu pago, necesitas llenar el <strong style="color:#f39c12;">formulario W-9</strong> (requerido por el IRS para pagos mayores a $600/año). Sin este formulario no podemos procesarte el pago.</p>
+        <div class="amb-slide amb-slide-d3" style="padding:18px;margin-bottom:18px;border-radius:18px;border:2px solid rgba(231,76,60,0.4);background:linear-gradient(135deg,rgba(231,76,60,0.1),rgba(192,57,43,0.05));">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <span style="font-size:28px;">📋</span>
+            <div>
+              <h3 style="color:#e74c3c;font-size:15px;margin:0;">Requisito: Formulario W-9</h3>
+              <p style="color:#94a3b8;font-size:11px;margin:2px 0 0;">Requerido por el IRS para procesarte el pago</p>
+            </div>
+          </div>
+          <p style="color:#cbd5e1;font-size:12px;line-height:1.6;margin-bottom:12px;">Para recibir tu dinero, necesitas llenar el <strong style="color:#f39c12;">formulario W-9</strong> una sola vez. Sin este formulario no podemos pagarte.</p>
           <div id="w9StatusBox">
-            <button onclick="showW9Form()" style="width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-weight:bold;font-size:14px;cursor:pointer;">📝 Llenar Formulario W-9</button>
+            <button onclick="showW9Form()" style="width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#e74c3c,#c0392b);color:white;font-weight:bold;font-size:15px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">📝 Llenar Formulario W-9</button>
           </div>
         </div>
 
-        <!-- How it works -->
-        <div class="card" style="padding:15px;margin-top:15px;">
-          <h3 style="color:#f39c12;font-size:14px;margin:0 0 10px;">¿Cómo funciona?</h3>
-          <div style="color:#e2e8f0;font-size:13px;line-height:2;">
-            <div>1️⃣ Llena tu formulario W-9 (una sola vez)</div>
-            <div>2️⃣ Comparte tu link con técnicos HVAC</div>
-            <div>3️⃣ Tu referido se registra con tu link</div>
-            <div>4️⃣ Cuando active su membresía pagada = <strong style="color:#2ecc71;">$20 para ti</strong></div>
-            <div>5️⃣ Pago por Zelle o transferencia bancaria</div>
+        <!-- How it works - Visual Steps -->
+        <div class="amb-slide amb-slide-d4" style="background:linear-gradient(135deg,#0f172a,#1e293b);border-radius:20px;padding:20px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.1);">
+          <h3 style="color:#f39c12;font-size:16px;margin:0 0 14px;text-align:center;">⚡ ¿Cómo funciona?</h3>
+          
+          <div class="amb-step">
+            <div style="background:#e74c3c;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📝</div>
+            <div><span style="color:#e2e8f0;font-size:13px;">Llena tu <strong style="color:#f39c12;">formulario W-9</strong> (una sola vez)</span></div>
+          </div>
+          
+          <div style="margin-left:18px;border-left:2px dashed rgba(243,156,18,0.3);height:12px;"></div>
+          
+          <div class="amb-step">
+            <div style="background:#3b82f6;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">📤</div>
+            <div><span style="color:#e2e8f0;font-size:13px;"><strong style="color:#3b82f6;">Comparte</strong> tu link con técnicos HVAC</span></div>
+          </div>
+          
+          <div style="margin-left:18px;border-left:2px dashed rgba(243,156,18,0.3);height:12px;"></div>
+          
+          <div class="amb-step">
+            <div style="background:#8b5cf6;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">👤</div>
+            <div><span style="color:#e2e8f0;font-size:13px;">Tu referido se <strong style="color:#8b5cf6;">registra</strong> con tu link</span></div>
+          </div>
+          
+          <div style="margin-left:18px;border-left:2px dashed rgba(243,156,18,0.3);height:12px;"></div>
+          
+          <div class="amb-step">
+            <div style="background:#2ecc71;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">💳</div>
+            <div><span style="color:#e2e8f0;font-size:13px;">Activa su membresía = <strong style="color:#2ecc71;">¡$20 para ti!</strong></span></div>
+          </div>
+          
+          <div style="margin-left:18px;border-left:2px dashed rgba(243,156,18,0.3);height:12px;"></div>
+          
+          <div class="amb-step">
+            <div style="background:#f39c12;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🏦</div>
+            <div><span style="color:#e2e8f0;font-size:13px;">Recibe tu <strong style="color:#f39c12;">pago por Zelle</strong> o transferencia</span></div>
           </div>
         </div>
 
-        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Menú</button>
+        <!-- Motivational CTA -->
+        <div class="amb-slide amb-slide-d4" style="background:linear-gradient(135deg,rgba(243,156,18,0.15),rgba(39,174,96,0.1));border:2px solid rgba(243,156,18,0.3);border-radius:18px;padding:18px;text-align:center;margin-bottom:18px;">
+          <div style="font-size:32px;margin-bottom:8px;">🚀</div>
+          <p style="color:#f39c12;font-size:15px;font-weight:bold;margin:0 0 6px;">¿Conoces 5 técnicos HVAC?</p>
+          <p style="color:#e2e8f0;font-size:13px;margin:0 0 12px;">¡Son <strong style="color:#2ecc71;">$100 dólares</strong> directo a tu bolsillo! 💰</p>
+          <button onclick="shareRefWhatsApp()" style="padding:14px 28px;border:none;border-radius:12px;background:linear-gradient(135deg,#25D366,#128C7E);color:white;font-weight:bold;font-size:15px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">📱 ¡Compartir Ahora por WhatsApp!</button>
+        </div>
+
+        <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:8px;margin-bottom:20px;">← Volver al Menú</button>
       </div>
     </div>
 
@@ -3175,7 +3295,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <!-- Calendario de Clases + Referidos -->
         <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
           <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:10px; background: linear-gradient(135deg, #00d4ff, #0099cc); color: white;">📅 Calendario de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white;">💰 Programa de Embajadores — Gana $20</button>
+          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; position:relative; overflow:hidden;"><span style="position:relative;z-index:2;">💰 ¡GANA DINERO! — Programa de Embajadores 💵</span><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:18px;animation:bounceArrow 1.5s ease-in-out infinite;">👉</span></button>
         </div>
 
         <!-- Zona de Membresía - Botón de acceso -->
@@ -13330,13 +13450,40 @@ if (screenId === 'adminDashboardScreen') {
       }
     }
     
+    function getAmbassadorMessage() {
+      var refCode = generateRefCode();
+      var link = 'https://maestromario.com/app?ref=' + refCode;
+      var nombre = (currentUser && currentUser.nombre) ? currentUser.nombre.split(' ')[0] : 'Un compañero';
+      
+      var msg = '🔥 *¿Eres técnico HVAC y quieres certificarte?* 🔥\n\n' +
+        'Te recomiendo *Maestro ACVOLT* — la app #1 de certificación HVAC en español. 💯\n\n' +
+        '✅ Lo que incluye:\n' +
+        '🧠 3,500+ preguntas de práctica para EPA 608, NATE y OSHA 30\n' +
+        '🤖 Maestro Mario AI — Inteligencia Artificial bilingüe que te ayuda a estudiar\n' +
+        '🎬 19 videos exclusivos de técnicas HVAC filmados en campo real\n' +
+        '📊 Tu progreso se sincroniza automáticamente\n' +
+        '📅 Mario te manda recordatorios si no has estudiado 😂\n\n' +
+        'Esta NO es una app genérica. Es la herramienta de estudio más completa para técnicos HVAC en español. No existe nada igual. 💪\n\n' +
+        '¿La mejor parte? *Es GRATIS descargarla.*\n\n' +
+        '👉 Regístrate con mi link: ' + link + '\n\n' +
+        'Yo la uso y me ha ayudado mucho. Si tienes preguntas, escríbeme.\n' +
+        '— ' + nombre + '\n\n' +
+        '#HVAC #EPA608 #NATE #OSHA #TécnicoHVAC #CertificaciónHVAC #MaestroACVOLT';
+      
+      return { text: msg, link: link };
+    }
+
     function copyRefLink() {
-      var code = document.getElementById('refLinkCode');
-      if (!code) return;
-      var link = code.textContent;
+      var msg = getAmbassadorMessage();
+      var fullText = msg.text;
+      
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(link).then(function() { alert('✅ Link copiado: ' + link); });
-      } else { prompt('Copia este link:', link); }
+        navigator.clipboard.writeText(fullText).then(function() { 
+          alert('✅ ¡Mensaje completo copiado!\n\nPégalo en WhatsApp, Facebook, SMS o donde quieras.\n\nTu link: ' + msg.link); 
+        });
+      } else { 
+        prompt('Copia este mensaje:', fullText); 
+      }
       
       // Track share
       if (supabaseClient && supabaseUserId) {
@@ -13345,16 +13492,35 @@ if (screenId === 'adminDashboardScreen') {
     }
     
     function shareRefWhatsApp() {
-      var refCode = generateRefCode();
-      var link = 'https://maestromario.com/app?ref=' + refCode;
-      var text = '🔧 ¡Aprende HVAC con MaestroAC! La app de Maestro Mario con 2,350+ preguntas de certificación. Regístrate con mi link: ' + link;
-      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      var msg = getAmbassadorMessage();
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg.text), '_blank');
+      
+      // Track share
+      if (supabaseClient && supabaseUserId) {
+        try { supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'whatsapp', ref_code: generateRefCode() }); } catch(e) {}
+      }
     }
     
     function shareRefFacebook() {
-      var refCode = generateRefCode();
-      var link = 'https://maestromario.com/app?ref=' + refCode;
-      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(link), '_blank');
+      var msg = getAmbassadorMessage();
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(msg.link) + '&quote=' + encodeURIComponent(msg.text), '_blank');
+      
+      // Track share
+      if (supabaseClient && supabaseUserId) {
+        try { supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'facebook', ref_code: generateRefCode() }); } catch(e) {}
+      }
+    }
+
+    function shareRefSMS() {
+      var msg = getAmbassadorMessage();
+      // SMS shorter version
+      var smsText = '🔥 ¿Eres técnico HVAC? Te recomiendo Maestro ACVOLT — app #1 de certificación HVAC en español. 3,500+ preguntas EPA 608, NATE, OSHA. ¡GRATIS! 👉 ' + msg.link;
+      window.open('sms:?body=' + encodeURIComponent(smsText), '_blank');
+      
+      // Track share
+      if (supabaseClient && supabaseUserId) {
+        try { supabaseClient.from('referral_shares').insert({ user_id: supabaseUserId, platform: 'sms', ref_code: generateRefCode() }); } catch(e) {}
+      }
     }
     
     async function loadReferidosData() {
@@ -17420,7 +17586,7 @@ if(_origSS){
         <span style="font-size:28px;">📧</span>
         <div>
           <h3 style="color:white;margin:0;font-size:18px;" id="emailModalTitle">Enviar Email</h3>
-          <p style="color:rgba(255,255,255,0.7);margin:0;font-size:12px;">Desde: Techschoolacvolt@gmail.com</p>
+          <p style="color:rgba(255,255,255,0.7);margin:0;font-size:12px;">Desde: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="623607010a11010a0d0d0e0301140d0e1622050f030b0e4c010d0f">[email&#160;protected]</a></p>
         </div>
       </div>
       <button onclick="closeEmailModal()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;">✕</button>
@@ -17455,7 +17621,7 @@ if(_origSS){
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ============================================
 // IN-APP EMAIL SYSTEM - Techschoolacvolt@gmail.com
 // ============================================
@@ -17683,9 +17849,4 @@ function quickSendEmail(to, subject, body) {
     var msg = msgs[Math.floor(Math.random() * msgs.length)];
 
     document.getElementById('wbTitle').textContent = '¡Bienvenido de vuelta, ' + nombre + '! 👋';
-    document.getElementById('wbMessage').innerHTML = msg;
-    document.getElementById('wbProgress').innerHTML = '💡 Tip: Estudia al menos 15 minutos al día. La consistencia gana al talento.';
-    document.getElementById('welcomeBackOverlay').style.display = 'flex';
-  }
-
-  win
+    document.getElementById('wbMessage').in

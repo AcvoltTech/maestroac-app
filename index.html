@@ -14361,7 +14361,8 @@ if (screenId === 'adminDashboardScreen') {
           html += '<button onclick="approveAccessCode(' + i + ')" style="background:#27ae60;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\u2705 Generar</button>';
           html += '<button onclick="rejectAccessCode(' + i + ')" style="background:#e74c3c;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\u274C Rechazar</button>';
         } else if (req.status === 'approved') {
-          html += '<button onclick="copyCodeToClipboard(\'' + req.code + '\')" style="background:#3498db;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;">\uD83D\uDCCB Copiar</button>';
+          html += '<button onclick="copyCodeToClipboard(\'' + req.code + '\')" style="background:#3498db;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\uD83D\uDCCB Copiar</button>';
+          html += '<button onclick="showCodeSendModal(\'' + (req.student_name || '').replace(/'/g, "\\'") + '\',\'' + (req.student_email || '') + '\',\'' + (req.student_phone || '') + '\',\'' + req.code + '\')" style="background:#22c55e;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">📤 Enviar</button>';
         }
         
         html += '</td></tr>';
@@ -14421,6 +14422,9 @@ if (screenId === 'adminDashboardScreen') {
         
         // Refresh active codes list
         loadActiveCodes();
+        
+        // Show send modal
+        showCodeSendModal(name, email, '', code);
         
         // Add notification
         if (typeof addNotification === 'function') {
@@ -15354,8 +15358,104 @@ if (screenId === 'adminDashboardScreen') {
         
         localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
         renderAccessCodes();
-        alert('C\u00F3digo generado: ' + code + '\n\nEnv\u00EDa este c\u00F3digo al estudiante: ' + requests[index].student_name);
+        
+        // Show send options modal
+        var req = requests[index];
+        var name = req.student_name || 'Estudiante';
+        var email = req.student_email || '';
+        var phone = req.student_phone || '';
+        
+        showCodeSendModal(name, email, phone, code);
       }
+    }
+
+    function showCodeSendModal(name, email, phone, code) {
+      // Remove existing modal
+      var existing = document.getElementById('codeSendModal');
+      if (existing) existing.remove();
+      
+      var emailSubject = encodeURIComponent('🎓 Tu Código de Acceso - ACVOLT Tech School');
+      var emailBody = encodeURIComponent(
+        'Hola ' + name + ',\n\n' +
+        '¡Tu código de acceso para MaestroAC ha sido aprobado! 🎉\n\n' +
+        '🔑 TU CÓDIGO: ' + code + '\n\n' +
+        'Para activarlo:\n' +
+        '1. Abre la app MaestroAC en maestromario.com\n' +
+        '2. Inicia sesión con tu cuenta\n' +
+        '3. Ve a "Canjear Código" en el menú\n' +
+        '4. Ingresa tu código: ' + code + '\n\n' +
+        '¡Éxito en tu camino de certificación HVAC!\n\n' +
+        'Maestro Mario\n' +
+        'ACVOLT Tech School\n' +
+        'www.maestromario.com'
+      );
+      
+      var waMsg = encodeURIComponent(
+        '🎓 *ACVOLT Tech School*\n\n' +
+        'Hola ' + name + ', tu código de acceso está listo:\n\n' +
+        '🔑 *' + code + '*\n\n' +
+        'Para activarlo:\n' +
+        '1️⃣ Abre maestromario.com\n' +
+        '2️⃣ Inicia sesión\n' +
+        '3️⃣ Ve a "Canjear Código"\n' +
+        '4️⃣ Ingresa: *' + code + '*\n\n' +
+        '¡Éxito! 💪🔥'
+      );
+      
+      // Clean phone for WhatsApp (remove spaces, dashes, parentheses)
+      var cleanPhone = phone.replace(/[\s\-\(\)\+]/g, '');
+      if (cleanPhone && !cleanPhone.startsWith('1') && cleanPhone.length === 10) cleanPhone = '1' + cleanPhone;
+      
+      var modal = document.createElement('div');
+      modal.id = 'codeSendModal';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+      modal.innerHTML = 
+        '<div style="background:white;border-radius:20px;padding:30px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">' +
+          '<div style="text-align:center;margin-bottom:20px;">' +
+            '<div style="font-size:48px;margin-bottom:10px;">✅</div>' +
+            '<h2 style="color:#1e293b;margin:0 0 5px;">Código Generado</h2>' +
+            '<p style="color:#64748b;font-size:14px;margin:0;">Para: <strong>' + name + '</strong></p>' +
+          '</div>' +
+          
+          '<div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #22c55e;border-radius:12px;padding:15px;text-align:center;margin-bottom:20px;">' +
+            '<div style="color:#64748b;font-size:12px;margin-bottom:4px;">CÓDIGO DE ACCESO</div>' +
+            '<div style="font-size:28px;font-weight:bold;letter-spacing:4px;color:#16a34a;font-family:monospace;">' + code + '</div>' +
+            '<button onclick="navigator.clipboard.writeText(\'' + code + '\');this.textContent=\'✅ Copiado!\';setTimeout(()=>this.textContent=\'📋 Copiar Código\',2000)" style="margin-top:8px;background:#22c55e;color:white;border:none;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:bold;">📋 Copiar Código</button>' +
+          '</div>' +
+          
+          '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:15px;">' +
+            '<div style="color:#64748b;font-size:12px;font-weight:bold;text-align:center;">📤 ENVIAR AL ESTUDIANTE</div>' +
+            
+            // Email button
+            (email ? 
+              '<a href="mailto:' + email + '?subject=' + emailSubject + '&body=' + emailBody + '" target="_blank" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#3b82f6,#2563eb);color:white;text-decoration:none;padding:14px 20px;border-radius:12px;font-weight:bold;font-size:14px;">' +
+                '<span style="font-size:24px;">📧</span>' +
+                '<div><div>Enviar por Email</div><div style="font-size:11px;opacity:0.8;font-weight:normal;">' + email + '</div></div>' +
+              '</a>' : 
+              '<div style="background:#f1f5f9;padding:14px 20px;border-radius:12px;color:#94a3b8;text-align:center;font-size:13px;">📧 Sin email registrado</div>') +
+            
+            // WhatsApp button
+            (cleanPhone ? 
+              '<a href="https://wa.me/' + cleanPhone + '?text=' + waMsg + '" target="_blank" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#25D366,#128C7E);color:white;text-decoration:none;padding:14px 20px;border-radius:12px;font-weight:bold;font-size:14px;">' +
+                '<span style="font-size:24px;">💬</span>' +
+                '<div><div>Enviar por WhatsApp</div><div style="font-size:11px;opacity:0.8;font-weight:normal;">' + phone + '</div></div>' +
+              '</a>' : 
+              '<div style="background:#f1f5f9;padding:14px 20px;border-radius:12px;color:#94a3b8;text-align:center;font-size:13px;">💬 Sin teléfono registrado</div>') +
+            
+            // SMS button
+            (cleanPhone ? 
+              '<a href="sms:' + cleanPhone + '?body=' + encodeURIComponent('ACVOLT Tech School - Tu código de acceso: ' + code + ' | Actívalo en maestromario.com') + '" style="display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:white;text-decoration:none;padding:14px 20px;border-radius:12px;font-weight:bold;font-size:14px;">' +
+                '<span style="font-size:24px;">💬</span>' +
+                '<div><div>Enviar por SMS</div><div style="font-size:11px;opacity:0.8;font-weight:normal;">' + phone + '</div></div>' +
+              '</a>' : '') +
+          '</div>' +
+          
+          '<button onclick="document.getElementById(\'codeSendModal\').remove()" style="width:100%;padding:12px;background:#f1f5f9;color:#475569;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;">✓ Listo</button>' +
+        '</div>';
+      
+      document.body.appendChild(modal);
+      // Close on backdrop click
+      modal.addEventListener('click', function(e) { if (e.target === modal) modal.remove(); });
     }
 
     async function rejectAccessCode(index) {

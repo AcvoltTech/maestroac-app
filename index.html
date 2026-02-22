@@ -3286,11 +3286,11 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
       </div>
       <div class="card" style="padding:10px;">
         <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:3px;">🎓 Comenzar Entrenamiento</button>
-        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:3px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📊 Mis Clases y Progreso</button>
-        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades</button>
-        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas</button>
+        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:3px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📚 Mis Clases (Biblioteca y Tareas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades (3,500+ Preguntas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas (Zoom y YouTube)</button>
         <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:3px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
-        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:3px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Certificaciones Oficiales</button>
+        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:3px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Obtén tus Certificados Oficiales</button>
         
         <!-- Referidos + CRM - VEGAS STYLE -->
         <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
@@ -3373,6 +3373,14 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
         <div style="text-align:center; margin-top:4px;">
           <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:12px; padding:6px 16px;">🚪 Cerrar Sesión</button>
+        </div>
+        
+        <!-- ACVOLT School Info -->
+        <div style="margin-top:8px;padding:8px 12px;background:#f1f5f9;border-radius:10px;text-align:center;">
+          <div style="font-size:10px;color:#475569;line-height:1.6;">
+            📍 484 E Valley Blvd, Colton, CA 92324 · 📞 <a href="tel:9098244849" style="color:#2563eb;text-decoration:none;">909-824-4849</a><br>
+            ✉️ <a href="mailto:ventas@acvolt.school" style="color:#2563eb;text-decoration:none;">ventas@acvolt.school</a> · 🌐 <a href="https://acvolt.school" target="_blank" style="color:#2563eb;text-decoration:none;">acvolt.school</a>
+          </div>
         </div>
       </div>
     </div>
@@ -3462,60 +3470,122 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <h1 style="font-size:22px;margin:0;">👑 Membresías en Vivo</h1>
         <p class="subtitle" style="margin:4px 0 8px;font-size:13px;">Clases en vivo con Maestro Mario</p>
       </div>
-      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:10px;">← Volver al Menú</button>
+      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:8px;">← Volver al Menú</button>
       
+      <!-- Maestro Mario Quote -->
+      <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid rgba(243,156,18,0.3);">
+        <div style="min-width:50px;width:50px;height:50px;border-radius:50%;overflow:hidden;border:2px solid #f39c12;">
+          <img src="mario-black.jpg" alt="Mario" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentElement.innerHTML='👨‍🏫';">
+        </div>
+        <div>
+          <div style="color:#f39c12;font-weight:800;font-size:13px;">Maestro Mario</div>
+          <div style="color:#e2e8f0;font-size:12px;line-height:1.4;font-style:italic;">"Invierte en tu educación y tu carrera te lo devuelve 100x. Mis estudiantes están ganando $30-$80/hr en el campo."</div>
+        </div>
+      </div>
+
       <div style="display:grid; grid-template-columns: repeat(1, 1fr); gap:10px;">
-        <!-- Principiante -->
-        <div onclick="window.open('https://buy.stripe.com/9B6cN52rB6tagjd1nV3sI04','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:16px;border:2px solid #f59e0b;text-align:center;">
-          <div style="font-size:36px;margin-bottom:4px;">🥉</div>
-          <div style="font-size:18px;font-weight:900;color:#92400e;">Principiante</div>
-          <div style="font-size:24px;font-weight:900;color:#d97706;margin:6px 0;">$119/mes</div>
-          <div style="font-size:12px;color:#78716c;">Acceso a clases en vivo nivel principiante</div>
-          <div style="margin-top:8px;background:#f59e0b;color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        <!-- Principiante $119 -->
+        <div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:16px;border:2px solid #f59e0b;">
+          <div style="text-align:center;">
+            <div style="font-size:28px;">🥉</div>
+            <div style="font-size:18px;font-weight:900;color:#92400e;">Principiante</div>
+            <div style="font-size:28px;font-weight:900;color:#d97706;margin:4px 0;">$119<span style="font-size:14px;font-weight:600;">/mes</span></div>
+          </div>
+          <div style="margin:10px 0;border-top:1px solid rgba(146,64,14,0.2);padding-top:10px;">
+            <div style="font-size:12px;color:#78350f;line-height:1.8;">
+              ✅ Clases en VIVO Martes y Miércoles 6-10PM PST<br>
+              ✅ Preguntas y Respuestas en VIVO — Lunes 6-10PM<br>
+              ✅ Clases en línea por acvolt.school<br>
+              ✅ Acceso TOTAL a la App de entrenamiento<br>
+              ✅ Grupo privado de WhatsApp — Comunidad + Soporte<br>
+              ✅ Certificado de participación
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="window.open('https://buy.stripe.com/9B6cN52rB6tagjd1nV3sI04','_blank')" style="cursor:pointer;background:#f59e0b;color:white;padding:10px 20px;border-radius:10px;display:inline-block;font-weight:800;font-size:14px;">💳 Suscribirme</div>
+          </div>
         </div>
         
-        <!-- Intermedio -->
-        <div onclick="window.open('https://buy.stripe.com/7sYcN5d6feZG3wr2rZ3sI0e','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-radius:14px;padding:16px;border:2px solid #6366f1;text-align:center;">
-          <div style="font-size:36px;margin-bottom:4px;">🥈</div>
-          <div style="font-size:18px;font-weight:900;color:#3730a3;">Intermedio</div>
-          <div style="font-size:24px;font-weight:900;color:#4f46e5;margin:6px 0;">$299/mes</div>
-          <div style="font-size:12px;color:#64748b;">Clases avanzadas + material de estudio</div>
-          <div style="margin-top:8px;background:#6366f1;color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        <!-- Intermedio $299 -->
+        <div style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-radius:14px;padding:16px;border:2px solid #6366f1;">
+          <div style="text-align:center;">
+            <div style="font-size:14px;font-weight:800;color:#fff;background:#6366f1;border-radius:20px;display:inline-block;padding:2px 12px;margin-bottom:4px;">⭐ MÁS POPULAR</div>
+            <div style="font-size:28px;">🥈</div>
+            <div style="font-size:18px;font-weight:900;color:#3730a3;">Intermedio</div>
+            <div style="font-size:28px;font-weight:900;color:#4f46e5;margin:4px 0;">$299<span style="font-size:14px;font-weight:600;">/mes</span></div>
+          </div>
+          <div style="margin:10px 0;border-top:1px solid rgba(55,48,163,0.2);padding-top:10px;">
+            <div style="font-size:12px;color:#312e81;line-height:1.8;">
+              ✅ <strong>TODO lo del plan Principiante</strong> +<br>
+              ✅ Clases Sábado y Domingo 7-11AM PST<br>
+              ✅ 🔥 <strong>La Trinidad del Oficio:</strong><br>
+              <span style="margin-left:18px;">⚡ Electricidad Residencial y Comercial</span><br>
+              <span style="margin-left:18px;">❄️ Aire Acondicionado Comercial</span><br>
+              <span style="margin-left:18px;">🧊 Refrigeración Comercial</span><br>
+              ✅ Preparación para certificaciones EPA, OSHA, NATE<br>
+              ✅ Soporte directo por WhatsApp con Maestro Mario
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="window.open('https://buy.stripe.com/7sYcN5d6feZG3wr2rZ3sI0e','_blank')" style="cursor:pointer;background:#6366f1;color:white;padding:10px 20px;border-radius:10px;display:inline-block;font-weight:800;font-size:14px;">💳 Suscribirme</div>
+          </div>
         </div>
         
-        <!-- Mentoría -->
-        <div onclick="window.open('https://buy.stripe.com/6oU28r3vF5p6aYTaYv3sI0d','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:16px;border:2px solid #ffd700;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.2);">
-          <div style="font-size:36px;margin-bottom:4px;">🥇</div>
-          <div style="font-size:18px;font-weight:900;color:#ffd700;">Mentoría</div>
-          <div style="font-size:24px;font-weight:900;color:#fbbf24;margin:6px 0;">$699/mes</div>
-          <div style="font-size:12px;color:#94a3b8;">Mentoría 1-on-1 + acceso completo + prioridad</div>
-          <div style="margin-top:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        <!-- Mentoría $699 -->
+        <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:16px;border:2px solid #ffd700;box-shadow:0 0 20px rgba(255,215,0,0.2);">
+          <div style="text-align:center;">
+            <div style="font-size:14px;font-weight:800;color:#1a1a2e;background:linear-gradient(135deg,#ffd700,#f59e0b);border-radius:20px;display:inline-block;padding:2px 12px;margin-bottom:4px;">🏆 PREMIUM</div>
+            <div style="font-size:28px;">🥇</div>
+            <div style="font-size:18px;font-weight:900;color:#ffd700;">Mentoría</div>
+            <div style="font-size:28px;font-weight:900;color:#fbbf24;margin:4px 0;">$699<span style="font-size:14px;font-weight:600;">/mes</span></div>
+          </div>
+          <div style="margin:10px 0;border-top:1px solid rgba(255,215,0,0.2);padding-top:10px;">
+            <div style="font-size:12px;color:#e2e8f0;line-height:1.8;">
+              ✅ <strong style="color:#ffd700;">TODO lo del plan Intermedio</strong> +<br>
+              ✅ Mentoría Profesional de Contratista<br>
+              ✅ Clases Pregrabadas — acceso completo<br>
+              ✅ Acceso prioritario — preguntas respondidas primero<br>
+              ✅ Ayuda para iniciar tu propio negocio HVAC
+            </div>
+          </div>
+          <div style="text-align:center;">
+            <div onclick="window.open('https://buy.stripe.com/6oU28r3vF5p6aYTaYv3sI0d','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:10px 20px;border-radius:10px;display:inline-block;font-weight:800;font-size:14px;">💳 Suscribirme</div>
+          </div>
         </div>
+      </div>
+      
+      <!-- Garantía -->
+      <div style="text-align:center;margin-top:12px;padding:10px;background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;">
+        <div style="font-size:12px;color:#166534;font-weight:600;">🛡️ Cancela cuando quieras — sin contratos ni penalidades</div>
       </div>
     </div>
 
     <!-- Certificaciones Oficiales Screen -->
     <div class="screen" id="certOficialesScreen">
       <div class="header" style="padding:8px 0 4px;">
-        <h1 style="font-size:22px;margin:0;">🏆 Certificaciones Oficiales</h1>
+        <h1 style="font-size:20px;margin:0;">🏆 Obtén tus Certificados Oficiales</h1>
         <p class="subtitle" style="margin:4px 0 8px;font-size:13px;">Prepárate para tus certificaciones profesionales</p>
       </div>
       <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:10px;">← Volver al Menú</button>
       
-      <!-- Insignias -->
+      <!-- Insignias - matching acvolt.school -->
       <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:14px;border:2px solid rgba(243,156,18,0.3);margin-bottom:12px;">
-        <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;">
           <div style="text-align:center;">
-            <div style="width:60px;height:60px;background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:12px;">NATE</span></div>
-            <div style="font-size:10px;color:#ffd700;font-weight:600;">NATE</div>
+            <div style="width:56px;height:56px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#1a237e;font-weight:900;font-size:10px;letter-spacing:-0.5px;">OSHA</span></div>
+            <div style="font-size:9px;color:#ffd700;font-weight:600;">OSHA</div>
           </div>
           <div style="text-align:center;">
-            <div style="width:60px;height:60px;background:linear-gradient(135deg,#2e7d32,#1b5e20);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:9px;line-height:1.1;">HVAC<br>EXCL</span></div>
-            <div style="font-size:10px;color:#ffd700;font-weight:600;">HVAC Excellence</div>
+            <div style="width:56px;height:56px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#c62828;font-weight:900;font-size:10px;">NATE</span></div>
+            <div style="font-size:9px;color:#ffd700;font-weight:600;">NATE</div>
           </div>
           <div style="text-align:center;">
-            <div style="width:60px;height:60px;background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:11px;">EPA</span></div>
-            <div style="font-size:10px;color:#ffd700;font-weight:600;">EPA 608</div>
+            <div style="width:56px;height:56px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#1565C0;font-weight:900;font-size:8px;">NCCER</span></div>
+            <div style="font-size:9px;color:#ffd700;font-weight:600;">NCCER</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:56px;height:56px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#2e7d32;font-weight:900;font-size:10px;">EPA</span></div>
+            <div style="font-size:9px;color:#ffd700;font-weight:600;">EPA</div>
           </div>
         </div>
       </div>
@@ -3681,14 +3751,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
     <!-- Study Sections Screen -->
     <div class="screen" id="studySectionsScreen">
       <div class="header">
-        <div style="font-size:48px;margin-bottom:4px;position:relative;display:inline-block;">
-          <span style="font-size:48px;">👨‍🔧</span>
-          <span style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:22px;">🎓</span>
-        </div>
-        <div style="display:flex;justify-content:center;gap:8px;margin-top:4px;margin-bottom:4px;">
-          <span style="font-size:20px;">🔧</span>
-          <span style="font-size:20px;">📊</span>
-        </div>
+        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:80px;">
         <h1>Desarrollo de Habilidades</h1>
         <p class="subtitle">Selecciona tu especialidad</p>
       </div>
@@ -3810,13 +3873,31 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
     <div class="screen" id="videoLessonsScreen">
       <div style="position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#1a5276,#154360);padding:8px 15px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid rgba(255,255,255,0.1);">
         <button onclick="showScreen('welcomeScreen')" style="background:#e2e8f0;border:none;color:#1e293b;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;">← Volver</button>
-        <span style="color:#f39c12;font-weight:bold;font-size:14px;">🎬 Videolecciones</span>
+        <span style="color:#f39c12;font-weight:bold;font-size:14px;">🎥 Clases Pregrabadas</span>
       </div>
       <div class="header" style="padding-top:10px;">
         <div class="logo">🎬</div>
-        <h1>Videolecciones</h1>
-        <p class="subtitle">Aprende con videos organizados por nivel y categoría</p>
+        <h1>Clases Pregrabadas</h1>
+        <p class="subtitle">Zoom y YouTube — organizados por categoría</p>
       </div>
+      
+      <!-- Zoom Classes Button -->
+      <div style="margin:0 15px 12px;background:linear-gradient(135deg,#2D8CFF,#0B5CFF);border-radius:12px;padding:14px;text-align:center;box-shadow:0 4px 15px rgba(45,140,255,0.3);">
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;">
+          <div style="width:40px;height:40px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="1" y="5" width="15" height="14" rx="2" fill="#2D8CFF"/><path d="M17 9.5L22 7V17L17 14.5V9.5Z" fill="#2D8CFF"/><rect x="3" y="7" width="11" height="10" rx="1" fill="#fff"/></svg>
+          </div>
+          <div style="text-align:left;">
+            <div style="color:#fff;font-weight:800;font-size:15px;">📹 Clases por Zoom</div>
+            <div style="color:rgba(255,255,255,0.8);font-size:11px;">635+ clases grabadas · 2,000+ horas de contenido</div>
+          </div>
+        </div>
+        <div style="margin-top:8px;background:rgba(255,255,255,0.2);border-radius:8px;padding:6px 16px;display:inline-block;color:#fff;font-weight:700;font-size:12px;">🔐 Solicita tu código de acceso</div>
+        <div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:4px;">Exclusivo para alumnos con membresía activa</div>
+      </div>
+
+      <!-- YouTube Section Header -->
+      <div style="margin:0 15px 8px;"><div style="font-size:13px;font-weight:800;color:#1e293b;display:flex;align-items:center;gap:6px;">📺 Videos de YouTube</div></div>
       
       <!-- Level Filter Tabs -->
       <div class="video-level-tabs" id="videoLevelTabs">

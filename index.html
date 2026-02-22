@@ -16161,10 +16161,10 @@ if (screenId === 'adminDashboardScreen') {
       if (!email) return { active: false, plan: null, error: 'No email provided' };
       
       try {
-        // Try specific subscription check first
+        // Call edge function with check_subscription only
         const response = await fetch(SUPABASE_URL + '/functions/v1/get-stripe-data', {
           method: 'POST',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + SUPABASE_KEY
           },
@@ -16174,60 +16174,48 @@ if (screenId === 'adminDashboardScreen') {
         if (response.ok) {
           const data = await response.json();
           if (data.active || data.has_subscription) {
-            return { active: true, plan: data.plan || data.product || 'Suscripción Activa', type: data.type || 'subscription' };
+            return { active: true, plan: data.plan || data.product || 'Suscripcion Activa', type: data.type || 'subscription' };
+          }
+          
+          // Check if response has charges/payments data
+          if (data.charges || data.payments) {
+            const charges = data.charges || data.payments || [];
+            const chargeList = Array.isArray(charges) ? charges : [];
+            const recentPayment = chargeList.find(c => {
+              const cEmail = (c.customer_email || c.email || c.receipt_email || '').toLowerCase();
+              const paid = c.paid || c.status === 'succeeded' || c.status === 'paid';
+              return cEmail === email.toLowerCase() && paid;
+            });
+            if (recentPayment) {
+              return { active: true, plan: 'Pago verificado', type: 'one_time' };
+            }
+          }
+          
+          // Check subscriptions in response
+          if (data.subscriptions || data.active_subscriptions) {
+            const subs = data.subscriptions || data.active_subscriptions || [];
+            const activeSubs = Array.isArray(subs) ? subs : [];
+            const subMatch = activeSubs.find(s => {
+              const subEmail = (s.customer_email || s.email || (s.customer && s.customer.email) || '').toLowerCase();
+              return subEmail === email.toLowerCase();
+            });
+            if (subMatch) {
+              const amount = subMatch.amount || subMatch.plan_amount || 0;
+              const amountUsd = amount > 100 ? amount / 100 : amount;
+              let planName = 'Suscripcion Activa';
+              if (amountUsd >= 600) planName = '\ud83d\udc51 Mentoria $699/mes';
+              else if (amountUsd >= 250) planName = '\ud83d\udcaa Intermedio $299/mes';
+              else if (amountUsd >= 200) planName = '\ud83d\udcd6 App Anual $240/año';
+              else if (amountUsd >= 100) planName = '\ud83c\udf1f Principiante $119/mes';
+              else if (amountUsd >= 15) planName = '\ud83d\udcf1 App Mensual $20/mes';
+              return { active: true, plan: planName, type: 'subscription' };
+            }
           }
         }
         
-        // Fallback: fetch all Stripe data and search by email
-        const fallback = await fetch(SUPABASE_URL + '/functions/v1/get-stripe-data', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + SUPABASE_KEY
-          },
-          body: JSON.stringify({ action: 'get_data' })
-        });
+        // If edge function failed or returned no match, return not found
+        return { active: false, plan: null, error: 'No se encontro pago activo ($20/mes, $240/año, o Membresia)' };
         
-        if (fallback.ok) {
-          const data = await fallback.json();
-          
-          // Check active subscriptions (membresías + app access)
-          const subs = data.subscriptions || data.active_subscriptions || [];
-          const activeSubs = Array.isArray(subs) ? subs : [];
-          const subMatch = activeSubs.find(s => {
-            const subEmail = (s.customer_email || s.email || (s.customer && s.customer.email) || '').toLowerCase();
-            return subEmail === email.toLowerCase();
-          });
-          
-          if (subMatch) {
-            // Determine plan type by amount
-            const amount = subMatch.amount || subMatch.plan_amount || 0;
-            const amountUsd = amount > 100 ? amount / 100 : amount; // cents to dollars
-            let planName = 'Suscripción Activa';
-            if (amountUsd >= 600) planName = '👑 Mentoría $699/mes';
-            else if (amountUsd >= 250) planName = '🥈 Intermedio $299/mes';
-            else if (amountUsd >= 200) planName = '💰 App Anual $240/año';
-            else if (amountUsd >= 100) planName = '🥉 Principiante $119/mes';
-            else if (amountUsd >= 15) planName = '📱 App Mensual $20/mes';
-            
-            return { active: true, plan: planName, type: 'subscription' };
-          }
-          
-          // Check one-time payments (e.g., $240 annual)
-          const charges = data.charges || data.payments || [];
-          const chargeList = Array.isArray(charges) ? charges : [];
-          const recentPayment = chargeList.find(c => {
-            const cEmail = (c.customer_email || c.email || c.receipt_email || '').toLowerCase();
-            const paid = c.paid || c.status === 'succeeded' || c.status === 'paid';
-            return cEmail === email.toLowerCase() && paid;
-          });
-          
-          if (recentPayment) {
-            return { active: true, plan: 'Pago verificado', type: 'one_time' };
-          }
-        }
-        
-        return { active: false, plan: null, error: 'No se encontró pago activo ($20/mes, $240/año, o Membresía)' };
       } catch(e) {
         console.warn('[Stripe Check]', e);
         return { active: false, plan: null, error: 'Error conectando con Stripe: ' + e.message };

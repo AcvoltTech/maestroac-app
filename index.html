@@ -34,22 +34,22 @@
     .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 100vh; }
     .screen { display: none; }
     .screen.active { display: flex !important; flex-direction: column; }
-    .header { text-align: center; padding: 30px 0; }
+    .header { text-align: center; padding: 20px 0 10px; }
     .logo { font-size: 50px; margin-bottom: 10px; }
     .logo-img { max-width: 200px; height: auto; margin-bottom: 15px; }
     h1 { font-size: 28px; margin-bottom: 5px; }
     h2 { font-size: 22px; color: #E31937; margin-bottom: 10px; }
     .subtitle { color: #64748b; font-size: 16px; }
-    .card { background: #ffffff; border-radius: 15px; padding: 25px; margin: 15px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .card { background: #ffffff; border-radius: 15px; padding: 18px; margin: 10px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; color: #64748b; font-size: 14px; }
     .form-group input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; color: #1e293b; font-size: 16px; }
     .form-group input::placeholder { color: #94a3b8; }
     .form-group input:focus { outline: none; border-color: #f39c12; background: #fff; }
-    .btn { width: 100%; padding: 18px; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
     .btn-primary { background: linear-gradient(135deg, #E31937, #C62828); color: white; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(227,25,55,0.3); }
-    .btn-secondary { background: #f0f2f5; color: #1e293b; margin-top: 10px; border: 1px solid #e2e8f0; }
+    .btn-secondary { background: #f0f2f5; color: #1e293b; margin-top: 6px; border: 1px solid #e2e8f0; }
     .btn-secondary:hover { background: #e2e8f0; }
     .level-card { background: #ffffff; border-radius: 12px; padding: 15px 18px; margin: 8px 0; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; }
     .level-card:hover { background: #f8fafc; transform: translateX(5px); border-color: #f39c12; }
@@ -621,6 +621,8 @@ body { background: linear-gradient(180deg, #f0f4ff 0%, #faf8ff 50%, #f0f4ff 100%
 .video-level-tab.active, .study-level-tab.active { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; color: white !important; border-color: transparent !important; box-shadow: 0 4px 12px rgba(99,102,241,0.35) !important; }
 .study-category-card { border: 2px solid #eef2ff !important; border-radius: 16px !important; box-shadow: 0 2px 10px rgba(99,102,241,0.06) !important; transition: all 0.3s !important; }
 .study-category-card:hover { border-color: #6366f1 !important; box-shadow: 0 4px 20px rgba(99,102,241,0.15) !important; transform: translateY(-2px) !important; }
+.specialty-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important; }
+.specialty-card:active { transform: scale(0.96); }
 .cert-card, .membership-card { border: 2px solid #eef2ff !important; border-radius: 16px !important; box-shadow: 0 2px 10px rgba(99,102,241,0.08) !important; transition: all 0.3s !important; }
 .cert-card:hover, .membership-card:hover { transform: translateY(-3px) !important; border-color: #6366f1 !important; box-shadow: 0 8px 25px rgba(99,102,241,0.2) !important; }
 .certificate-card { box-shadow: 0 4px 20px rgba(255,215,0,0.15) !important; border-radius: 20px !important; }
@@ -3282,56 +3284,96 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <h1>MAESTRO ACVOLT</h1>
         <p class="subtitle">Bienvenido</p>
       </div>
-      <div class="card">
-        <p style="text-align:center; margin-bottom:20px;">Crea tu perfil de técnico HVACR</p>
-        <button class="btn btn-primary" onclick="handleComenzar()">Comenzar</button>
-        <button class="btn btn-secondary" onclick="showScreen('quizOnlyScreen')">Prueba tu Conocimiento</button>
-        <button class="btn btn-secondary certificates-nav-btn" onclick="showCertificates('welcomeScreen')" style="margin-top:10px;">🏅 Mis Certificados</button>
-        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:10px;">👤 Mi Perfil</button>
-        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:10px;">📚 Secciones de Estudio</button>
-        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:10px;">🎬 Video Lecciones</button>
-        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:10px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white;">📋 Mi Asistencia - Check In/Out</button>
+      <div class="card" style="padding:14px;">
+        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:4px;">🎓 Comenzar Entrenamiento</button>
+        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:4px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📊 Mis Clases y Progreso</button>
+        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:4px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades</button>
+        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:4px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas</button>
+        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:4px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
         
-        <!-- Calendario de Clases + Referidos -->
-        <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:10px; background: linear-gradient(135deg, #00d4ff, #0099cc); color: white;">📅 Calendario de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('referidosScreen')" style="margin-top:10px; background: linear-gradient(135deg, #f39c12, #e67e22); color: white; position:relative; overflow:hidden;"><span style="position:relative;z-index:2;">💰 ¡GANA DINERO! — Programa de Embajadores 💵</span><span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:18px;animation:bounceArrow 1.5s ease-in-out infinite;">👉</span></button>
+        <!-- Referidos + CRM - VEGAS STYLE -->
+        <div style="margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
           
-          <!-- 🔥 Trade Master CRM Demo -->
-          <div style="margin-top:10px;background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 50%,#1e3a5f 100%);background-size:200% 200%;animation:crmShimmer 3s ease infinite;border-radius:14px;padding:16px 20px;color:#fff;text-align:center;box-shadow:0 4px 20px rgba(30,58,95,.4);position:relative;overflow:hidden;border:2px solid rgba(249,115,22,.3);">
-              <div style="position:absolute;top:8px;right:14px;font-size:16px;animation:crmBounce 2s ease infinite">⚡</div>
-              <div style="position:absolute;bottom:8px;left:14px;font-size:14px;animation:crmBounce 2s ease infinite .5s">🔥</div>
-              <div style="font-size:11px;font-weight:700;color:#f97316;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px">🚀 ¿Ya Tienes Tu Negocio?</div>
-              <div style="font-size:18px;font-weight:900;margin-bottom:2px">Trade Master CRM</div>
-              <div style="font-size:11px;color:#94a3b8;margin-bottom:8px">Maneja clientes, técnicos, facturas, cobros y nómina</div>
-              <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
-                <span style="background:rgba(249,115,22,.15);color:#f97316;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📋 Clientes</span>
-                <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📍 GPS</span>
-                <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">💰 Cobros</span>
-                <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📊 Nómina</span>
+          <!-- 🎰 GANA DINERO - Vegas Carnival Style -->
+          <div onclick="showScreen('referidosScreen')" style="margin-top:4px;position:relative;border-radius:14px;padding:4px;cursor:pointer;background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00ff00,#00bfff,#8b00ff,#ff0000);background-size:400% 100%;animation:vegasLights 3s linear infinite;box-shadow:0 0 15px rgba(255,215,0,0.5),0 0 30px rgba(255,0,0,0.3);">
+            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:11px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 20% 20%,rgba(255,215,0,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(255,0,0,0.1) 0%,transparent 50%);"></div>
+              <div style="position:relative;z-index:2;">
+                <div style="font-size:22px;margin-bottom:2px;animation:vegasBounce 1s ease infinite;">🤑</div>
+                <div style="font-size:16px;font-weight:900;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,0.5);letter-spacing:1px;">¡GANA DINERO!</div>
+                <div style="font-size:12px;font-weight:700;color:#fff;margin-top:2px;">RECOMIENDA LA ESCUELA</div>
+                <div style="display:flex;justify-content:center;gap:4px;margin-top:6px;font-size:10px;">
+                  <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.2s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.6s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.1s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.3s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.5s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.7s;">💡</span>
+                </div>
               </div>
-              <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-                <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;animation:crmPulse 2s ease infinite;box-shadow:0 2px 12px rgba(34,197,94,.4)">📝 REGÍSTRATE GRATIS</a>
-                <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;box-shadow:0 2px 12px rgba(249,115,22,.4)">🎬 VER DEMO AI</a>
+            </div>
+          </div>
+          
+          <!-- 🔥 Trade Master CRM Demo - Vegas Style -->
+          <div style="margin-top:6px;position:relative;border-radius:14px;padding:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e,#3b82f6,#8b5cf6,#f97316);background-size:400% 100%;animation:vegasLights 4s linear infinite;box-shadow:0 0 15px rgba(249,115,22,0.4),0 0 30px rgba(59,130,246,0.2);">
+            <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 50%,#1e3a5f 100%);background-size:200% 200%;animation:crmShimmer 3s ease infinite;border-radius:11px;padding:12px 16px;color:#fff;text-align:center;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 30% 30%,rgba(249,115,22,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 70%,rgba(59,130,246,0.08) 0%,transparent 50%);"></div>
+              <div style="position:relative;z-index:2;">
+                <div style="display:flex;justify-content:center;gap:4px;margin-bottom:4px;font-size:10px;">
+                  <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.15s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.3s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.45s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.6s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.75s;">💡</span>
+                </div>
+                <div style="font-size:11px;font-weight:700;color:#f97316;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;animation:crmTextPop 3s ease-in-out infinite;">🚀 ¿Ya Tienes Tu Negocio?</div>
+                <div style="font-size:18px;font-weight:900;margin-bottom:2px;text-shadow:0 0 10px rgba(255,255,255,0.2);">Trade Master CRM</div>
+                <div style="font-size:11px;color:#94a3b8;margin-bottom:8px">Maneja clientes, técnicos, facturas, cobros y nómina</div>
+                <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
+                  <span style="background:rgba(249,115,22,.15);color:#f97316;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📋 Clientes</span>
+                  <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📍 GPS</span>
+                  <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">💰 Cobros</span>
+                  <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📊 Nómina</span>
+                </div>
+                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+                  <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;animation:crmPulse 2s ease infinite;box-shadow:0 2px 12px rgba(34,197,94,.4)">📝 REGÍSTRATE GRATIS</a>
+                  <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;box-shadow:0 2px 12px rgba(249,115,22,.4)">🎬 VER DEMO AI</a>
+                </div>
+                <div style="font-size:9px;color:#64748b;margin-top:6px">Free para 10 clientes • No necesitas tarjeta</div>
+                <div style="display:flex;justify-content:center;gap:4px;margin-top:6px;font-size:10px;">
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.1s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.25s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.55s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.7s;">💡</span>
+                  <span style="animation:vegasBlink 0.8s ease infinite 0.85s;">💡</span>
+                </div>
               </div>
-              <div style="font-size:9px;color:#64748b;margin-top:6px">Free para 10 clientes • No necesitas tarjeta</div>
+            </div>
           </div>
           <style>
+            @keyframes vegasLights{0%{background-position:0% 50%}100%{background-position:400% 50%}}
+            @keyframes vegasBlink{0%,100%{opacity:1;filter:brightness(1.5);}50%{opacity:0.3;filter:brightness(0.5);}}
+            @keyframes vegasBounce{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+            @keyframes crmTextPop{0%,100%{transform:scale(1);opacity:1;}15%{transform:scale(0) translateY(20px);opacity:0;}30%{transform:scale(1.2) translateY(-5px);opacity:1;}40%{transform:scale(1);}}
             @keyframes crmShimmer{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
             @keyframes crmPulse{0%,100%{transform:scale(1);box-shadow:0 2px 12px rgba(34,197,94,.4)}50%{transform:scale(1.03);box-shadow:0 4px 20px rgba(34,197,94,.6)}}
             @keyframes crmBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
           </style>
         </div>
 
-        <!-- Zona de Membresía - Botón de acceso -->
-        <div style="margin-top:15px; padding-top:15px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="openMembershipZone()" style="margin-top:10px; background: linear-gradient(135deg, #9b59b6, #8e44ad);">🎥 Clases en Vivo - Membresías</button>
+        <!-- Calendario + Clases en Vivo -->
+        <div style="margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
+          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:4px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
         </div>
         
-        <div style="text-align:center; margin-top:25px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="text-align:center; margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1);">
           <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔐 Acceso Administrador</span>
         </div>
-        <div style="text-align:center; margin-top:15px;">
+        <div style="text-align:center; margin-top:8px;">
           <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:13px; padding:8px 20px;">🚪 Cerrar Sesión</button>
         </div>
       </div>
@@ -3392,7 +3434,7 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <p class="subtitle">Elige un nivel para comenzar el quiz</p>
       </div>
       <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:12px;">← Volver al Menú</button>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:15px;"><button class="btn btn-secondary certificates-nav-btn" onclick="showCertificates('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🏅 Mis Certificados</button><button class="btn btn-secondary profile-nav-btn" onclick="showProfile('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">👤 Mi Perfil</button><button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">📚 Secciones de Estudio</button><button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🎬 Video Lecciones</button></div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:15px;"><button class="btn btn-secondary certificates-nav-btn" onclick="showCertificates('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🏅 Mis Certificados</button><button class="btn btn-secondary profile-nav-btn" onclick="showProfile('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">👤 Mi Perfil</button><button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🎓 Desarrollo de Habilidades</button><button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🎬 Video Lecciones</button></div>
       <div id="levelsList"></div>
 
       <!-- Certification Courses Grid -->
@@ -3627,13 +3669,115 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
     <!-- Study Sections Screen -->
     <div class="screen" id="studySectionsScreen">
       <div class="header">
-        <div class="logo">📚</div>
-        <h1>Secciones de Estudio</h1>
-        <p class="subtitle">Estudia todas las preguntas organizadas por categoría</p>
+        <div style="font-size:48px;margin-bottom:4px;position:relative;display:inline-block;">
+          <span style="font-size:48px;">👨‍🔧</span>
+          <span style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:22px;">🎓</span>
+        </div>
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:4px;margin-bottom:4px;">
+          <span style="font-size:20px;">🔧</span>
+          <span style="font-size:20px;">📊</span>
+        </div>
+        <h1>Desarrollo de Habilidades</h1>
+        <p class="subtitle">Selecciona tu especialidad</p>
       </div>
       <div class="study-level-tabs" id="studyLevelTabs"></div>
-      <div id="studyCategoriesList"></div>
-      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:20px;">← Volver al Inicio</button>
+      
+      <!-- 9 Specialty Grid -->
+      <div id="specialtyGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px;">
+        <div class="specialty-card" onclick="showSpecialtyCategories('electricidad-residencial')" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(245,158,11,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">⚡</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Electricidad</div>
+          <div style="font-size:10px;opacity:0.9;">Residencial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('electricidad-comercial')" style="background:linear-gradient(135deg,#f97316,#ea580c);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(249,115,22,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">⚡</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Electricidad</div>
+          <div style="font-size:10px;opacity:0.9;">Comercial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('electricidad-industrial')" style="background:linear-gradient(135deg,#ef4444,#dc2626);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(239,68,68,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">⚡</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Electricidad</div>
+          <div style="font-size:10px;opacity:0.9;">Industrial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('ac-residencial')" style="background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(59,130,246,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">❄️</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Aire Acond.</div>
+          <div style="font-size:10px;opacity:0.9;">Residencial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('ac-comercial')" style="background:linear-gradient(135deg,#6366f1,#4f46e5);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(99,102,241,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">❄️</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Aire Acond.</div>
+          <div style="font-size:10px;opacity:0.9;">Comercial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('ac-industrial')" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(139,92,246,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">❄️</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Aire Acond.</div>
+          <div style="font-size:10px;opacity:0.9;">Industrial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('refri-residencial')" style="background:linear-gradient(135deg,#06b6d4,#0891b2);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(6,182,212,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">🧊</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Refrigeración</div>
+          <div style="font-size:10px;opacity:0.9;">Residencial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('refri-comercial')" style="background:linear-gradient(135deg,#14b8a6,#0d9488);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(20,184,166,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">🧊</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Refrigeración</div>
+          <div style="font-size:10px;opacity:0.9;">Comercial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('refri-industrial')" style="background:linear-gradient(135deg,#10b981,#059669);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(16,185,129,0.3);transition:all 0.3s;">
+          <div style="font-size:32px;margin-bottom:6px;">🧊</div>
+          <div style="font-size:12px;font-weight:800;line-height:1.2;">Refrigeración</div>
+          <div style="font-size:10px;opacity:0.9;">Industrial</div>
+        </div>
+      </div>
+
+      <!-- Códigos, Manuales & Certificaciones -->
+      <div style="margin:10px 0 8px;padding-top:8px;">
+        <p style="text-align:center;font-size:13px;font-weight:700;color:#64748b;letter-spacing:1px;text-transform:uppercase;">📖 Códigos, Manuales & Certificaciones</p>
+      </div>
+      <div id="codesGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px;">
+        <div class="specialty-card" onclick="showSpecialtyCategories('acca-residencial')" style="background:linear-gradient(135deg,#1e40af,#1d4ed8);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(30,64,175,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">📘</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">Manuales</div>
+          <div style="font-size:10px;opacity:0.9;">ACCA</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('acca-comercial')" style="background:linear-gradient(135deg,#1e3a8a,#1e40af);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(30,58,138,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">📘</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">ACCA</div>
+          <div style="font-size:10px;opacity:0.9;">A/C Comercial</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('ashrae')" style="background:linear-gradient(135deg,#0f766e,#0d9488);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(15,118,110,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">📗</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">Manuales</div>
+          <div style="font-size:10px;opacity:0.9;">ASHRAE</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('nec')" style="background:linear-gradient(135deg,#b91c1c,#dc2626);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(185,28,28,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">📕</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">Código</div>
+          <div style="font-size:10px;opacity:0.9;">NEC</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('nfpa54')" style="background:linear-gradient(135deg,#c2410c,#ea580c);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(194,65,12,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">📙</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">Código</div>
+          <div style="font-size:10px;opacity:0.9;">NFPA 54</div>
+        </div>
+        <div class="specialty-card" onclick="showSpecialtyCategories('bpi')" style="background:linear-gradient(135deg,#16a34a,#22c55e);border-radius:16px;padding:16px 10px;text-align:center;cursor:pointer;color:#fff;box-shadow:0 4px 15px rgba(22,163,74,0.3);transition:all 0.3s;">
+          <div style="font-size:28px;margin-bottom:6px;">🏛️</div>
+          <div style="font-size:11px;font-weight:800;line-height:1.2;">Certificación</div>
+          <div style="font-size:10px;opacity:0.9;">BPI</div>
+        </div>
+      </div>
+
+      <!-- Subcategories list (hidden by default, shows when specialty is clicked) -->
+      <div id="specialtySubcategories" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <button onclick="document.getElementById('specialtySubcategories').style.display='none';document.getElementById('specialtyGrid').style.display='grid';document.getElementById('studyLevelTabs').style.display='flex';" style="background:#e2e8f0;border:none;color:#1e293b;padding:8px 15px;border-radius:8px;font-size:14px;cursor:pointer;">← Volver</button>
+          <h3 id="specialtyTitle" style="margin:0;font-size:16px;color:#1e293b;"></h3>
+        </div>
+        <div id="studyCategoriesList"></div>
+      </div>
+
+      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Inicio</button>
     </div>
 
     <!-- Study Category Detail Screen -->
@@ -8519,6 +8663,137 @@ if (screenId === 'adminDashboardScreen') {
       });
     }
 
+    // Specialty-to-category mapping for the 9-grid view
+    const specialtyMap = {
+      'electricidad-residencial': {
+        name: '⚡ Electricidad Residencial',
+        keywords: ['Electricidad', 'Eléctrico', 'Diagramas Eléctricos', 'Controles Eléctricos', 'Residencial']
+      },
+      'electricidad-comercial': {
+        name: '⚡ Electricidad Comercial',
+        keywords: ['Electricidad Avanzada', 'Controles', 'Controles Experto', 'Diagramas Eléctricos']
+      },
+      'electricidad-industrial': {
+        name: '⚡ Electricidad Industrial',
+        keywords: ['Eléctrico Experto', 'Industrial', 'Industrial Avanzado']
+      },
+      'ac-residencial': {
+        name: '❄️ Aire Acondicionado Residencial',
+        keywords: ['Instalación', 'Split/Mini-Split', 'Herramientas', 'Tubería', 'Soldadura', 'Vacío', 'Carga Refrigerante', 'Superheat/Subcooling', 'Mantenimiento', 'Residencial Avanzado', 'Residencial Experto', 'Técnico Residencial', 'Bomba de Calor', 'Calefacción', 'Calefacción Gas']
+      },
+      'ac-comercial': {
+        name: '❄️ Aire Acondicionado Comercial',
+        keywords: ['Sistemas Comerciales', 'HVAC Comercial', 'Comercial Avanzado', 'Comercial Experto', 'Técnico Comercial', 'Mantenimiento Comercial', 'Instalación Experto']
+      },
+      'ac-industrial': {
+        name: '❄️ Aire Acondicionado Industrial',
+        keywords: ['Diseño de Sistemas', 'Eficiencia', 'Eficiencia Energética', 'Equipos Específicos', 'Tecnología']
+      },
+      'refri-residencial': {
+        name: '🧊 Refrigeración Residencial',
+        keywords: ['Refrigeración', 'Refrigerantes', 'Manejo de Refrigerantes', 'Recovery', 'Válvulas y Controles', 'Componentes']
+      },
+      'refri-comercial': {
+        name: '🧊 Refrigeración Comercial',
+        keywords: ['Refrigeración Comercial', 'Refrigerantes Avanzado', 'Diagnóstico Refrigeración', 'Diagnóstico', 'Diagnóstico Avanzado', 'Diagnóstico Experto', 'Troubleshooting']
+      },
+      'refri-industrial': {
+        name: '🧊 Refrigeración Industrial',
+        keywords: ['EPA 608', 'EPA Avanzado', 'OSHA', 'OSHA 30', 'OSHA Avanzado', 'Seguridad', 'Seguridad Completa', 'Códigos y Permisos', 'Códigos', 'Códigos y Estándares']
+      },
+      'acca-residencial': {
+        name: '📘 Manuales ACCA — Residencial',
+        keywords: ['ACCA', 'Manual J', 'Manual D', 'Manual S', 'Manual T', 'Carga Térmica', 'Diseño Ductos']
+      },
+      'acca-comercial': {
+        name: '📘 ACCA — A/C Comercial',
+        keywords: ['ACCA Comercial', 'Manual N', 'Manual CS', 'Manual H', 'Carga Comercial']
+      },
+      'ashrae': {
+        name: '📗 Manuales ASHRAE',
+        keywords: ['ASHRAE', 'Estándar 62', 'Estándar 90', 'Estándar 55', 'Calidad Aire', 'Ventilación', 'Confort Térmico']
+      },
+      'nec': {
+        name: '📕 Código NEC',
+        keywords: ['NEC', 'National Electrical Code', 'Código Eléctrico', 'Artículo 210', 'Artículo 220', 'Artículo 230', 'Artículo 240', 'Artículo 250', 'Artículo 310', 'Artículo 430', 'Artículo 440']
+      },
+      'nfpa54': {
+        name: '📙 Código NFPA 54',
+        keywords: ['NFPA 54', 'NFPA', 'Código Gas', 'Gas Natural', 'Gas LP', 'Tubería Gas', 'Venteo', 'Combustión']
+      },
+      'bpi': {
+        name: '🏛️ Certificación BPI',
+        keywords: ['BPI', 'Building Performance', 'Eficiencia Energética', 'Auditoría Energética', 'Envolvente', 'Infiltración', 'Weatherization']
+      }
+    };
+
+    let currentSpecialty = null;
+
+    function showSpecialtyCategories(specialtyId) {
+      currentSpecialty = specialtyId;
+      const specialty = specialtyMap[specialtyId];
+      if (!specialty) return;
+
+      // Hide the grid and level tabs, show subcategories
+      document.getElementById('specialtyGrid').style.display = 'none';
+      document.getElementById('studyLevelTabs').style.display = 'none';
+      document.getElementById('specialtySubcategories').style.display = 'block';
+      document.getElementById('specialtyTitle').textContent = specialty.name;
+
+      // Get all questions across all levels, filter by specialty keywords
+      const container = document.getElementById('studyCategoriesList');
+      container.innerHTML = '';
+
+      const allGrouped = {};
+      const levelOrder = ['principiante', 'intermedio', 'avanzado', 'elite', 'platino'];
+
+      levelOrder.forEach(levelId => {
+        const levelQuestions = questions[levelId] || [];
+        levelQuestions.forEach(q => {
+          if (specialty.keywords.some(kw => q.category === kw || q.category.includes(kw) || kw.includes(q.category))) {
+            const key = q.category;
+            if (!allGrouped[key]) allGrouped[key] = { questions: [], level: levelId };
+            allGrouped[key].questions.push(q);
+          }
+        });
+      });
+
+      const cats = Object.keys(allGrouped);
+      if (cats.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#64748b;padding:20px;">Próximamente — estamos preparando las preguntas para esta especialidad.</p>';
+        return;
+      }
+
+      cats.forEach(cat => {
+        const count = allGrouped[cat].questions.length;
+        const icon = categoryIcons[cat] || '📋';
+        const isLocked = allGrouped[cat].level !== 'principiante' && !hasAppAccess();
+
+        const card = document.createElement('div');
+        card.className = 'study-category-card';
+        card.innerHTML = `
+          <div class="study-category-info">
+            <h3>${isLocked ? '🔒 ' : ''}${cat}</h3>
+            <p>${count} pregunta${count !== 1 ? 's' : ''}</p>
+          </div>
+          <div class="study-category-icon">${icon}</div>
+        `;
+        if (isLocked) {
+          card.style.opacity = '0.6';
+          card.onclick = () => showPurchaseModal();
+        } else {
+          card.onclick = () => {
+            // Set the level for detail view
+            currentStudyLevel = allGrouped[cat].level;
+            showStudyCategoryDetail(cat);
+          };
+        }
+        container.appendChild(card);
+      });
+
+      // Also add unmatched categories under a "Otros" section if this is a broad specialty
+    }
+
     function showStudyCategoryDetail(category) {
       const grouped = getQuestionsGroupedByCategory(currentStudyLevel);
       const categoryQuestions = grouped[category] || [];
@@ -8574,6 +8849,10 @@ if (screenId === 'adminDashboardScreen') {
       if (screenId === 'studySectionsScreen') {
         renderStudyLevelTabs();
         renderStudyCategories();
+        // Reset to grid view
+        document.getElementById('specialtyGrid').style.display = 'grid';
+        document.getElementById('specialtySubcategories').style.display = 'none';
+        document.getElementById('studyLevelTabs').style.display = 'flex';
       }
       if (screenId === 'videoLessonsScreen') {
         // Load videos from YouTube if not already loaded
@@ -17264,7 +17543,7 @@ if(cb)cb();
 
 <!-- ACVOLT AI ASSISTANT - Asistente Unificado -->
 <style>
-#acvoltAI{position:fixed;bottom:75px;right:15px;z-index:960;display:none;flex-direction:column;align-items:flex-end;gap:8px;width:340px;animation:aiIn .4s ease}
+#acvoltAI{position:fixed;bottom:85px;left:15px;z-index:960;display:none;flex-direction:column;align-items:flex-start;gap:8px;width:340px;animation:aiIn .4s ease}
 @keyframes aiIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
 #acvoltAI .ai-panel{background:linear-gradient(135deg,#0d1117,#161b22);border:1.5px solid rgba(243,156,18,0.3);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;max-height:440px}
 #acvoltAI .ai-head{background:linear-gradient(135deg,#f39c12,#e67e22);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -17291,12 +17570,12 @@ if(cb)cb();
 .ai-dots span{width:5px;height:5px;border-radius:50%;background:#f39c12;animation:mTy 1.4s ease-in-out infinite}
 .ai-dots span:nth-child(2){animation-delay:.2s}
 .ai-dots span:nth-child(3){animation-delay:.4s}
-#acvoltBtn{position:fixed;bottom:20px;right:15px;z-index:961;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:2.5px solid rgba(243,156,18,0.6);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 20px rgba(243,156,18,0.4);transition:all .3s}
+#acvoltBtn{position:fixed;bottom:20px;left:15px;z-index:961;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.7);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 24px rgba(243,156,18,0.5);transition:all .3s}
 #acvoltBtn:hover{transform:scale(1.1)}
 #acvoltBtn.speaking{animation:aiPulse 1.5s ease-in-out infinite}
-@keyframes aiPulse{0%,100%{box-shadow:0 4px 20px rgba(243,156,18,0.4)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
+@keyframes aiPulse{0%,100%{box-shadow:0 4px 24px rgba(243,156,18,0.5)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
 .ai-bdg{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:#e74c3c;border-radius:10px;color:white;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:bold;border:2px solid #0d1117;padding:0 4px}
-@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:75px}#acvoltBtn{bottom:15px;right:10px;width:48px;height:48px}}
+@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:80px}#acvoltBtn{bottom:15px;left:10px;width:54px;height:54px}}
 </style>
 
 <div id="acvoltBtn" onclick="window._acAI.toggle()" style="overflow:hidden;"><img src="mario-black.jpg" alt="AI" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><div class="ai-bdg" id="aiBdg">1</div></div>

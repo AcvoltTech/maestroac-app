@@ -3279,18 +3279,29 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
     <!-- Welcome Screen -->
     <div class="screen" id="welcomeScreen">
-      <div class="header" style="padding:2px 0 0;">
-        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:80px;margin-bottom:0;">
-        <h1 style="font-size:18px;margin:0;">MAESTRO ACVOLT</h1>
-        <p class="subtitle" style="margin:1px 0 3px;font-size:11px;">Bienvenido</p>
+      <div class="header" style="padding:3px 0 1px;">
+        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:95px;margin-bottom:1px;">
+        <h1 style="font-size:20px;margin:0;">MAESTRO ACVOLT</h1>
+        <p class="subtitle" style="margin:2px 0 4px;font-size:12px;">Bienvenido</p>
       </div>
-      <div class="card" style="padding:8px;">
-        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:2px;padding:10px;font-size:14px;">🎓 Comenzar Entrenamiento</button>
-        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📚 Mis Clases (Biblioteca y Tareas)</button>
-        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades (3,500+ Preguntas)</button>
-        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas (Zoom y YouTube)</button>
-        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
-        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Obtén tus Certificados Oficiales</button>
+      <div class="card" style="padding:10px;">
+        <!-- Progress Badge for free users -->
+        <div id="freeUserProgress" style="display:none;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:10px;padding:8px 12px;margin-bottom:6px;border:1px solid #f59e0b;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+            <span style="font-size:11px;font-weight:800;color:#92400e;">📊 Tu Progreso</span>
+            <span id="progressCount" style="font-size:11px;font-weight:800;color:#d97706;">0/50 preguntas</span>
+          </div>
+          <div style="background:rgba(146,64,14,0.15);border-radius:6px;height:8px;overflow:hidden;">
+            <div id="progressBar" style="height:100%;background:linear-gradient(90deg,#f59e0b,#d97706);border-radius:6px;width:0%;transition:width 0.5s;"></div>
+          </div>
+          <div id="progressMsg" style="font-size:9px;color:#92400e;margin-top:3px;text-align:center;"></div>
+        </div>
+        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:3px;padding:11px;font-size:14px;">🎓 Comenzar Entrenamiento</button>
+        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📚 Mis Clases (Biblioteca y Tareas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades (3,500+ Preguntas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas (Zoom y YouTube)</button>
+        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
+        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Obtén tus Certificados Oficiales</button>
         
         <!-- Referidos + CRM -->
         <div style="margin-top:3px; padding-top:3px; border-top:1px solid rgba(255,255,255,0.1);">
@@ -3336,20 +3347,20 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- Calendario + Membresías -->
-        <div style="margin-top:3px; padding-top:3px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('membresiasScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #9333ea, #7e22ce); color:white;">👑 Membresías en Vivo</button>
+        <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
+          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
+          <button class="btn btn-secondary" onclick="showScreen('membresiasScreen')" style="margin-top:3px;padding:11px;font-size:14px; background: linear-gradient(135deg, #9333ea, #7e22ce); color:white;">👑 Membresías en Vivo</button>
         </div>
         
-        <div style="text-align:center; margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
-          <span class="admin-link" onclick="showScreen('adminLoginScreen')" style="font-size:12px;">🔐 Acceso Administrador</span>
+        <div style="text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
+          <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔐 Acceso Administrador</span>
         </div>
-        <div style="text-align:center; margin-top:3px;">
-          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:11px; padding:5px 14px;">🚪 Cerrar Sesión</button>
+        <div style="text-align:center; margin-top:4px;">
+          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:12px; padding:6px 16px;">🚪 Cerrar Sesión</button>
         </div>
         
         <!-- ACVOLT School Info -->
-        <div style="margin-top:5px;padding:5px 10px;background:#f1f5f9;border-radius:8px;text-align:center;">
+        <div style="margin-top:6px;padding:6px 10px;background:#f1f5f9;border-radius:8px;text-align:center;">
           <div style="font-size:9px;color:#475569;line-height:1.5;">
             📍 484 E Valley Blvd, Colton, CA 92324 · 📞 <a href="tel:9098244849" style="color:#2563eb;text-decoration:none;">909-824-4849</a><br>
             ✉️ <a href="mailto:ventas@acvolt.school" style="color:#2563eb;text-decoration:none;">ventas@acvolt.school</a> · 🌐 <a href="https://acvolt.school" target="_blank" style="color:#2563eb;text-decoration:none;">acvolt.school</a>
@@ -3865,8 +3876,10 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             <div style="color:rgba(255,255,255,0.8);font-size:11px;">635+ clases grabadas · 2,000+ horas de contenido</div>
           </div>
         </div>
-        <div style="margin-top:8px;background:rgba(255,255,255,0.2);border-radius:8px;padding:6px 16px;display:inline-block;color:#fff;font-weight:700;font-size:12px;">🔐 Solicita tu código de acceso</div>
-        <div style="color:rgba(255,255,255,0.6);font-size:10px;margin-top:4px;">Exclusivo para alumnos con membresía activa</div>
+        <div style="margin-top:8px;background:rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;">
+          <div style="color:#fff;font-weight:700;font-size:12px;">🔐 Exclusivo para alumnos con membresía</div>
+          <div style="color:rgba(255,255,255,0.7);font-size:10px;margin-top:3px;">Tu código se entrega al activar tu membresía en<br><strong style="color:#fbbf24;">👑 Membresías en Vivo</strong> desde el menú principal</div>
+        </div>
       </div>
 
       <!-- YouTube Section Header -->
@@ -6206,6 +6219,101 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
     }
 
     // Cerrar sesion del usuario
+    // === FREE USER PROGRESS TRACKER ===
+    function updateFreeUserProgress() {
+      const progressDiv = document.getElementById('freeUserProgress');
+      if (!progressDiv) return;
+      if (hasAppAccess()) { progressDiv.style.display = 'none'; return; }
+      
+      // Count answered questions from localStorage
+      const email = currentUser ? currentUser.email : '';
+      if (!email) { progressDiv.style.display = 'none'; return; }
+      
+      let answered = 0;
+      try {
+        const key = 'maestroac_quiz_history_' + email;
+        const history = JSON.parse(localStorage.getItem(key) || '[]');
+        answered = history.length;
+      } catch(e) {
+        // Try counting from question status
+        answered = Object.keys(questionStatus || {}).length;
+      }
+      
+      const max = 50;
+      const pct = Math.min(100, Math.round((answered / max) * 100));
+      
+      progressDiv.style.display = 'block';
+      document.getElementById('progressCount').textContent = Math.min(answered, max) + '/' + max + ' preguntas';
+      document.getElementById('progressBar').style.width = pct + '%';
+      
+      const msgEl = document.getElementById('progressMsg');
+      if (pct >= 80) {
+        msgEl.textContent = '⚠️ ¡Casi llegas al límite! Suscríbete para seguir avanzando';
+        msgEl.style.color = '#dc2626';
+        msgEl.style.fontWeight = '700';
+      } else if (pct >= 50) {
+        msgEl.textContent = '🔥 ¡Buen progreso! Sigue practicando';
+        msgEl.style.color = '#d97706';
+        msgEl.style.fontWeight = '600';
+      } else if (answered > 0) {
+        msgEl.textContent = '💪 ¡Sigue así! Tienes acceso a ' + max + ' preguntas gratis';
+        msgEl.style.color = '#92400e';
+        msgEl.style.fontWeight = '400';
+      } else {
+        msgEl.textContent = '🎯 Tienes 50 preguntas GRATIS — ¡Empieza ahora!';
+        msgEl.style.color = '#92400e';
+        msgEl.style.fontWeight = '400';
+      }
+    }
+
+    // === CLASS REMINDER NOTIFICATIONS (Dynamic from Calendar) ===
+    function checkClassReminders() {
+      if (!liveClasses || liveClasses.length === 0) return;
+      
+      const now = new Date();
+      const today = now.toDateString();
+      const remindersKey = 'maestroac_reminders_' + today;
+      const sent = JSON.parse(localStorage.getItem(remindersKey) || '{}');
+      
+      liveClasses.forEach(function(c) {
+        if (c.estado === 'completada') return;
+        
+        const classDate = new Date(c.fecha);
+        if (classDate.toDateString() !== today) return;
+        
+        const classId = c.id || c.titulo;
+        if (sent[classId]) return;
+        
+        // Parse class start time
+        const startParts = (c.hora_inicio || '18:00').split(':');
+        const classHour = parseInt(startParts[0]);
+        const currentHour = now.getHours();
+        
+        // Send reminder 1 hour before class
+        if (currentHour >= (classHour - 1) && currentHour <= classHour) {
+          const timeStr = c.hora_inicio + ' - ' + (c.hora_fin || '');
+          addNotification('class', '📢 HOY — ' + c.titulo + ' (' + timeStr + ') con ' + (c.instructor || 'Maestro Mario'), '🔴');
+          sent[classId] = true;
+          localStorage.setItem(remindersKey, JSON.stringify(sent));
+        }
+      });
+    }
+    
+    // Check reminders every 10 minutes
+    setInterval(checkClassReminders, 10 * 60 * 1000);
+    // Also check after calendar loads and on page load
+    setTimeout(checkClassReminders, 5000);
+    
+    // Hook into calendar load to re-check reminders
+    const _origLoadCal = typeof loadCalendarData === 'function' ? loadCalendarData : null;
+    if (_origLoadCal) {
+      const _wrappedLoadCal = async function() {
+        await _origLoadCal();
+        setTimeout(checkClassReminders, 2000);
+      };
+      // Will be called when calendar screen opens
+    }
+
     async function cerrarSesion() {
         try {
             if (supabaseClient) {
@@ -6506,6 +6614,12 @@ window.toggleFormula = function(id) {
 
       if (screenId === 'miPerfilScreen') {
         try { loadProfileData(); } catch(e) {}
+      }
+      if (screenId === 'welcomeScreen') {
+        try { updateFreeUserProgress(); } catch(e) {}
+        // Auto-load calendar for class notifications
+        try { if (liveClasses.length === 0) loadCalendarData(); } catch(e) {}
+        setTimeout(function(){ try { checkClassReminders(); } catch(e) {} }, 3000);
       }
       // Auto-load admin data when admin dashboard opens
       

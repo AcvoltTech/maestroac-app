@@ -11712,6 +11712,21 @@ if (screenId === 'adminDashboardScreen') {
         return;
       }
 
+      // Verify Stripe membership before generating
+      const stripeCheck = await verifyStripeMembership(email);
+      let stripeVerified = stripeCheck.active;
+      
+      if (!stripeCheck.active) {
+        const override = confirm(
+          '⚠️ ' + nombre + ' NO tiene membresía activa en Stripe.\n\n' +
+          (stripeCheck.error ? stripeCheck.error + '\n\n' : '') +
+          '¿Generar código sin verificación de pago?'
+        );
+        if (!override) return;
+      } else {
+        alert('✅ Membresía verificada en Stripe\nPlan: ' + (stripeCheck.plan || 'Activa'));
+      }
+
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       let code;
       do {
@@ -11725,7 +11740,8 @@ if (screenId === 'adminDashboardScreen') {
         type: 'app_access',
         createdAt: new Date().toISOString(),
         used: false,
-        revoked: false
+        revoked: false,
+        stripe_verified: stripeVerified
       };
       await saveAccessCode(code, codeData);
 
@@ -11733,7 +11749,7 @@ if (screenId === 'adminDashboardScreen') {
       document.getElementById('adminCodeFor').textContent = nombre;
       document.getElementById('adminCodeDisplay').style.display = 'block';
 
-      alert('✅ Código generado: ' + code + '\nPara: ' + nombre);
+      alert('✅ Código generado: ' + code + '\nPara: ' + nombre + (stripeVerified ? '\n✅ Stripe verificado' : '\n⚠️ Sin verificación Stripe'));
     }
 
     function copyAccessCode() {
@@ -14872,6 +14888,47 @@ if (screenId === 'adminDashboardScreen') {
         return;
       }
       
+      // === BLOCK DUPLICATE REQUESTS ===
+      try {
+        const { data: existing } = await supabaseClient
+          .from('access_code_requests')
+          .select('id, status, code')
+          .eq('student_email', user.email)
+          .in('status', ['pending', 'approved'])
+          .order('requested_at', { ascending: false })
+          .limit(1);
+        
+        if (existing && existing.length > 0) {
+          const prev = existing[0];
+          if (prev.status === 'pending') {
+            msgDiv.style.color = '#f59e0b';
+            msgDiv.innerHTML = '⏳ Ya tienes una solicitud pendiente.<br>El administrador la revisará pronto. No necesitas enviar otra.';
+            return;
+          }
+          if (prev.status === 'approved' && prev.code) {
+            msgDiv.style.color = '#22c55e';
+            msgDiv.innerHTML = '✅ Ya tienes un código aprobado: <strong style="font-size:18px;letter-spacing:2px;">' + prev.code + '</strong><br>Ingrésalo arriba para activar tu acceso.';
+            return;
+          }
+        }
+      } catch(e) {
+        // Also check localStorage as fallback
+        const localReqs = JSON.parse(localStorage.getItem('maestroac_code_requests') || '[]');
+        const localExisting = localReqs.find(r => r.student_email === user.email && (r.status === 'pending' || r.status === 'approved'));
+        if (localExisting) {
+          if (localExisting.status === 'pending') {
+            msgDiv.style.color = '#f59e0b';
+            msgDiv.innerHTML = '⏳ Ya tienes una solicitud pendiente. No necesitas enviar otra.';
+            return;
+          }
+          if (localExisting.status === 'approved' && localExisting.code) {
+            msgDiv.style.color = '#22c55e';
+            msgDiv.innerHTML = '✅ Ya tienes un código: <strong>' + localExisting.code + '</strong>';
+            return;
+          }
+        }
+      }
+      
       const request = {
         id: 'req_' + Date.now(),
         student_name: user.nombre,
@@ -14992,7 +15049,7 @@ if (screenId === 'adminDashboardScreen') {
       }
       
       let html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
-      html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
+      html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Stripe</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
       
       requests.forEach((req, i) => {
         const statusColors = { pending: '#f39c12', approved: '#27ae60', redeemed: '#3498db', rejected: '#e74c3c' };
@@ -15005,6 +15062,7 @@ if (screenId === 'adminDashboardScreen') {
         html += '<td style="padding:8px;">' + (req.student_city || '') + ', ' + (req.student_state || '') + '</td>';
         html += '<td style="padding:8px;text-align:center;">' + (req.tech_number || '-') + '</td>';
         html += '<td style="padding:8px;text-align:center;font-family:monospace;font-weight:bold;font-size:14px;color:#2c3e50;">' + (req.code || '---') + '</td>';
+        html += '<td style="padding:8px;text-align:center;">' + (req.stripe_verified ? '<span style="color:#16a34a;font-weight:bold;">✅</span>' : '<span style="color:#dc2626;">❌</span>') + '</td>';
         html += '<td style="padding:8px;"><span style="background:' + (statusColors[req.status] || '#999') + ';color:white;padding:3px 8px;border-radius:12px;font-size:11px;">' + (statusLabels[req.status] || req.status) + '</span></td>';
         html += '<td style="padding:8px;">';
         
@@ -15032,6 +15090,21 @@ if (screenId === 'adminDashboardScreen') {
       const duration = document.getElementById('manualCodeDuration').value;
       
       if (!name) { alert('Ingresa el nombre del t' + String.fromCharCode(233) + 'cnico'); return; }
+      
+      // Verify Stripe membership if email provided
+      if (email) {
+        const stripeCheck = await verifyStripeMembership(email);
+        if (!stripeCheck.active) {
+          const override = confirm(
+            '⚠️ ALERTA: ' + name + ' (' + email + ') NO tiene membresía activa en Stripe.\n\n' +
+            (stripeCheck.error ? '📋 ' + stripeCheck.error + '\n\n' : '') +
+            '¿Generar código de todas formas sin verificación de pago?'
+          );
+          if (!override) return;
+        } else {
+          alert('✅ Membresía verificada en Stripe\nPlan: ' + (stripeCheck.plan || 'Activa'));
+        }
+      }
       
       // Generate unique code
       const prefix = level === 'full_app' ? 'FULL' : level.substring(0, 4).toUpperCase();
@@ -15984,6 +16057,85 @@ if (screenId === 'adminDashboardScreen') {
 
 
 
+    // === VERIFY STRIPE PAYMENT BEFORE GENERATING CODE ===
+    // Checks for ANY active payment: Membresía ($119/$299/$699) OR App Access ($20/mes, $240/año)
+    async function verifyStripeMembership(email) {
+      if (!email) return { active: false, plan: null, error: 'No email provided' };
+      
+      try {
+        // Try specific subscription check first
+        const response = await fetch(SUPABASE_URL + '/functions/v1/get-stripe-data', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          },
+          body: JSON.stringify({ action: 'check_subscription', email: email })
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.active || data.has_subscription) {
+            return { active: true, plan: data.plan || data.product || 'Suscripción Activa', type: data.type || 'subscription' };
+          }
+        }
+        
+        // Fallback: fetch all Stripe data and search by email
+        const fallback = await fetch(SUPABASE_URL + '/functions/v1/get-stripe-data', {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + SUPABASE_KEY
+          },
+          body: JSON.stringify({ action: 'get_data' })
+        });
+        
+        if (fallback.ok) {
+          const data = await fallback.json();
+          
+          // Check active subscriptions (membresías + app access)
+          const subs = data.subscriptions || data.active_subscriptions || [];
+          const activeSubs = Array.isArray(subs) ? subs : [];
+          const subMatch = activeSubs.find(s => {
+            const subEmail = (s.customer_email || s.email || (s.customer && s.customer.email) || '').toLowerCase();
+            return subEmail === email.toLowerCase();
+          });
+          
+          if (subMatch) {
+            // Determine plan type by amount
+            const amount = subMatch.amount || subMatch.plan_amount || 0;
+            const amountUsd = amount > 100 ? amount / 100 : amount; // cents to dollars
+            let planName = 'Suscripción Activa';
+            if (amountUsd >= 600) planName = '👑 Mentoría $699/mes';
+            else if (amountUsd >= 250) planName = '🥈 Intermedio $299/mes';
+            else if (amountUsd >= 200) planName = '💰 App Anual $240/año';
+            else if (amountUsd >= 100) planName = '🥉 Principiante $119/mes';
+            else if (amountUsd >= 15) planName = '📱 App Mensual $20/mes';
+            
+            return { active: true, plan: planName, type: 'subscription' };
+          }
+          
+          // Check one-time payments (e.g., $240 annual)
+          const charges = data.charges || data.payments || [];
+          const chargeList = Array.isArray(charges) ? charges : [];
+          const recentPayment = chargeList.find(c => {
+            const cEmail = (c.customer_email || c.email || c.receipt_email || '').toLowerCase();
+            const paid = c.paid || c.status === 'succeeded' || c.status === 'paid';
+            return cEmail === email.toLowerCase() && paid;
+          });
+          
+          if (recentPayment) {
+            return { active: true, plan: 'Pago verificado', type: 'one_time' };
+          }
+        }
+        
+        return { active: false, plan: null, error: 'No se encontró pago activo ($20/mes, $240/año, o Membresía)' };
+      } catch(e) {
+        console.warn('[Stripe Check]', e);
+        return { active: false, plan: null, error: 'Error conectando con Stripe: ' + e.message };
+      }
+    }
+
     async function approveAccessCode(index) {
       let requests = [];
       try {
@@ -15996,21 +16148,41 @@ if (screenId === 'adminDashboardScreen') {
       }
       
       if (requests[index]) {
+        const studentEmail = requests[index].student_email;
+        
+        // Verify Stripe membership
+        const stripeCheck = await verifyStripeMembership(studentEmail);
+        
+        if (!stripeCheck.active) {
+          const override = confirm(
+            '⚠️ ALERTA: ' + (requests[index].student_name || studentEmail) + ' NO tiene membresía activa en Stripe.\n\n' +
+            (stripeCheck.error ? '📋 ' + stripeCheck.error + '\n\n' : '') +
+            '¿Deseas generar el código de todas formas?\n\n' +
+            '• SÍ = Generar código manualmente (sin verificación de pago)\n' +
+            '• NO = Cancelar y pedir que pague primero'
+          );
+          if (!override) return;
+        } else {
+          // Confirmed active — show plan info
+          alert('✅ Membresía verificada en Stripe\n\nPlan: ' + (stripeCheck.plan || 'Activa') + '\nEstudiante: ' + (requests[index].student_name || studentEmail) + '\n\nGenerando código...');
+        }
+
         const code = generateAccessCode();
         requests[index].status = 'approved';
         requests[index].code = code;
         requests[index].approved_at = new Date().toISOString();
+        requests[index].stripe_verified = stripeCheck.active;
         
         try {
           await supabaseClient.from('access_code_requests').update({ 
-            status: 'approved', code: code, approved_at: new Date().toISOString() 
+            status: 'approved', code: code, approved_at: new Date().toISOString(),
+            stripe_verified: stripeCheck.active
           }).eq('id', requests[index].id);
         } catch(e) {}
         
         localStorage.setItem('maestroac_code_requests', JSON.stringify(requests));
         renderAccessCodes();
         
-        // Show send options modal
         var req = requests[index];
         var name = req.student_name || 'Estudiante';
         var email = req.student_email || '';

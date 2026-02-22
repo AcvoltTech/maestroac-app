@@ -34,19 +34,19 @@
     .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 100vh; }
     .screen { display: none; }
     .screen.active { display: flex !important; flex-direction: column; }
-    .header { text-align: center; padding: 20px 0 10px; }
+    .header { text-align: center; padding: 8px 0 4px; }
     .logo { font-size: 50px; margin-bottom: 10px; }
-    .logo-img { max-width: 200px; height: auto; margin-bottom: 15px; }
+    .logo-img { max-width: 140px; height: auto; margin-bottom: 5px; }
     h1 { font-size: 28px; margin-bottom: 5px; }
     h2 { font-size: 22px; color: #E31937; margin-bottom: 10px; }
     .subtitle { color: #64748b; font-size: 16px; }
-    .card { background: #ffffff; border-radius: 15px; padding: 18px; margin: 10px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+    .card { background: #ffffff; border-radius: 15px; padding: 12px; margin: 6px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; color: #64748b; font-size: 14px; }
     .form-group input { width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 10px; background: #f8fafc; color: #1e293b; font-size: 16px; }
     .form-group input::placeholder { color: #94a3b8; }
     .form-group input:focus { outline: none; border-color: #f39c12; background: #fff; }
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn { width: 100%; padding: 10px; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
     .btn-primary { background: linear-gradient(135deg, #E31937, #C62828); color: white; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(227,25,55,0.3); }
     .btn-secondary { background: #f0f2f5; color: #1e293b; margin-top: 6px; border: 1px solid #e2e8f0; }
@@ -1388,8 +1388,8 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
         <div class="card" style="padding:15px;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
-            <h3 style="color:#00d4ff;margin:0;font-size:16px;">📅 Próximas Clases</h3>
-            <span id="stuCalWeek" style="color:#64748b;font-size:12px;"></span>
+            <h3 style="color:#1e40af;margin:0;font-size:16px;font-weight:800;">📅 Próximas Clases</h3>
+            <span id="stuCalWeek" style="color:#4b5563;font-size:12px;font-weight:600;"></span>
           </div>
           <div id="studentClassList" style="min-height:200px;">
             <div style="text-align:center;color:#94a3b8;padding:30px;">
@@ -1398,12 +1398,12 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
             </div>
           </div>
         </div>
-        <div class="card" style="padding:15px;margin-top:15px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,153,204,0.05));border:1px solid rgba(0,212,255,0.2);">
-          <h3 style="color:#00d4ff;font-size:14px;margin:0 0 8px;">🔔 Horario Regular</h3>
-          <div style="color:#e2e8f0;font-size:13px;line-height:1.8;">
-            <div>📌 <strong>Lunes a Viernes:</strong> 7:00 PM - 9:00 PM (PST)</div>
-            <div>📌 <strong>Sábados:</strong> 10:00 AM - 12:00 PM (PST)</div>
-            <div style="color:#64748b;font-size:11px;margin-top:8px;">* Los horarios pueden cambiar. Revisa este calendario antes de cada clase.</div>
+        <div class="card" style="padding:15px;margin-top:15px;background:linear-gradient(135deg,#eef2ff,#e0e7ff);border:2px solid #6366f1;">
+          <h3 style="color:#4338ca;font-size:15px;margin:0 0 8px;font-weight:800;">🔔 Horario Regular</h3>
+          <div style="color:#1e293b;font-size:14px;line-height:2;">
+            <div>📌 <strong style="color:#dc2626;">Lunes a Viernes:</strong> <strong>7:00 PM - 9:00 PM (PST)</strong></div>
+            <div>📌 <strong style="color:#dc2626;">Sábados:</strong> <strong>10:00 AM - 12:00 PM (PST)</strong></div>
+            <div style="color:#6b7280;font-size:11px;margin-top:8px;">* Los horarios pueden cambiar. Revisa este calendario antes de cada clase.</div>
           </div>
         </div>
         <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top:15px;">← Volver al Menú</button>
@@ -3279,30 +3279,30 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
     <!-- Welcome Screen -->
     <div class="screen" id="welcomeScreen">
-      <div class="header">
-        <img src="logo.png" alt="ACVOLT" class="logo-img">
-        <h1>MAESTRO ACVOLT</h1>
-        <p class="subtitle">Bienvenido</p>
+      <div class="header" style="padding:4px 0 2px;">
+        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:110px;margin-bottom:2px;">
+        <h1 style="font-size:22px;margin:0;">MAESTRO ACVOLT</h1>
+        <p class="subtitle" style="margin:2px 0 4px;font-size:13px;">Bienvenido</p>
       </div>
-      <div class="card" style="padding:14px;">
-        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:4px;">🎓 Comenzar Entrenamiento</button>
-        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:4px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📊 Mis Clases y Progreso</button>
-        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:4px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades</button>
-        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:4px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas</button>
-        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:4px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
+      <div class="card" style="padding:10px;">
+        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:3px;">🎓 Comenzar Entrenamiento</button>
+        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:3px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📊 Mis Clases y Progreso</button>
+        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades</button>
+        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas</button>
+        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:3px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
+        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:3px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Certificaciones Oficiales</button>
         
         <!-- Referidos + CRM - VEGAS STYLE -->
-        <div style="margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
           
           <!-- 🎰 GANA DINERO - Vegas Carnival Style -->
-          <div onclick="showScreen('referidosScreen')" style="margin-top:4px;position:relative;border-radius:14px;padding:4px;cursor:pointer;background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00ff00,#00bfff,#8b00ff,#ff0000);background-size:400% 100%;animation:vegasLights 3s linear infinite;box-shadow:0 0 15px rgba(255,215,0,0.5),0 0 30px rgba(255,0,0,0.3);">
-            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:11px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;">
-              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 20% 20%,rgba(255,215,0,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(255,0,0,0.1) 0%,transparent 50%);"></div>
+          <div onclick="showScreen('referidosScreen')" style="margin-top:3px;position:relative;border-radius:12px;padding:3px;cursor:pointer;background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00ff00,#00bfff,#8b00ff,#ff0000);background-size:400% 100%;animation:vegasLights 3s linear infinite;box-shadow:0 0 15px rgba(255,215,0,0.5),0 0 30px rgba(255,0,0,0.3);">
+            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:10px;padding:10px 12px;text-align:center;position:relative;overflow:hidden;">
               <div style="position:relative;z-index:2;">
-                <div style="font-size:22px;margin-bottom:2px;animation:vegasBounce 1s ease infinite;">🤑</div>
-                <div style="font-size:16px;font-weight:900;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,0.5);letter-spacing:1px;">¡GANA DINERO!</div>
-                <div style="font-size:12px;font-weight:700;color:#fff;margin-top:2px;">RECOMIENDA LA ESCUELA</div>
-                <div style="display:flex;justify-content:center;gap:4px;margin-top:6px;font-size:10px;">
+                <div style="font-size:18px;margin-bottom:1px;animation:vegasBounce 1s ease infinite;display:inline-block;">🤑</div>
+                <div style="font-size:14px;font-weight:900;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,0.5);letter-spacing:1px;display:inline-block;margin-left:6px;">¡GANA DINERO!</div>
+                <div style="font-size:11px;font-weight:700;color:#fff;margin-top:1px;">RECOMIENDA LA ESCUELA</div>
+                <div style="display:flex;justify-content:center;gap:3px;margin-top:4px;font-size:8px;">
                   <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.2s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
@@ -3317,39 +3317,36 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </div>
           
           <!-- 🔥 Trade Master CRM Demo - Vegas Style -->
-          <div style="margin-top:6px;position:relative;border-radius:14px;padding:4px;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e,#3b82f6,#8b5cf6,#f97316);background-size:400% 100%;animation:vegasLights 4s linear infinite;box-shadow:0 0 15px rgba(249,115,22,0.4),0 0 30px rgba(59,130,246,0.2);">
-            <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 50%,#1e3a5f 100%);background-size:200% 200%;animation:crmShimmer 3s ease infinite;border-radius:11px;padding:12px 16px;color:#fff;text-align:center;position:relative;overflow:hidden;">
-              <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 30% 30%,rgba(249,115,22,0.08) 0%,transparent 50%),radial-gradient(circle at 70% 70%,rgba(59,130,246,0.08) 0%,transparent 50%);"></div>
+          <div onclick="window.open('https://acvolttech.github.io/trademaster-crm/','_blank')" style="margin-top:4px;position:relative;border-radius:12px;padding:3px;cursor:pointer;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e,#3b82f6,#8b5cf6,#f97316);background-size:400% 100%;animation:vegasLights 4s linear infinite;box-shadow:0 0 15px rgba(249,115,22,0.4),0 0 30px rgba(59,130,246,0.2);">
+            <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 50%,#1e3a5f 100%);background-size:200% 200%;animation:crmShimmer 3s ease infinite;border-radius:10px;padding:8px 12px;color:#fff;text-align:center;position:relative;overflow:hidden;">
               <div style="position:relative;z-index:2;">
-                <div style="display:flex;justify-content:center;gap:4px;margin-bottom:4px;font-size:10px;">
+                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:2px;font-size:8px;">
                   <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.15s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.3s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.45s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.6s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.75s;">💡</span>
                 </div>
-                <div style="font-size:11px;font-weight:700;color:#f97316;letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;animation:crmTextPop 3s ease-in-out infinite;">🚀 ¿Ya Tienes Tu Negocio?</div>
-                <div style="font-size:18px;font-weight:900;margin-bottom:2px;text-shadow:0 0 10px rgba(255,255,255,0.2);">Trade Master CRM</div>
-                <div style="font-size:11px;color:#94a3b8;margin-bottom:8px">Maneja clientes, técnicos, facturas, cobros y nómina</div>
-                <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:10px">
-                  <span style="background:rgba(249,115,22,.15);color:#f97316;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📋 Clientes</span>
-                  <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📍 GPS</span>
-                  <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">💰 Cobros</span>
-                  <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:2px 8px;border-radius:20px;font-size:9px;font-weight:600">📊 Nómina</span>
+                <div style="font-size:10px;font-weight:700;color:#f97316;letter-spacing:2px;text-transform:uppercase;margin-bottom:1px;animation:crmTextPop 3s ease-in-out infinite;">🚀 ¿Ya Tienes Tu Negocio?</div>
+                <div style="font-size:16px;font-weight:900;margin-bottom:1px;text-shadow:0 0 10px rgba(255,255,255,0.2);">Trade Master CRM</div>
+                <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Maneja clientes, técnicos, facturas, cobros y nómina</div>
+                <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:6px">
+                  <span style="background:rgba(249,115,22,.15);color:#f97316;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📋 Clientes</span>
+                  <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📍 GPS</span>
+                  <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">💰 Cobros</span>
+                  <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📊 Nómina</span>
                 </div>
-                <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-                  <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;animation:crmPulse 2s ease infinite;box-shadow:0 2px 12px rgba(34,197,94,.4)">📝 REGÍSTRATE GRATIS</a>
-                  <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;color:#fff;display:inline-block;box-shadow:0 2px 12px rgba(249,115,22,.4)">🎬 VER DEMO AI</a>
+                <div style="display:flex;gap:6px;justify-content:center;flex-wrap:nowrap">
+                  <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:8px 14px;border-radius:8px;font-size:11px;font-weight:800;color:#fff;display:inline-block;animation:crmPulse 2s ease infinite;box-shadow:0 2px 12px rgba(34,197,94,.4)">📝 REGÍSTRATE GRATIS</a>
+                  <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:8px 14px;border-radius:8px;font-size:11px;font-weight:800;color:#fff;display:inline-block;box-shadow:0 2px 12px rgba(249,115,22,.4)">🎬 VER DEMO AI</a>
                 </div>
-                <div style="font-size:9px;color:#64748b;margin-top:6px">Free para 10 clientes • No necesitas tarjeta</div>
-                <div style="display:flex;justify-content:center;gap:4px;margin-top:6px;font-size:10px;">
+                <div style="font-size:8px;color:#64748b;margin-top:4px">Free para 10 clientes • No necesitas tarjeta</div>
+                <div style="display:flex;justify-content:center;gap:3px;margin-top:4px;font-size:8px;">
                   <span style="animation:vegasBlink 0.8s ease infinite 0.1s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.25s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.55s;">💡</span>
                   <span style="animation:vegasBlink 0.8s ease infinite 0.7s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.85s;">💡</span>
                 </div>
               </div>
             </div>
@@ -3366,15 +3363,16 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         </div>
 
         <!-- Calendario + Clases en Vivo -->
-        <div style="margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:4px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
+        <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
+          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:3px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
+          <button class="btn btn-secondary" onclick="showScreen('membresiasScreen')" style="margin-top:3px; background: linear-gradient(135deg, #9333ea, #7e22ce); color:white;">👑 Membresías en Vivo</button>
         </div>
         
-        <div style="text-align:center; margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1);">
+        <div style="text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
           <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔐 Acceso Administrador</span>
         </div>
-        <div style="text-align:center; margin-top:8px;">
-          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:13px; padding:8px 20px;">🚪 Cerrar Sesión</button>
+        <div style="text-align:center; margin-top:4px;">
+          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:12px; padding:6px 16px;">🚪 Cerrar Sesión</button>
         </div>
       </div>
     </div>
@@ -3433,46 +3431,9 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <h1>Selecciona tu Nivel</h1>
         <p class="subtitle">Elige un nivel para comenzar el quiz</p>
       </div>
-      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:12px;">← Volver al Menú</button>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:15px;"><button class="btn btn-secondary certificates-nav-btn" onclick="showCertificates('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🏅 Mis Certificados</button><button class="btn btn-secondary profile-nav-btn" onclick="showProfile('levelsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">👤 Mi Perfil</button><button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🎓 Desarrollo de Habilidades</button><button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin:0;font-size:13px;padding:12px 8px;border-radius:12px;font-weight:600;">🎬 Video Lecciones</button></div>
+      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:8px;">← Volver al Menú</button>
+      
       <div id="levelsList"></div>
-
-      <!-- Certification Courses Grid -->
-      <div style="margin-top:20px;">
-        <h3 style="color:#f39c12; text-align:center; margin-bottom:12px; font-size:16px;">📜 Cursos de Certificación</h3>
-        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:8px;">
-          <div class="cert-card" onclick="openCertCourse('epa608')">
-            <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="4" y="2" width="24" height="28" rx="3" fill="#1565C0"/><rect x="7" y="5" width="18" height="4" rx="1" fill="#fff"/><text x="16" y="8.2" text-anchor="middle" font-size="3.2" fill="#1565C0" font-weight="bold">EPA 608</text><rect x="7" y="22" width="8" height="5" rx="1" fill="#FFD700"/><text x="11" y="25.5" text-anchor="middle" font-size="3" fill="#1565C0" font-weight="bold">ID</text><circle cx="22" cy="24" r="3" fill="#4CAF50"/><path d="M20.5 24L21.5 25L23.5 23" stroke="#fff" stroke-width=".8"/></svg></div>
-            <div class="cert-name">EPA 608</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-          <div class="cert-card" onclick="openCertCourse('osha')">
-            <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="10" y="4" width="3" height="22" rx="1" fill="#FF9800"/><rect x="19" y="4" width="3" height="22" rx="1" fill="#FF9800"/><rect x="8" y="8" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="8" y="15" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="8" y="22" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="1" y="24" width="10" height="6" rx="2" fill="#E53935"/><rect x="1" y="17" width="3" height="9" rx="1" fill="#E53935"/><circle cx="2.5" cy="16" r="1.5" fill="#E53935"/></svg></div>
-            <div class="cert-name">OSHA</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-          <div class="cert-card" onclick="openCertCourse('a2l')">
-            <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="10" y="2" width="12" height="24" rx="5" fill="#42A5F5"/><rect x="12" y="4" width="8" height="20" rx="3.5" fill="#BBDEFB"/><text x="16" y="16" text-anchor="middle" font-size="5" fill="#1565C0" font-weight="bold">R32</text><circle cx="16" cy="6" r="1.5" fill="#1565C0"/><rect x="13" y="24" width="6" height="4" rx="1" fill="#1565C0"/></svg></div>
-            <div class="cert-name">A2L</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-          <div class="cert-card" onclick="openCertCourse('calefaccion')">
-            <div class="cert-icon">🔥</div>
-            <div class="cert-name">Calefacción</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-          <div class="cert-card" onclick="openCertCourse('hvaccore')">
-            <div class="cert-icon">❄️</div>
-            <div class="cert-name">HVAC Core</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-          <div class="cert-card" onclick="openCertCourse('hvacr')">
-            <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect width="16" height="32" fill="#E3F2FD" rx="2"/><rect x="16" width="16" height="32" fill="#FFF3E0" rx="2"/><path d="M8 8L5 14L8 12L11 14Z" fill="#42A5F5"/><circle cx="8" cy="6" r="1.5" fill="#42A5F5"/><path d="M24 16C24 13 22 11 22 9C22 7 23 6 24 6C25 6 26 7 26 9C26 11 24 13 24 16Z" fill="#FF9800"/><circle cx="24" cy="18" r="1.5" fill="#E65100"/></svg></div>
-            <div class="cert-name">HVACR</div>
-            <div class="cert-price">Estudio Gratis</div>
-          </div>
-        </div>
-      </div>
 
       <!-- Memberships Grid -->
       <!-- Access Code Section -->
@@ -3491,56 +3452,107 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
         <div id="accessCodeMessage" style="margin-top:10px;font-size:13px;display:none;"></div>
       </div>
 
-      <div style="margin-top:20px;">
-        <h3 style="color:#9b59b6; text-align:center; margin-bottom:12px; font-size:16px;">👑 Membresías en Vivo</h3>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-          <div class="membership-card bronze" onclick="window.open('https://buy.stripe.com/9B6cN52rB6tagjd1nV3sI04','_blank')">
-            <div class="cert-icon">🥉</div>
-            <div class="cert-name">Principiante</div>
-            <div class="cert-price">$119/mes</div>
-            <div class="cert-lock">💳</div>
-          </div>
-          <div class="membership-card silver" onclick="window.open('https://buy.stripe.com/7sYcN5d6feZG3wr2rZ3sI0e','_blank')">
-            <div class="cert-icon">🥈</div>
-            <div class="cert-name">Intermedio</div>
-            <div class="cert-price">$299/mes</div>
-            <div class="cert-lock">💳</div>
-          </div>
-          <div class="membership-card gold" onclick="window.open('https://buy.stripe.com/6oU28r3vF5p6aYTaYv3sI0d','_blank')">
-            <div class="cert-icon">🥇</div>
-            <div class="cert-name">Mentoría</div>
-            <div class="cert-price">$699/mes</div>
-            <div class="cert-lock">💳</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Trade Master CRM -->
-      <div style="margin-top:20px;">
-        <h3 style="color:#3498db; text-align:center; margin-bottom:12px; font-size:16px;">💼 Trade Master CRM</h3>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-          <div class="cert-card" style="border-color:rgba(46,204,113,0.5); background:linear-gradient(135deg, rgba(46,204,113,0.15), rgba(39,174,96,0.15));" onclick="window.open('https://trademastersusa.org', '_blank')">
-            <div class="cert-icon">🆓</div>
-            <div class="cert-name">CRM Gratis</div>
-            <div class="cert-price" style="color:#2ecc71;">Registrarse</div>
-          </div>
-          <div class="cert-card" style="border-color:rgba(52,152,219,0.5); background:linear-gradient(135deg, rgba(52,152,219,0.15), rgba(41,128,185,0.15));" onclick="window.open('https://trademastersusa.org', '_blank')">
-            <div class="cert-icon">🚀</div>
-            <div class="cert-name">CRM Pro</div>
-            <div class="cert-price">$149/mes</div>
-            <div class="cert-lock">🔒</div>
-          </div>
-          <div class="cert-card" style="border-color:rgba(155,89,182,0.5); background:linear-gradient(135deg, rgba(155,89,182,0.15), rgba(142,68,173,0.15));" onclick="window.open('https://trademastersusa.org', '_blank')">
-            <div class="cert-icon">🏢</div>
-            <div class="cert-name">Enterprise</div>
-            <div class="cert-price">$299/mes</div>
-            <div class="cert-lock">🔒</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Soporte -->
       <div style="margin-top:20px;background:#fff;border-radius:12px;padding:18px;border:1px solid #e2e8f0;"><h3 style="color:#1565C0;text-align:center;margin-bottom:12px;font-size:16px;">🛠️ Soporte Técnico</h3><p style="text-align:center;color:#64748b;font-size:13px;margin-bottom:12px;">¿Necesitas ayuda?</p><div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;"><button onclick="window.open('https://wa.me/19096390448?text=Hola%20ACVOLT','_blank')" style="background:linear-gradient(135deg,#25D366,#128C7E);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">💬 WhatsApp</button><button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Soporte Técnico - ACVOLT','Hola, necesito ayuda con...','📧 Soporte Técnico')" style="background:linear-gradient(135deg,#1565C0,#0D47A1);color:white;border:none;border-radius:10px;padding:12px 8px;cursor:pointer;font-size:12px;font-weight:600;">📧 Email</button></div></div>
+    </div>
+
+    <!-- Membresías en Vivo Screen -->
+    <div class="screen" id="membresiasScreen">
+      <div class="header" style="padding:8px 0 4px;">
+        <h1 style="font-size:22px;margin:0;">👑 Membresías en Vivo</h1>
+        <p class="subtitle" style="margin:4px 0 8px;font-size:13px;">Clases en vivo con Maestro Mario</p>
+      </div>
+      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:10px;">← Volver al Menú</button>
+      
+      <div style="display:grid; grid-template-columns: repeat(1, 1fr); gap:10px;">
+        <!-- Principiante -->
+        <div onclick="window.open('https://buy.stripe.com/9B6cN52rB6tagjd1nV3sI04','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#fef3c7,#fde68a);border-radius:14px;padding:16px;border:2px solid #f59e0b;text-align:center;">
+          <div style="font-size:36px;margin-bottom:4px;">🥉</div>
+          <div style="font-size:18px;font-weight:900;color:#92400e;">Principiante</div>
+          <div style="font-size:24px;font-weight:900;color:#d97706;margin:6px 0;">$119/mes</div>
+          <div style="font-size:12px;color:#78716c;">Acceso a clases en vivo nivel principiante</div>
+          <div style="margin-top:8px;background:#f59e0b;color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        </div>
+        
+        <!-- Intermedio -->
+        <div onclick="window.open('https://buy.stripe.com/7sYcN5d6feZG3wr2rZ3sI0e','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-radius:14px;padding:16px;border:2px solid #6366f1;text-align:center;">
+          <div style="font-size:36px;margin-bottom:4px;">🥈</div>
+          <div style="font-size:18px;font-weight:900;color:#3730a3;">Intermedio</div>
+          <div style="font-size:24px;font-weight:900;color:#4f46e5;margin:6px 0;">$299/mes</div>
+          <div style="font-size:12px;color:#64748b;">Clases avanzadas + material de estudio</div>
+          <div style="margin-top:8px;background:#6366f1;color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        </div>
+        
+        <!-- Mentoría -->
+        <div onclick="window.open('https://buy.stripe.com/6oU28r3vF5p6aYTaYv3sI0d','_blank')" style="cursor:pointer;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:16px;border:2px solid #ffd700;text-align:center;box-shadow:0 0 20px rgba(255,215,0,0.2);">
+          <div style="font-size:36px;margin-bottom:4px;">🥇</div>
+          <div style="font-size:18px;font-weight:900;color:#ffd700;">Mentoría</div>
+          <div style="font-size:24px;font-weight:900;color:#fbbf24;margin:6px 0;">$699/mes</div>
+          <div style="font-size:12px;color:#94a3b8;">Mentoría 1-on-1 + acceso completo + prioridad</div>
+          <div style="margin-top:8px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:8px 16px;border-radius:8px;display:inline-block;font-weight:700;font-size:13px;">💳 Suscribirse</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Certificaciones Oficiales Screen -->
+    <div class="screen" id="certOficialesScreen">
+      <div class="header" style="padding:8px 0 4px;">
+        <h1 style="font-size:22px;margin:0;">🏆 Certificaciones Oficiales</h1>
+        <p class="subtitle" style="margin:4px 0 8px;font-size:13px;">Prepárate para tus certificaciones profesionales</p>
+      </div>
+      <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-bottom:10px;">← Volver al Menú</button>
+      
+      <!-- Insignias -->
+      <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:14px;padding:14px;border:2px solid rgba(243,156,18,0.3);margin-bottom:12px;">
+        <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:12px;">NATE</span></div>
+            <div style="font-size:10px;color:#ffd700;font-weight:600;">NATE</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#2e7d32,#1b5e20);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:9px;line-height:1.1;">HVAC<br>EXCL</span></div>
+            <div style="font-size:10px;color:#ffd700;font-weight:600;">HVAC Excellence</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#1565C0,#0D47A1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 4px;border:3px solid #ffd700;box-shadow:0 0 12px rgba(255,215,0,0.3);"><span style="color:#fff;font-weight:900;font-size:11px;">EPA</span></div>
+            <div style="font-size:10px;color:#ffd700;font-weight:600;">EPA 608</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Course Cards -->
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+        <div class="cert-card" onclick="openCertCourse('epa608')">
+          <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="4" y="2" width="24" height="28" rx="3" fill="#1565C0"/><rect x="7" y="5" width="18" height="4" rx="1" fill="#fff"/><text x="16" y="8.2" text-anchor="middle" font-size="3.2" fill="#1565C0" font-weight="bold">EPA 608</text><rect x="7" y="22" width="8" height="5" rx="1" fill="#FFD700"/><text x="11" y="25.5" text-anchor="middle" font-size="3" fill="#1565C0" font-weight="bold">ID</text><circle cx="22" cy="24" r="3" fill="#4CAF50"/><path d="M20.5 24L21.5 25L23.5 23" stroke="#fff" stroke-width=".8"/></svg></div>
+          <div class="cert-name">EPA 608</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+        <div class="cert-card" onclick="openCertCourse('osha')">
+          <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="10" y="4" width="3" height="22" rx="1" fill="#FF9800"/><rect x="19" y="4" width="3" height="22" rx="1" fill="#FF9800"/><rect x="8" y="8" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="8" y="15" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="8" y="22" width="16" height="2" rx=".5" fill="#FFB74D"/><rect x="1" y="24" width="10" height="6" rx="2" fill="#E53935"/><rect x="1" y="17" width="3" height="9" rx="1" fill="#E53935"/><circle cx="2.5" cy="16" r="1.5" fill="#E53935"/></svg></div>
+          <div class="cert-name">OSHA</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+        <div class="cert-card" onclick="openCertCourse('a2l')">
+          <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect x="10" y="2" width="12" height="24" rx="5" fill="#42A5F5"/><rect x="12" y="4" width="8" height="20" rx="3.5" fill="#BBDEFB"/><text x="16" y="16" text-anchor="middle" font-size="5" fill="#1565C0" font-weight="bold">R32</text><circle cx="16" cy="6" r="1.5" fill="#1565C0"/><rect x="13" y="24" width="6" height="4" rx="1" fill="#1565C0"/></svg></div>
+          <div class="cert-name">A2L</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+        <div class="cert-card" onclick="openCertCourse('calefaccion')">
+          <div class="cert-icon">🔥</div>
+          <div class="cert-name">Calefacción</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+        <div class="cert-card" onclick="openCertCourse('hvaccore')">
+          <div class="cert-icon">❄️</div>
+          <div class="cert-name">HVAC Core</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+        <div class="cert-card" onclick="openCertCourse('hvacr')">
+          <div class="cert-icon"><svg width="28" height="28" viewBox="0 0 32 32"><rect width="16" height="32" fill="#E3F2FD" rx="2"/><rect x="16" width="16" height="32" fill="#FFF3E0" rx="2"/><path d="M8 8L5 14L8 12L11 14Z" fill="#42A5F5"/><circle cx="8" cy="6" r="1.5" fill="#42A5F5"/><path d="M24 16C24 13 22 11 22 9C22 7 23 6 24 6C25 6 26 7 26 9C26 11 24 13 24 16Z" fill="#FF9800"/><circle cx="24" cy="18" r="1.5" fill="#E65100"/></svg></div>
+          <div class="cert-name">HVACR</div>
+          <div class="cert-price">Estudio Gratis</div>
+        </div>
+      </div>
     </div>
 
     <!-- Certification Course Screen -->
@@ -6406,7 +6418,7 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
         if (activeScreen && (activeScreen.id === 'quizScreen' || activeScreen.id === 'quizOnlyScreen') && screenId !== 'quizScreen' && screenId !== 'quizOnlyScreen') {}
       }
       // Force check-in before accessing any content
-      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipZoneScreen', 'studentCalendarScreen', 'referidosScreen'];
+      const protectedScreens = ['levelsScreen', 'studySectionsScreen', 'videoLessonsScreen', 'quizScreen', 'studyContentScreen', 'studyCategoryScreen', 'certificatesScreen', 'membershipZoneScreen', 'studentCalendarScreen', 'referidosScreen', 'certOficialesScreen'];
       if (protectedScreens.includes(screenId) && !sessionCheckedIn) {
         if (!requireCheckIn(screenId)) return;
       }
@@ -13981,18 +13993,18 @@ if (screenId === 'adminDashboardScreen') {
       container.innerHTML = upcoming.map(function(c) {
         var d = new Date(c.fecha);
         var isToday = d.toDateString() === now.toDateString();
-        return '<div style="background:' + (isToday ? 'rgba(0,212,255,0.1)' : 'rgba(255,255,255,0.03)') + ';border:1px solid ' + (isToday ? 'rgba(0,212,255,0.3)' : 'rgba(255,255,255,0.05)') + ';border-radius:10px;padding:12px;margin:6px 0;">' +
+        return '<div style="background:' + (isToday ? '#eff6ff' : '#f8fafc') + ';border:2px solid ' + (isToday ? '#3b82f6' : '#e2e8f0') + ';border-radius:10px;padding:12px;margin:6px 0;">' +
           '<div style="display:flex;justify-content:space-between;align-items:center;">' +
             '<div>' +
-              '<div style="color:#e2e8f0;font-size:14px;font-weight:bold;">' + (c.titulo || 'Clase HVAC') + '</div>' +
-              '<div style="color:#64748b;font-size:12px;">👨‍🏫 ' + (c.instructor || 'Maestro Mario') + '</div>' +
+              '<div style="color:#1e293b;font-size:14px;font-weight:bold;">' + (c.titulo || 'Clase HVAC') + '</div>' +
+              '<div style="color:#4b5563;font-size:12px;">👨‍🏫 ' + (c.instructor || 'Maestro Mario') + '</div>' +
             '</div>' +
             '<div style="text-align:right;">' +
-              '<div style="color:' + (isToday ? '#00d4ff' : '#f39c12') + ';font-size:13px;font-weight:bold;">' + d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' }) + '</div>' +
-              '<div style="color:#e2e8f0;font-size:12px;">' + (c.hora_inicio || '7:00 PM') + ' - ' + (c.hora_fin || '9:00 PM') + '</div>' +
+              '<div style="color:' + (isToday ? '#2563eb' : '#dc2626') + ';font-size:13px;font-weight:bold;">' + d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric', month: 'short' }) + '</div>' +
+              '<div style="color:#374151;font-size:12px;font-weight:600;">' + (c.hora_inicio || '7:00 PM') + ' - ' + (c.hora_fin || '9:00 PM') + '</div>' +
             '</div>' +
           '</div>' +
-          (isToday && c.zoom_link ? '<a href="' + c.zoom_link + '" target="_blank" style="display:block;margin-top:8px;padding:8px;background:#00d4ff;color:#1a1a2e;border-radius:6px;text-align:center;font-weight:bold;font-size:13px;text-decoration:none;">🔴 Unirse a la Clase EN VIVO</a>' : '') +
+          (isToday && c.zoom_link ? '<a href="' + c.zoom_link + '" target="_blank" style="display:block;margin-top:8px;padding:8px;background:#dc2626;color:white;border-radius:6px;text-align:center;font-weight:bold;font-size:13px;text-decoration:none;">🔴 Unirse a la Clase EN VIVO</a>' : '') +
         '</div>';
       }).join('');
     }
@@ -17543,7 +17555,7 @@ if(cb)cb();
 
 <!-- ACVOLT AI ASSISTANT - Asistente Unificado -->
 <style>
-#acvoltAI{position:fixed;bottom:85px;left:15px;z-index:960;display:none;flex-direction:column;align-items:flex-start;gap:8px;width:340px;animation:aiIn .4s ease}
+#acvoltAI{position:fixed;top:180px;right:15px;z-index:960;display:none;flex-direction:column;align-items:flex-end;gap:8px;width:340px;animation:aiIn .4s ease}
 @keyframes aiIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
 #acvoltAI .ai-panel{background:linear-gradient(135deg,#0d1117,#161b22);border:1.5px solid rgba(243,156,18,0.3);border-radius:18px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.5);display:flex;flex-direction:column;max-height:440px}
 #acvoltAI .ai-head{background:linear-gradient(135deg,#f39c12,#e67e22);padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -17570,12 +17582,13 @@ if(cb)cb();
 .ai-dots span{width:5px;height:5px;border-radius:50%;background:#f39c12;animation:mTy 1.4s ease-in-out infinite}
 .ai-dots span:nth-child(2){animation-delay:.2s}
 .ai-dots span:nth-child(3){animation-delay:.4s}
-#acvoltBtn{position:fixed;bottom:20px;left:15px;z-index:961;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.7);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 4px 24px rgba(243,156,18,0.5);transition:all .3s}
+#acvoltBtn{position:fixed;top:120px;right:12px;z-index:961;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.8);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 0 0 0 rgba(243,156,18,0.5);animation:aiRingPulse 2s ease infinite;transition:all .3s}
 #acvoltBtn:hover{transform:scale(1.1)}
 #acvoltBtn.speaking{animation:aiPulse 1.5s ease-in-out infinite}
+@keyframes aiRingPulse{0%{box-shadow:0 0 0 0 rgba(243,156,18,0.6);}70%{box-shadow:0 0 0 12px rgba(243,156,18,0);}100%{box-shadow:0 0 0 0 rgba(243,156,18,0);}}
 @keyframes aiPulse{0%,100%{box-shadow:0 4px 24px rgba(243,156,18,0.5)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
 .ai-bdg{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:#e74c3c;border-radius:10px;color:white;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:bold;border:2px solid #0d1117;padding:0 4px}
-@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;bottom:80px}#acvoltBtn{bottom:15px;left:10px;width:54px;height:54px}}
+@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;top:175px;bottom:auto}#acvoltBtn{top:115px;right:10px;width:46px;height:46px}}
 </style>
 
 <div id="acvoltBtn" onclick="window._acAI.toggle()" style="overflow:hidden;"><img src="mario-black.jpg" alt="AI" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><div class="ai-bdg" id="aiBdg">1</div></div>

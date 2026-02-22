@@ -15048,7 +15048,8 @@ if (screenId === 'adminDashboardScreen') {
         return;
       }
       
-      let html = '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+      let html = '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button onclick="verifyAllStripe()" style="background:#635bff;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;">💳 Verificar Todos en Stripe</button></div>';
+      html += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
       html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Stripe</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
       
       requests.forEach((req, i) => {
@@ -15062,7 +15063,15 @@ if (screenId === 'adminDashboardScreen') {
         html += '<td style="padding:8px;">' + (req.student_city || '') + ', ' + (req.student_state || '') + '</td>';
         html += '<td style="padding:8px;text-align:center;">' + (req.tech_number || '-') + '</td>';
         html += '<td style="padding:8px;text-align:center;font-family:monospace;font-weight:bold;font-size:14px;color:#2c3e50;">' + (req.code || '---') + '</td>';
-        html += '<td style="padding:8px;text-align:center;">' + (req.stripe_verified ? '<span style="color:#16a34a;font-weight:bold;">✅</span>' : '<span style="color:#dc2626;">❌</span>') + '</td>';
+        html += '<td style="padding:8px;text-align:center;" id="stripe_' + i + '">';
+        if (req.stripe_verified === true) {
+          html += '<span style="color:#16a34a;font-weight:bold;" title="Verificado en Stripe">✅</span>';
+        } else if (req.stripe_verified === false) {
+          html += '<span style="color:#dc2626;" title="No encontrado en Stripe">❌</span>';
+        } else {
+          html += '<button onclick="verifyStripeInline(' + i + ',\'' + (req.student_email || '').replace(/'/g, "\\'") + '\')" style="background:#635bff;color:white;border:none;padding:3px 8px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:bold;">🔍 Verificar</button>';
+        }
+        html += '</td>';
         html += '<td style="padding:8px;"><span style="background:' + (statusColors[req.status] || '#999') + ';color:white;padding:3px 8px;border-radius:12px;font-size:11px;">' + (statusLabels[req.status] || req.status) + '</span></td>';
         html += '<td style="padding:8px;">';
         
@@ -15082,6 +15091,95 @@ if (screenId === 'adminDashboardScreen') {
     }
 
     // === CENTRO DE MANDO FUNCTIONS ===
+    
+    async function verifyAllStripe() {
+      let requests = [];
+      try {
+        const { data } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+        if (data) requests = data;
+      } catch(e) { return; }
+      
+      // Get unique emails that haven't been verified
+      const emailsToCheck = [];
+      requests.forEach((req, i) => {
+        if (req.student_email && req.stripe_verified === null || req.stripe_verified === undefined) {
+          if (!emailsToCheck.find(e => e.email === req.student_email)) {
+            emailsToCheck.push({ email: req.student_email, indices: [] });
+          }
+          emailsToCheck.find(e => e.email === req.student_email).indices.push(i);
+        }
+      });
+      
+      if (emailsToCheck.length === 0) {
+        alert('✅ Todos los técnicos ya están verificados.');
+        return;
+      }
+      
+      alert('🔍 Verificando ' + emailsToCheck.length + ' técnicos en Stripe...');
+      
+      for (const item of emailsToCheck) {
+        // Update UI
+        item.indices.forEach(i => {
+          const cell = document.getElementById('stripe_' + i);
+          if (cell) cell.innerHTML = '<span style="color:#635bff;font-size:10px;">⏳</span>';
+        });
+        
+        const result = await verifyStripeMembership(item.email);
+        
+        item.indices.forEach(async (i) => {
+          const cell = document.getElementById('stripe_' + i);
+          if (cell) {
+            if (result.active) {
+              cell.innerHTML = '<span style="color:#16a34a;font-weight:bold;">✅</span>';
+            } else {
+              cell.innerHTML = '<span style="color:#dc2626;">❌</span>';
+            }
+          }
+          // Save to DB
+          try {
+            if (requests[i]) {
+              await supabaseClient.from('access_code_requests').update({ stripe_verified: result.active }).eq('id', requests[i].id);
+            }
+          } catch(e) {}
+        });
+        
+        // Small delay between checks to avoid rate limiting
+        await new Promise(r => setTimeout(r, 500));
+      }
+      
+      alert('✅ Verificación completa.');
+    }
+
+    async function verifyStripeInline(index, email) {
+      const cell = document.getElementById('stripe_' + index);
+      if (!cell) return;
+      cell.innerHTML = '<span style="color:#635bff;font-size:10px;">⏳ Verificando...</span>';
+      
+      const result = await verifyStripeMembership(email);
+      
+      if (result.active) {
+        cell.innerHTML = '<span style="color:#16a34a;font-weight:bold;" title="' + (result.plan || 'Activa') + '">✅</span><br><span style="font-size:8px;color:#16a34a;">' + (result.plan || '') + '</span>';
+        // Save to Supabase
+        try {
+          let requests = [];
+          const { data } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+          if (data) requests = data;
+          if (requests[index]) {
+            await supabaseClient.from('access_code_requests').update({ stripe_verified: true }).eq('id', requests[index].id);
+          }
+        } catch(e) {}
+      } else {
+        cell.innerHTML = '<span style="color:#dc2626;" title="' + (result.error || 'No encontrado') + '">❌</span><br><span style="font-size:8px;color:#dc2626;">No pagó</span>';
+        try {
+          let requests = [];
+          const { data } = await supabaseClient.from('access_code_requests').select('*').order('requested_at', { ascending: false });
+          if (data) requests = data;
+          if (requests[index]) {
+            await supabaseClient.from('access_code_requests').update({ stripe_verified: false }).eq('id', requests[index].id);
+          }
+        } catch(e) {}
+      }
+    }
     
     async function generateManualAccessCode() {
       const name = document.getElementById('manualCodeName').value.trim();

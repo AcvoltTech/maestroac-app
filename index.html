@@ -15042,9 +15042,9 @@ if (screenId === 'adminDashboardScreen') {
         return;
       }
       
-      let html = '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;"><button onclick="verifyAllStripe()" style="background:#635bff;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;">💳 Verificar Todos en Stripe</button></div>';
+      let html = '<div style="display:flex;justify-content:flex-end;margin-bottom:8px;gap:8px;"><button onclick="verifyAllStripe()" style="background:#635bff;color:white;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:bold;">\ud83d\udcb3 Verificar Todos en Stripe</button></div>';
       html += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
-      html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Stripe</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
+      html += '<tr style="background:#2c3e50;color:white;"><th style="padding:8px;">Estudiante</th><th>Contacto</th><th>Ciudad/Estado</th><th>T\u00E9cnico #</th><th>C\u00F3digo</th><th>Stripe</th><th>Pago</th><th>Estado</th><th>Acci\u00F3n</th></tr>';
       
       requests.forEach((req, i) => {
         const statusColors = { pending: '#f39c12', approved: '#27ae60', redeemed: '#3498db', rejected: '#e74c3c' };
@@ -15059,13 +15059,32 @@ if (screenId === 'adminDashboardScreen') {
         html += '<td style="padding:8px;text-align:center;font-family:monospace;font-weight:bold;font-size:14px;color:#2c3e50;">' + (req.code || '---') + '</td>';
         html += '<td style="padding:8px;text-align:center;" id="stripe_' + i + '">';
         if (req.stripe_verified === true) {
-          html += '<span style="color:#16a34a;font-weight:bold;" title="Verificado en Stripe">✅</span>';
+          html += '<span style="color:#16a34a;font-weight:bold;" title="Verificado en Stripe">\u2705</span>';
         } else if (req.stripe_verified === false) {
-          html += '<span style="color:#dc2626;" title="No encontrado en Stripe">❌</span>';
+          html += '<span style="color:#dc2626;" title="No encontrado en Stripe">\u274C</span>';
         } else {
-          html += '<button onclick="verifyStripeInline(' + i + ',\'' + (req.student_email || '').replace(/'/g, "\\'") + '\')" style="background:#635bff;color:white;border:none;padding:3px 8px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:bold;">🔍 Verificar</button>';
+          html += '<button onclick="verifyStripeInline(' + i + ',\'' + (req.student_email || '').replace(/'/g, "\\'") + '\')" style="background:#635bff;color:white;border:none;padding:3px 8px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:bold;">\ud83d\udd0d Verificar</button>';
         }
         html += '</td>';
+        
+        // Payment Method column
+        var currentMethod = req.payment_method || '';
+        var paymentColors = { stripe: '#635bff', zelle: '#6d1ed4', efectivo: '#27ae60', otro: '#f39c12' };
+        var paymentColor = paymentColors[currentMethod] || '#999';
+        html += '<td style="padding:8px;text-align:center;">';
+        if (currentMethod) {
+          html += '<span style="background:' + paymentColor + ';color:white;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:bold;cursor:pointer;" onclick="changePaymentMethod(' + i + ',\'' + req.id + '\')" title="Click para cambiar">' + currentMethod.charAt(0).toUpperCase() + currentMethod.slice(1) + '</span>';
+        } else {
+          html += '<select onchange="setPaymentMethod(' + i + ',\'' + req.id + '\',this.value)" style="font-size:10px;padding:2px 4px;border-radius:4px;border:1px solid #ddd;cursor:pointer;">';
+          html += '<option value="">--</option>';
+          html += '<option value="stripe">\ud83d\udcb3 Stripe</option>';
+          html += '<option value="zelle">\ud83d\udcb1 Zelle</option>';
+          html += '<option value="efectivo">\ud83d\udcb5 Efectivo</option>';
+          html += '<option value="otro">\ud83d\udce6 Otro</option>';
+          html += '</select>';
+        }
+        html += '</td>';
+        
         html += '<td style="padding:8px;"><span style="background:' + (statusColors[req.status] || '#999') + ';color:white;padding:3px 8px;border-radius:12px;font-size:11px;">' + (statusLabels[req.status] || req.status) + '</span></td>';
         html += '<td style="padding:8px;">';
         
@@ -15074,7 +15093,7 @@ if (screenId === 'adminDashboardScreen') {
           html += '<button onclick="rejectAccessCode(' + i + ')" style="background:#e74c3c;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\u274C Rechazar</button>';
         } else if (req.status === 'approved') {
           html += '<button onclick="copyCodeToClipboard(\'' + req.code + '\')" style="background:#3498db;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\uD83D\uDCCB Copiar</button>';
-          html += '<button onclick="showCodeSendModal(\'' + (req.student_name || '').replace(/'/g, "\\'") + '\',\'' + (req.student_email || '') + '\',\'' + (req.student_phone || '') + '\',\'' + req.code + '\')" style="background:#22c55e;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">📤 Enviar</button>';
+          html += '<button onclick="showCodeSendModal(\'' + (req.student_name || '').replace(/'/g, "\\'") + '\',\'' + (req.student_email || '') + '\',\'' + (req.student_phone || '') + '\',\'' + req.code + '\')" style="background:#22c55e;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:11px;margin:2px;">\ud83d\udce4 Enviar</button>';
         }
         
         html += '</td></tr>';
@@ -15082,6 +15101,52 @@ if (screenId === 'adminDashboardScreen') {
       
       html += '</table>';
       container.innerHTML = html;
+    }
+    
+    async function setPaymentMethod(index, reqId, method) {
+      if (!method) return;
+      try {
+        await supabaseClient.from('access_code_requests').update({ 
+          payment_method: method,
+          payment_verified_at: new Date().toISOString()
+        }).eq('id', reqId);
+        
+        // If method is not stripe, also mark as verified
+        if (method !== 'stripe') {
+          await supabaseClient.from('access_code_requests').update({ stripe_verified: true }).eq('id', reqId);
+        }
+        
+        // Refresh the table
+        renderAccessCodes();
+      } catch(e) {
+        alert('Error guardando: ' + e.message);
+      }
+    }
+    
+    async function changePaymentMethod(index, reqId) {
+      const methods = ['stripe', 'zelle', 'efectivo', 'otro', '(quitar)'];
+      const choice = prompt('Selecciona m\u00E9todo de pago:\n1. Stripe\n2. Zelle\n3. Efectivo\n4. Otro\n5. Quitar', '');
+      if (!choice) return;
+      
+      let method = null;
+      const num = parseInt(choice);
+      if (num === 1 || choice.toLowerCase() === 'stripe') method = 'stripe';
+      else if (num === 2 || choice.toLowerCase() === 'zelle') method = 'zelle';
+      else if (num === 3 || choice.toLowerCase() === 'efectivo') method = 'efectivo';
+      else if (num === 4 || choice.toLowerCase() === 'otro') method = 'otro';
+      else if (num === 5) method = null;
+      else method = choice.toLowerCase();
+      
+      try {
+        await supabaseClient.from('access_code_requests').update({ 
+          payment_method: method,
+          payment_verified_at: method ? new Date().toISOString() : null,
+          stripe_verified: method ? true : null
+        }).eq('id', reqId);
+        renderAccessCodes();
+      } catch(e) {
+        alert('Error: ' + e.message);
+      }
     }
 
     // === CENTRO DE MANDO FUNCTIONS ===

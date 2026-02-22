@@ -3279,76 +3279,49 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
 
     <!-- Welcome Screen -->
     <div class="screen" id="welcomeScreen">
-      <div class="header" style="padding:4px 0 2px;">
-        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:110px;margin-bottom:2px;">
-        <h1 style="font-size:22px;margin:0;">MAESTRO ACVOLT</h1>
-        <p class="subtitle" style="margin:2px 0 4px;font-size:13px;">Bienvenido</p>
+      <div class="header" style="padding:2px 0 0;">
+        <img src="logo.png" alt="ACVOLT" class="logo-img" style="max-width:80px;margin-bottom:0;">
+        <h1 style="font-size:18px;margin:0;">MAESTRO ACVOLT</h1>
+        <p class="subtitle" style="margin:1px 0 3px;font-size:11px;">Bienvenido</p>
       </div>
-      <div class="card" style="padding:10px;">
-        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:3px;">🎓 Comenzar Entrenamiento</button>
-        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:3px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📚 Mis Clases (Biblioteca y Tareas)</button>
-        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades (3,500+ Preguntas)</button>
-        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:3px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas (Zoom y YouTube)</button>
-        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:3px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
-        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:3px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Obtén tus Certificados Oficiales</button>
+      <div class="card" style="padding:8px;">
+        <button class="btn btn-primary" onclick="handleComenzar()" style="margin-bottom:2px;padding:10px;font-size:14px;">🎓 Comenzar Entrenamiento</button>
+        <button class="btn btn-secondary profile-nav-btn" onclick="showProfile('welcomeScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">📚 Mis Clases (Biblioteca y Tareas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('studySectionsScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: white;">🎓 Desarrollo de Habilidades (3,500+ Preguntas)</button>
+        <button class="btn btn-secondary" onclick="showScreen('videoLessonsScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #0891b2, #0e7490); color: white;">🎥 Clases Pregrabadas (Zoom y YouTube)</button>
+        <button class="btn btn-secondary" onclick="showScreen('attendanceScreen'); loadAttendanceData();" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; font-weight:800;">✅ Mi Asistencia - Check In/Out</button>
+        <button class="btn btn-secondary" onclick="showScreen('certOficialesScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #b45309, #92400e); color: white;">🏆 Obtén tus Certificados Oficiales</button>
         
-        <!-- Referidos + CRM - VEGAS STYLE -->
-        <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
+        <!-- Referidos + CRM -->
+        <div style="margin-top:3px; padding-top:3px; border-top:1px solid rgba(255,255,255,0.1);">
           
-          <!-- 🎰 GANA DINERO - Vegas Carnival Style -->
-          <div onclick="showScreen('referidosScreen')" style="margin-top:3px;position:relative;border-radius:12px;padding:3px;cursor:pointer;background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00ff00,#00bfff,#8b00ff,#ff0000);background-size:400% 100%;animation:vegasLights 3s linear infinite;box-shadow:0 0 15px rgba(255,215,0,0.5),0 0 30px rgba(255,0,0,0.3);">
-            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:10px;padding:10px 12px;text-align:center;position:relative;overflow:hidden;">
-              <div style="position:relative;z-index:2;">
-                <div style="font-size:18px;margin-bottom:1px;animation:vegasBounce 1s ease infinite;display:inline-block;">🤑</div>
-                <div style="font-size:14px;font-weight:900;color:#ffd700;text-shadow:0 0 10px rgba(255,215,0,0.5);letter-spacing:1px;display:inline-block;margin-left:6px;">¡GANA DINERO!</div>
-                <div style="font-size:11px;font-weight:700;color:#fff;margin-top:1px;">RECOMIENDA LA ESCUELA</div>
-                <div style="display:flex;justify-content:center;gap:3px;margin-top:4px;font-size:8px;">
-                  <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.2s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.6s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.1s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.3s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.5s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.7s;">💡</span>
-                </div>
+          <!-- GANA DINERO -->
+          <div onclick="showScreen('referidosScreen')" style="margin-top:2px;position:relative;border-radius:10px;padding:2px;cursor:pointer;background:linear-gradient(90deg,#ff0000,#ff8c00,#ffd700,#00ff00,#00bfff,#8b00ff,#ff0000);background-size:400% 100%;animation:vegasLights 3s linear infinite;box-shadow:0 0 10px rgba(255,215,0,0.4);">
+            <div style="background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:8px;padding:8px 10px;text-align:center;">
+              <div style="display:flex;align-items:center;justify-content:center;gap:6px;">
+                <span style="font-size:16px;animation:vegasBounce 1s ease infinite;">🤑</span>
+                <span style="font-size:13px;font-weight:900;color:#ffd700;letter-spacing:1px;">¡GANA DINERO!</span>
               </div>
+              <div style="font-size:10px;font-weight:700;color:#fff;">RECOMIENDA LA ESCUELA</div>
             </div>
           </div>
           
-          <!-- 🔥 Trade Master CRM Demo - Vegas Style -->
-          <div onclick="window.open('https://acvolttech.github.io/trademaster-crm/','_blank')" style="margin-top:4px;position:relative;border-radius:12px;padding:3px;cursor:pointer;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e,#3b82f6,#8b5cf6,#f97316);background-size:400% 100%;animation:vegasLights 4s linear infinite;box-shadow:0 0 15px rgba(249,115,22,0.4),0 0 30px rgba(59,130,246,0.2);">
-            <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2d5a8e 50%,#1e3a5f 100%);background-size:200% 200%;animation:crmShimmer 3s ease infinite;border-radius:10px;padding:8px 12px;color:#fff;text-align:center;position:relative;overflow:hidden;">
-              <div style="position:relative;z-index:2;">
-                <div style="display:flex;justify-content:center;gap:3px;margin-bottom:2px;font-size:8px;">
-                  <span style="animation:vegasBlink 0.8s ease infinite;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.15s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.3s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.45s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.6s;">💡</span>
-                </div>
-                <div style="font-size:10px;font-weight:700;color:#f97316;letter-spacing:2px;text-transform:uppercase;margin-bottom:1px;animation:crmTextPop 3s ease-in-out infinite;">🚀 ¿Ya Tienes Tu Negocio?</div>
-                <div style="font-size:16px;font-weight:900;margin-bottom:1px;text-shadow:0 0 10px rgba(255,255,255,0.2);">Trade Master CRM</div>
-                <div style="font-size:10px;color:#94a3b8;margin-bottom:6px">Maneja clientes, técnicos, facturas, cobros y nómina</div>
-                <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:6px">
-                  <span style="background:rgba(249,115,22,.15);color:#f97316;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📋 Clientes</span>
-                  <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📍 GPS</span>
-                  <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">💰 Cobros</span>
-                  <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:2px 6px;border-radius:20px;font-size:8px;font-weight:600">📊 Nómina</span>
-                </div>
-                <div style="display:flex;gap:6px;justify-content:center;flex-wrap:nowrap">
-                  <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:8px 14px;border-radius:8px;font-size:11px;font-weight:800;color:#fff;display:inline-block;animation:crmPulse 2s ease infinite;box-shadow:0 2px 12px rgba(34,197,94,.4)">📝 REGÍSTRATE GRATIS</a>
-                  <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:8px 14px;border-radius:8px;font-size:11px;font-weight:800;color:#fff;display:inline-block;box-shadow:0 2px 12px rgba(249,115,22,.4)">🎬 VER DEMO AI</a>
-                </div>
-                <div style="font-size:8px;color:#64748b;margin-top:4px">Free para 10 clientes • No necesitas tarjeta</div>
-                <div style="display:flex;justify-content:center;gap:3px;margin-top:4px;font-size:8px;">
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.1s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.25s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.4s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.55s;">💡</span>
-                  <span style="animation:vegasBlink 0.8s ease infinite 0.7s;">💡</span>
-                </div>
+          <!-- Trade Master CRM - Compact -->
+          <div onclick="window.open('https://acvolttech.github.io/trademaster-crm/','_blank')" style="margin-top:3px;position:relative;border-radius:10px;padding:2px;cursor:pointer;background:linear-gradient(90deg,#f97316,#fbbf24,#22c55e,#3b82f6,#8b5cf6,#f97316);background-size:400% 100%;animation:vegasLights 4s linear infinite;">
+            <div style="background:linear-gradient(135deg,#1e3a5f,#2d5a8e);border-radius:8px;padding:8px 10px;color:#fff;text-align:center;">
+              <div style="font-size:14px;font-weight:900;margin-bottom:2px;">Trade Master CRM</div>
+              <div style="font-size:9px;color:#94a3b8;margin-bottom:4px;">Maneja clientes, técnicos, facturas, cobros y nómina</div>
+              <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-bottom:4px;">
+                <span style="background:rgba(249,115,22,.15);color:#f97316;padding:1px 5px;border-radius:20px;font-size:8px;font-weight:600">📋 Clientes</span>
+                <span style="background:rgba(59,130,246,.15);color:#60a5fa;padding:1px 5px;border-radius:20px;font-size:8px;font-weight:600">📍 GPS</span>
+                <span style="background:rgba(34,197,94,.15);color:#4ade80;padding:1px 5px;border-radius:20px;font-size:8px;font-weight:600">💰 Cobros</span>
+                <span style="background:rgba(168,85,247,.15);color:#c084fc;padding:1px 5px;border-radius:20px;font-size:8px;font-weight:600">📊 Nómina</span>
               </div>
+              <div style="display:flex;gap:5px;justify-content:center;">
+                <a href="https://acvolttech.github.io/trademaster-crm/?tab=register&ref=maestro" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#22c55e,#16a34a);padding:6px 12px;border-radius:8px;font-size:10px;font-weight:800;color:#fff;animation:crmPulse 2s ease infinite;">📝 REGÍSTRATE GRATIS</a>
+                <a href="https://acvolttech.github.io/trademaster-crm/?demo=true" target="_blank" style="text-decoration:none;background:linear-gradient(135deg,#f97316,#ea580c);padding:6px 12px;border-radius:8px;font-size:10px;font-weight:800;color:#fff;">🎬 VER DEMO AI</a>
+              </div>
+              <div style="font-size:7px;color:#64748b;margin-top:3px;">Free para 10 clientes • No necesitas tarjeta</div>
             </div>
           </div>
           <style>
@@ -3362,22 +3335,22 @@ if(sessionStorage.getItem('launcher_seen')==='1'){
           </style>
         </div>
 
-        <!-- Calendario + Clases en Vivo -->
-        <div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
-          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:3px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
-          <button class="btn btn-secondary" onclick="showScreen('membresiasScreen')" style="margin-top:3px; background: linear-gradient(135deg, #9333ea, #7e22ce); color:white;">👑 Membresías en Vivo</button>
+        <!-- Calendario + Membresías -->
+        <div style="margin-top:3px; padding-top:3px; border-top:1px solid rgba(255,255,255,0.1);">
+          <button class="btn btn-secondary" onclick="showScreen('studentCalendarScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #4338ca, #3730a3); color:white;">📅 Calendario de Clases en Vivo</button>
+          <button class="btn btn-secondary" onclick="showScreen('membresiasScreen')" style="margin-top:2px;padding:9px;font-size:13px; background: linear-gradient(135deg, #9333ea, #7e22ce); color:white;">👑 Membresías en Vivo</button>
         </div>
         
-        <div style="text-align:center; margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1);">
-          <span class="admin-link" onclick="showScreen('adminLoginScreen')">🔐 Acceso Administrador</span>
+        <div style="text-align:center; margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
+          <span class="admin-link" onclick="showScreen('adminLoginScreen')" style="font-size:12px;">🔐 Acceso Administrador</span>
         </div>
-        <div style="text-align:center; margin-top:4px;">
-          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:12px; padding:6px 16px;">🚪 Cerrar Sesión</button>
+        <div style="text-align:center; margin-top:3px;">
+          <button class="btn btn-secondary" onclick="cerrarSesion()" style="background:rgba(231,76,60,0.15); border:1px solid rgba(231,76,60,0.4); color:#e74c3c; font-size:11px; padding:5px 14px;">🚪 Cerrar Sesión</button>
         </div>
         
         <!-- ACVOLT School Info -->
-        <div style="margin-top:8px;padding:8px 12px;background:#f1f5f9;border-radius:10px;text-align:center;">
-          <div style="font-size:10px;color:#475569;line-height:1.6;">
+        <div style="margin-top:5px;padding:5px 10px;background:#f1f5f9;border-radius:8px;text-align:center;">
+          <div style="font-size:9px;color:#475569;line-height:1.5;">
             📍 484 E Valley Blvd, Colton, CA 92324 · 📞 <a href="tel:9098244849" style="color:#2563eb;text-decoration:none;">909-824-4849</a><br>
             ✉️ <a href="mailto:ventas@acvolt.school" style="color:#2563eb;text-decoration:none;">ventas@acvolt.school</a> · 🌐 <a href="https://acvolt.school" target="_blank" style="color:#2563eb;text-decoration:none;">acvolt.school</a>
           </div>
@@ -5714,51 +5687,57 @@ window.onunhandledrejection=function(e){console.error('[MaestroAC Promise]',e.re
 
     function showPurchaseModal() {
       const modal = document.createElement('div');
-      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
+      modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;';
       modal.innerHTML = `
-        <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:25px;max-width:400px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
-          <div style="font-size:50px;margin-bottom:10px;">🔓</div>
-          <h3 style="color:#f39c12;margin-bottom:8px;">Desbloquea Maestro ACVOLT Completo</h3>
-          <p style="color:#64748b;font-size:14px;margin-bottom:15px;">Acceso a los 5 niveles con 3,500+ preguntas de certificación HVAC.</p>
+        <div style="background:linear-gradient(135deg,#1a5276,#154360);border-radius:20px;padding:22px;max-width:400px;width:100%;text-align:center;border:2px solid #f39c12;max-height:90vh;overflow-y:auto;">
+          <div style="font-size:40px;margin-bottom:6px;">⚠️</div>
+          <h3 style="color:#e74c3c;margin-bottom:6px;font-size:18px;">¡No Pierdas Tu Progreso!</h3>
+          <p style="color:#fbbf24;font-size:14px;font-weight:700;margin-bottom:4px;">Tu prueba gratuita de 50 preguntas terminó</p>
+          <p style="color:#e2e8f0;font-size:13px;margin-bottom:12px;">No pierdas tu progreso ni tus certificados.<br><strong style="color:#ffd700;">¡Regístrate ahora y sigue avanzando!</strong></p>
           
-          <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.5);border-radius:10px;padding:10px;margin-bottom:15px;">
-            <p style="color:#f39c12;font-size:12px;margin:0;">⚠️ <strong>Nota:</strong> La suscripción incluye SOLO acceso a cuestionarios. NO incluye clases de video, WhatsApp ni Telegram.</p>
+          <div style="background:rgba(243,156,18,0.15);border:1px solid rgba(243,156,18,0.5);border-radius:10px;padding:8px;margin-bottom:12px;">
+            <p style="color:#f39c12;font-size:11px;margin:0;">📱 Acceso completo: 5 niveles · 3,500+ preguntas · Certificaciones HVAC</p>
           </div>
           
-          <div style="background:rgba(46,204,113,0.15);border:2px solid rgba(46,204,113,0.4);border-radius:15px;padding:15px;margin-bottom:12px;">
-            <p style="color:#2ecc71;font-size:13px;font-weight:bold;margin-bottom:3px;">💰 MEJOR VALOR - ANUAL</p>
-            <p style="color:#1e293b;font-size:26px;font-weight:bold;margin-bottom:3px;">$200 USD/año</p>
-            <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Ahorra $40 vs mensual - 12 meses de acceso</p>
-            <button onclick="window.open('https://buy.stripe.com/annual200','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $200/Año</button>
+          <div style="background:rgba(46,204,113,0.15);border:2px solid rgba(46,204,113,0.4);border-radius:15px;padding:12px;margin-bottom:10px;">
+            <p style="color:#2ecc71;font-size:12px;font-weight:bold;margin-bottom:2px;">💰 MEJOR VALOR - ANUAL</p>
+            <p style="color:#fff;font-size:24px;font-weight:bold;margin-bottom:2px;">$240 USD/año</p>
+            <p style="color:#94a3b8;font-size:12px;margin-bottom:8px;">Solo $20/mes — Ahorra con el plan anual</p>
+            <button onclick="window.open('https://buy.stripe.com/annual240','_blank');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;">💳 Pagar $240/Año</button>
           </div>
 
-          <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);border-radius:15px;padding:15px;margin-bottom:15px;">
-            <p style="color:#1e293b;font-size:22px;font-weight:bold;margin-bottom:3px;">$20 USD/mes</p>
-            <p style="color:#64748b;font-size:13px;margin-bottom:10px;">Suscripción mensual - Cancela cuando quieras</p>
-            <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">💳 Suscribirme $20/mes</button>
+          <div style="background:rgba(52,152,219,0.15);border:1px solid rgba(52,152,219,0.4);border-radius:15px;padding:12px;margin-bottom:12px;">
+            <p style="color:#fff;font-size:20px;font-weight:bold;margin-bottom:2px;">$20 USD/mes</p>
+            <p style="color:#94a3b8;font-size:12px;margin-bottom:8px;">Suscripción mensual — Cancela cuando quieras</p>
+            <button onclick="window.open('https://buy.stripe.com/fZu5kD9U32cU1ojaYv3sI07','_blank');" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">💳 Suscribirme $20/mes</button>
           </div>
           
-          <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:10px;margin-bottom:12px;">
-            <p style="color:#e74c3c;font-size:11px;margin:0;">🚫 <strong>Sin reembolsos</strong> después de 3 días de uso de la app.</p>
+          <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.3);border-radius:10px;padding:8px;margin-bottom:10px;">
+            <p style="color:#e74c3c;font-size:10px;margin:0;">🚫 <strong>Sin reembolsos</strong> después de 3 días de uso de la app.</p>
           </div>
 
-          <p style="color:#64748b;font-size:11px;margin-bottom:12px;">Después de pagar, envía tu comprobante por WhatsApp o correo para activar tu acceso en menos de 24 horas.</p>
+          <p style="color:#94a3b8;font-size:10px;margin-bottom:10px;">Después de pagar, envía tu comprobante por WhatsApp o correo para activar tu acceso en menos de 24 horas.</p>
           
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
-            <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
-            <button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Compra Maestro ACVOLT App','Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: '+(currentUser?currentUser.email:''),'📧 Confirmar Compra App');" style="padding:10px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+            <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="padding:8px;border:none;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#25D366,#128C7E);color:white;">📱 WhatsApp</button>
+            <button onclick="openEmailComposer('Techschoolacvolt@gmail.com','Compra Maestro ACVOLT App','Hola, acabo de pagar por Maestro ACVOLT App completa. Mi correo es: '+(currentUser?currentUser.email:''),'📧 Confirmar Compra App');" style="padding:8px;border:none;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#3498db,#2980b9);color:white;">📧 Correo</button>
           </div>
 
-          <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;margin-bottom:12px;">
-            <p style="color:#9b59b6;font-size:13px;font-weight:bold;margin-bottom:8px;">🎫 ¿Ya tienes un código de acceso?</p>
+          <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:10px;margin-bottom:10px;">
+            <div style="background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(16,185,129,0.15));border:1px solid rgba(34,197,94,0.4);border-radius:12px;padding:10px;margin-bottom:8px;">
+              <p style="color:#4ade80;font-size:13px;font-weight:800;margin-bottom:4px;">🏠 ¿Eres Técnico de Casa?</p>
+              <p style="color:#e2e8f0;font-size:11px;margin-bottom:6px;">Si trabajas con una empresa afiliada, solicita tu código de acceso GRATIS.</p>
+              <button onclick="window.open('https://wa.me/19096390448?text=${encodeURIComponent("Hola, soy técnico de casa y quiero solicitar mi código de acceso para la App. Mi correo es: "+(currentUser?currentUser.email:""))}','_blank');" style="width:100%;padding:8px;border:none;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#22c55e,#16a34a);color:white;">📱 Solicitar Mi Código por WhatsApp</button>
+            </div>
+            <p style="color:#9b59b6;font-size:12px;font-weight:bold;margin-bottom:6px;">🎫 ¿Ya tienes un código de acceso?</p>
             <div style="display:flex;gap:8px;">
-              <input type="text" id="accessCodeInput" placeholder="Ingresa tu código" maxlength="10" style="flex:1;padding:10px;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;color:#1e293b;font-size:15px;text-align:center;letter-spacing:2px;text-transform:uppercase;font-family:monospace;">
-              <button onclick="redeemAccessCode()" style="padding:10px 16px;border:none;border-radius:10px;font-size:13px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;">Activar</button>
+              <input type="text" id="accessCodeInput" placeholder="Ingresa tu código" maxlength="10" style="flex:1;padding:8px;border-radius:10px;border:1px solid #e2e8f0;background:#f8fafc;color:#1e293b;font-size:14px;text-align:center;letter-spacing:2px;text-transform:uppercase;font-family:monospace;">
+              <button onclick="redeemAccessCode()" style="padding:8px 14px;border:none;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer;background:linear-gradient(135deg,#9b59b6,#8e44ad);color:white;">Activar</button>
             </div>
             <p id="codeRedeemMsg" style="color:#e74c3c;font-size:11px;margin-top:4px;display:none;"></p>
           </div>
 
-          <button onclick="this.closest('div').parentElement.remove();" style="width:100%;padding:12px;border:none;border-radius:12px;font-size:14px;cursor:pointer;background:rgba(255,255,255,0.15);color:#64748b;">Cancelar</button>
+          <button onclick="this.closest('div').parentElement.remove();" style="width:100%;padding:10px;border:none;border-radius:12px;font-size:13px;cursor:pointer;background:rgba(255,255,255,0.15);color:#64748b;">Cancelar</button>
         </div>
       `;
       document.body.appendChild(modal);
@@ -8760,11 +8739,11 @@ if (screenId === 'adminDashboardScreen') {
     const specialtyMap = {
       'electricidad-residencial': {
         name: '⚡ Electricidad Residencial',
-        keywords: ['Electricidad', 'Eléctrico', 'Diagramas Eléctricos', 'Controles Eléctricos', 'Residencial']
+        keywords: ['Electricidad', 'Diagramas Eléctricos', 'Controles Eléctricos']
       },
       'electricidad-comercial': {
         name: '⚡ Electricidad Comercial',
-        keywords: ['Electricidad Avanzada', 'Controles', 'Controles Experto', 'Diagramas Eléctricos']
+        keywords: ['Electricidad Avanzada', 'Controles', 'Controles Experto']
       },
       'electricidad-industrial': {
         name: '⚡ Electricidad Industrial',
@@ -8772,11 +8751,11 @@ if (screenId === 'adminDashboardScreen') {
       },
       'ac-residencial': {
         name: '❄️ Aire Acondicionado Residencial',
-        keywords: ['Instalación', 'Split/Mini-Split', 'Herramientas', 'Tubería', 'Soldadura', 'Vacío', 'Carga Refrigerante', 'Superheat/Subcooling', 'Mantenimiento', 'Residencial Avanzado', 'Residencial Experto', 'Técnico Residencial', 'Bomba de Calor', 'Calefacción', 'Calefacción Gas']
+        keywords: ['Instalación', 'Split/Mini-Split', 'Herramientas', 'Herramientas Experto', 'Tubería', 'Soldadura', 'Vacío', 'Carga Refrigerante', 'Superheat/Subcooling', 'Mantenimiento', 'Residencial Avanzado', 'Residencial Experto', 'Técnico Residencial', 'Técnico Avanzado', 'Bomba de Calor', 'Calefacción', 'Calefacción Gas', 'Componentes', 'Válvulas y Controles']
       },
       'ac-comercial': {
         name: '❄️ Aire Acondicionado Comercial',
-        keywords: ['Sistemas Comerciales', 'HVAC Comercial', 'Comercial Avanzado', 'Comercial Experto', 'Técnico Comercial', 'Mantenimiento Comercial', 'Instalación Experto']
+        keywords: ['Sistemas Comerciales', 'HVAC Comercial', 'Comercial Avanzado', 'Comercial Experto', 'Técnico Comercial', 'Mantenimiento Comercial', 'Instalación Experto', 'Mantenimiento Experto']
       },
       'ac-industrial': {
         name: '❄️ Aire Acondicionado Industrial',
@@ -8784,7 +8763,7 @@ if (screenId === 'adminDashboardScreen') {
       },
       'refri-residencial': {
         name: '🧊 Refrigeración Residencial',
-        keywords: ['Refrigeración', 'Refrigerantes', 'Manejo de Refrigerantes', 'Recovery', 'Válvulas y Controles', 'Componentes']
+        keywords: ['Refrigeración', 'Refrigerantes', 'Manejo de Refrigerantes', 'Recovery']
       },
       'refri-comercial': {
         name: '🧊 Refrigeración Comercial',
@@ -8792,7 +8771,7 @@ if (screenId === 'adminDashboardScreen') {
       },
       'refri-industrial': {
         name: '🧊 Refrigeración Industrial',
-        keywords: ['EPA 608', 'EPA Avanzado', 'OSHA', 'OSHA 30', 'OSHA Avanzado', 'Seguridad', 'Seguridad Completa', 'Códigos y Permisos', 'Códigos', 'Códigos y Estándares']
+        keywords: ['EPA 608', 'EPA Avanzado', 'OSHA', 'OSHA 30', 'OSHA Avanzado', 'Seguridad', 'Seguridad Completa', 'Códigos y Permisos', 'Códigos', 'Códigos y Estándares', 'Soporte Técnico', 'Liderazgo', 'Leadership', 'Liderazgo Final', 'Clientes y Estimaciones', 'Servicio Cliente', 'Finanzas', 'Finanzas Avanzado', 'Marketing', 'Marketing Experto', 'Legal', 'Legal Experto', 'Ventas Reemplazo', 'Ventas Experto', 'Supervisión', 'Supervisión Técnica', 'Proyectos', 'Proyectos Experto', 'Administración', 'Administración Avanzada', 'Gestión Personal', 'Gestión Avanzada', 'Escenario de Campo', 'Escenario Integrado', 'Escenario Técnico', 'Escenario Final']
       },
       'acca-residencial': {
         name: '📘 Manuales ACCA — Residencial',
@@ -17663,13 +17642,13 @@ if(cb)cb();
 .ai-dots span{width:5px;height:5px;border-radius:50%;background:#f39c12;animation:mTy 1.4s ease-in-out infinite}
 .ai-dots span:nth-child(2){animation-delay:.2s}
 .ai-dots span:nth-child(3){animation-delay:.4s}
-#acvoltBtn{position:fixed;top:120px;right:12px;z-index:961;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.8);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 0 0 0 rgba(243,156,18,0.5);animation:aiRingPulse 2s ease infinite;transition:all .3s}
+#acvoltBtn{position:fixed;top:135px;right:12px;z-index:961;width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#f39c12,#e67e22);border:3px solid rgba(243,156,18,0.8);display:flex;align-items:center;justify-content:center;font-size:26px;cursor:pointer;box-shadow:0 0 0 0 rgba(243,156,18,0.5);animation:aiRingPulse 2s ease infinite;transition:all .3s}
 #acvoltBtn:hover{transform:scale(1.1)}
 #acvoltBtn.speaking{animation:aiPulse 1.5s ease-in-out infinite}
 @keyframes aiRingPulse{0%{box-shadow:0 0 0 0 rgba(243,156,18,0.6);}70%{box-shadow:0 0 0 12px rgba(243,156,18,0);}100%{box-shadow:0 0 0 0 rgba(243,156,18,0);}}
 @keyframes aiPulse{0%,100%{box-shadow:0 4px 24px rgba(243,156,18,0.5)}50%{box-shadow:0 4px 35px rgba(243,156,18,0.7),0 0 0 10px rgba(243,156,18,0.12)}}
 .ai-bdg{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:#e74c3c;border-radius:10px;color:white;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:bold;border:2px solid #0d1117;padding:0 4px}
-@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;top:175px;bottom:auto}#acvoltBtn{top:115px;right:10px;width:46px;height:46px}}
+@media(max-width:600px){#acvoltAI{left:10px;right:10px;width:auto;top:190px;bottom:auto}#acvoltBtn{top:130px;right:10px;width:46px;height:46px}}
 </style>
 
 <div id="acvoltBtn" onclick="window._acAI.toggle()" style="overflow:hidden;"><img src="mario-black.jpg" alt="AI" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"><div class="ai-bdg" id="aiBdg">1</div></div>

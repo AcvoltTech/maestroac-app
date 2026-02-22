@@ -12819,45 +12819,39 @@ if (screenId === 'adminDashboardScreen') {
         document.getElementById('adminLiveCount').textContent = liveCount;
         document.getElementById('adminTodayCount').textContent = todayRecords.length;
         document.getElementById('adminWeekHours').textContent = (weekHours / 60).toFixed(1);
+
+        // Build userMap in ONE batch query instead of individual queries per student
         var studentIds = [];
         data.forEach(function(r) { if (studentIds.indexOf(r.student_id) === -1) studentIds.push(r.student_id); });
         var userMap = {};
-        for (var i = 0; i < studentIds.length; i++) {
+        
+        if (studentIds.length > 0) {
           try {
-            // Try profiles table first
-            var profRes = await supabaseClient.from('profiles').select('full_name, email').eq('id', studentIds[i]).single();
-            if (profRes.data && profRes.data.full_name) {
-              userMap[studentIds[i]] = profRes.data.full_name;
-            } else {
-              // Fallback: try technicians table using email from profiles or users
-              var email = profRes.data ? profRes.data.email : null;
-              if (!email) {
-                var userRes = await supabaseClient.from('users').select('email').eq('id', studentIds[i]).single();
-                email = userRes.data ? userRes.data.email : null;
-              }
-              if (email) {
-                var techRes = await supabaseClient.from('technicians').select('nombre').eq('email', email).single();
-                if (techRes.data && techRes.data.nombre) {
-                  userMap[studentIds[i]] = techRes.data.nombre;
-                } else {
-                  userMap[studentIds[i]] = email.split('@')[0];
-                }
-              } else {
-                userMap[studentIds[i]] = studentIds[i].substring(0,8) + '...';
-              }
+            // Batch query - get all users at once (no .single(), no loop)
+            var usersRes = await supabaseClient.from('users').select('id, nombre, email').in('id', studentIds);
+            if (usersRes.data) {
+              usersRes.data.forEach(function(u) {
+                userMap[u.id] = u.nombre || (u.email ? u.email.split('@')[0] : u.id.substring(0,8) + '...');
+              });
             }
-          } catch(e) { userMap[studentIds[i]] = studentIds[i].substring(0,8) + '...'; }
+          } catch(e) { console.warn('Error loading user names:', e); }
+          
+          // Fallback for IDs not found in users table
+          studentIds.forEach(function(id) {
+            if (!userMap[id]) userMap[id] = id.substring(0,8) + '...';
+          });
         }
+
         var tbody = document.getElementById('adminAttendanceBody');
         if (data.length === 0) {
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">Sin registros</td></tr>';
         } else {
           tbody.innerHTML = data.slice(0, 50).map(function(r) {
             var name = userMap[r.student_id] || r.student_id.substring(0,8);
-            var timeIn = new Date(r.check_in).toLocaleString('es-MX', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
-            var timeOut = r.check_out ? new Date(r.check_out).toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}) : '<span class="live-indicator"></span> En clase';
-            var hours = r.total_minutes ? (r.total_minutes / 60).toFixed(1) + 'h' : '—';
-            return '<tr><td>' + name + '</td><td><span class="history-type ' + (r.class_type === 'presencial' ? 'type-presencial' : 'type-zoom') + '">' + (r.class_type === 'presencial' ? '🏫' : '💻') + ' ' + r.class_type + '</span></td><td>' + timeIn + '</td><td>' + timeOut + '</td><td>' + hours + '</td><td>' + (r.status || 'presente') + '</td></tr>';
+            var timeIn = new Date(r.check_in).toLocaleDateString('es-MX', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+            var timeOut = r.check_out ? new Date(r.check_out).toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'}) : '<span class="live-indicator">En clase</span>';
+            var hours = r.total_minutes ? (r.total_minutes / 60).toFixed(1) + 'h' : '--';
+            return '<tr><td>' + name + '</td><td><span class="history-type ' + (r.class_type === 'presencial' ? 'type-presencial' : 'type-zoom') + '">' + (r.class_type === 'presencial' ? '\ud83c\udfdb\ufe0f' : '\ud83d\udcbb') + ' ' + r.class_type + '</span></td><td>' + timeIn + '</td><td>' + timeOut + '</td><td>' + hours + '</td><td>' + (r.status || 'presente') + '</td></tr>';
           }).join('');
         }
       } catch (err) { console.error('Error asistencia admin:', err); }
